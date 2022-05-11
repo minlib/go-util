@@ -1,2 +1,2 @@
-# go-utils
+# go-util
 golang utils common tool 
