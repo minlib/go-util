@@ -1,4 +1,4 @@
-package ziputil
+package zip
 
 import (
 	"archive/zip"
@@ -86,7 +86,7 @@ func Zip(zipPath string, paths ...string) error {
 
 // Unzip decompresses a zip file to specified directory.
 // Note that the destination directory don't need to specify the trailing path separator.
-func Unzip(zipPath, dstDir string) error {
+func Unzip(zipPath, destDir string) error {
 	// open zip file
 	reader, err := zip.OpenReader(zipPath)
 	if err != nil {
@@ -94,16 +94,16 @@ func Unzip(zipPath, dstDir string) error {
 	}
 	defer reader.Close()
 	for _, file := range reader.File {
-		if err = unzip(file, dstDir); err != nil {
+		if err = unzip(file, destDir); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func unzip(file *zip.File, dstDir string) error {
+func unzip(file *zip.File, destDir string) error {
 	// create the directory of file
-	filePath := path.Join(dstDir, file.Name)
+	filePath := path.Join(destDir, file.Name)
 	if file.FileInfo().IsDir() {
 		if err := os.MkdirAll(filePath, os.ModePerm); err != nil {
 			return err

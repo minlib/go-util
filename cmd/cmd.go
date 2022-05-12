@@ -1,13 +1,12 @@
-package cmdutil
+package cmd
 
 import (
 	"fmt"
 	"os/exec"
 )
 
-func WindowsCmd(cmd string) (string, error) {
+func WinCmd(cmd string) (string, error) {
 	command := exec.Command("cmd", "/c", cmd)
-	//command := exec.Command("tasklist")
 	output, err := command.CombinedOutput()
 	if err != nil {
 		fmt.Println("output err:", err)
