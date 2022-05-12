@@ -40,6 +40,8 @@ func Tar(tarPath string, paths ...string) error {
 			if err != nil {
 				return err
 			}
+			name = strings.ReplaceAll(name, "\\", "/")
+
 			// fmt.Println(name)
 			// 信息头
 			th := new(tar.Header)
