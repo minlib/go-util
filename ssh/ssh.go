@@ -1,7 +1,6 @@
 package ssh
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -14,27 +13,30 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// SshClient ssh客户端对象
-type SshClient struct {
+// Client SSH客户端对象
+type Client struct {
 	host     string
+	port     string
 	username string
 	password string
-	Client   *ssh.Client
+	*ssh.Client
 }
 
-// NewSshClient 创建一个SSH客户端对象
-func (sshClient *SshClient) NewSshClient(host, username, password string) *ssh.Client {
-	// 免费的测试服务器
-	flag.StringVar(&sshClient.host, "host", host, "通过ssh2登录linux的ip地址")
-	flag.StringVar(&sshClient.username, "username", username, "通过ssh2登录linux的用户名")
-	flag.StringVar(&sshClient.password, "password", password, "通过ssh2登录linux的密码")
-	flag.Parse()
-
+// NewClient 创建SshClient
+func NewClient(host, port, username, password string) *Client {
+	if port == "" {
+		port = "22"
+	}
+	c := new(Client)
+	c.host = host
+	c.port = port
+	c.username = username
+	c.password = password
 	auth := make([]ssh.AuthMethod, 0)
-	auth = append(auth, ssh.Password(sshClient.password))
+	auth = append(auth, ssh.Password(c.password))
 
-	clientConfig := &ssh.ClientConfig{
-		User:    sshClient.username,
+	config := &ssh.ClientConfig{
+		User:    c.username,
 		Auth:    auth,
 		Timeout: 30 * time.Second,
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
@@ -42,31 +44,33 @@ func (sshClient *SshClient) NewSshClient(host, username, password string) *ssh.C
 		},
 	}
 
-	addr := sshClient.host + ":22"
-	client, err := ssh.Dial("tcp", addr, clientConfig) //连接ssh
+	addr := c.host + ":" + c.port
+	client, err := ssh.Dial("tcp", addr, config) //连接ssh
 	if err != nil {
 		log.Fatal("连接ssh失败", err)
 	}
 
-	sshClient.Client = client
-	return client
+	c.Client = client
+	return c
 }
 
-func (sshClient *SshClient) RunCmd(cmd string) string {
-	session, err := sshClient.Client.NewSession()
+// RunCmd 运行Shell命令
+func (c *Client) RunCmd(cmd string) (string, error) {
+	session, err := c.Client.NewSession()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	defer session.Close()
 	runResult, err := session.CombinedOutput(cmd)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return string(runResult)
+	return string(runResult), nil
 }
 
-func (sshClient *SshClient) NewFtpClient() *sftp.Client {
-	ftpClient, err := sftp.NewClient(sshClient.Client)
+// NewFtpClient 创建一个FtpClient
+func (c *Client) NewFtpClient() *sftp.Client {
+	ftpClient, err := sftp.NewClient(c.Client)
 	if err != nil {
 		fmt.Println("创建ftp客户端失败", err)
 		panic(err)
@@ -74,22 +78,19 @@ func (sshClient *SshClient) NewFtpClient() *sftp.Client {
 	return ftpClient
 }
 
-func (sshClient *SshClient) MkdirAll(path string) {
-	ftpClient := sshClient.NewFtpClient()
+// MkdirAll 创建文件夹
+func (c *Client) MkdirAll(path string) error {
+	ftpClient := c.NewFtpClient()
 	defer ftpClient.Close()
-	err := ftpClient.MkdirAll(path)
-	if err != nil {
-		fmt.Println("创建文件夹失败", err)
-		panic(err)
-	}
+	return ftpClient.MkdirAll(path)
 }
-func (sshClient *SshClient) UploadFile(localPath string, remoteDir string, remoteFileName string) {
-	ftpClient, err := sftp.NewClient(sshClient.Client)
-	if err != nil {
-		fmt.Println("创建ftp客户端失败", err)
-		panic(err)
-	}
 
+// UploadFile 上传文件
+// @localPath 本地路径
+// @remotePath 远程目录路径
+// @remoteFileName 远程文件名
+func (c *Client) UploadFile(localPath string, remotePath string, remoteFileName string) {
+	ftpClient := c.NewFtpClient()
 	defer ftpClient.Close()
 
 	fmt.Println(localPath, remoteFileName)
@@ -100,29 +101,29 @@ func (sshClient *SshClient) UploadFile(localPath string, remoteDir string, remot
 	}
 	defer srcFile.Close()
 
-	fn := path.Join(remoteDir, remoteFileName)
+	fn := path.Join(remotePath, remoteFileName)
 
-	err = ftpClient.MkdirAll(remoteDir)
+	err = ftpClient.MkdirAll(remotePath)
 	if err != nil {
 		fmt.Println("创建文件夹失败", err)
 		panic(err)
 	}
 
-	dstFile, e := ftpClient.Create(fn)
+	destFile, e := ftpClient.Create(fn)
 	if e != nil {
 		fmt.Println("创建文件失败", e)
 		panic(e)
 	}
-	defer dstFile.Close()
+	defer destFile.Close()
 
 	buffer := make([]byte, 1024000)
 	for {
 		n, err := srcFile.Read(buffer)
-		dstFile.Write(buffer[:n])
+		destFile.Write(buffer[:n])
 		//注意，由于文件大小不定，不可直接使用buffer，否则会在文件末尾重复写入，以填充1024的整数倍
 		if err != nil {
 			if err == io.EOF {
-				fmt.Println("已读取到文件末尾")
+				fmt.Println("upload finish")
 				break
 			} else {
 				fmt.Println("读取文件出错", err)
@@ -132,13 +133,12 @@ func (sshClient *SshClient) UploadFile(localPath string, remoteDir string, remot
 	}
 }
 
-func (sshClient *SshClient) DownloadFile(remotePath string, localDir string, localFilename string) {
-	ftpClient, err := sftp.NewClient(sshClient.Client)
-	if err != nil {
-		fmt.Println("创建ftp客户端失败", err)
-		panic(err)
-	}
-
+// DownloadFile 下载文件
+// @remotePath 远程路径
+// @localPath 本地目录路径
+// @localFilename 本地文件名
+func (c *Client) DownloadFile(remotePath string, localPath string, localFilename string) {
+	ftpClient := c.NewFtpClient()
 	defer ftpClient.Close()
 
 	srcFile, err := ftpClient.Open(remotePath)
@@ -148,13 +148,13 @@ func (sshClient *SshClient) DownloadFile(remotePath string, localDir string, loc
 	}
 	defer srcFile.Close()
 
-	dstFile, e := os.Create(path.Join(localDir, localFilename))
+	destFile, e := os.Create(path.Join(localPath, localFilename))
 	if e != nil {
 		fmt.Println("文件创建失败", e)
 		panic(e)
 	}
-	defer dstFile.Close()
-	if _, err = srcFile.WriteTo(dstFile); err != nil {
+	defer destFile.Close()
+	if _, err = srcFile.WriteTo(destFile); err != nil {
 		fmt.Println("文件写入失败", err)
 		panic(err)
 	}
