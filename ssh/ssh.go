@@ -58,11 +58,13 @@ func NewClient(host, port, username, password string) *Client {
 func (c *Client) RunCmd(cmd string) (string, error) {
 	session, err := c.Client.NewSession()
 	if err != nil {
+		fmt.Println("err:", err)
 		return "", err
 	}
 	defer session.Close()
 	runResult, err := session.CombinedOutput(cmd)
 	if err != nil {
+		fmt.Println("err:", err)
 		return "", err
 	}
 	return string(runResult), nil

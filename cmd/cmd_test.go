@@ -1,9 +1,13 @@
 package cmd
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestWinCmd(t *testing.T) {
-	//WinCmd("tasklist")
+	s, err := WinCmd("tasklist")
+	fmt.Println(s, err)
 	//WinCmd("ipconfig")
-	WinCmd("dir")
+	//WinCmd("dir")
 }

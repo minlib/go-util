@@ -2,16 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/vue5/go-util/convert"
 	"os/exec"
 )
 
 func WinCmd(cmd string) (string, error) {
-	command := exec.Command("cmd", "/c", cmd)
-	output, err := command.CombinedOutput()
+	c := exec.Command("cmd", "/c", cmd)
+	outputByte, err := c.CombinedOutput()
 	if err != nil {
-		fmt.Println("output err:", err)
+		fmt.Println("err:", err)
 		return "", err
 	}
-	fmt.Println(string(output))
-	return string(output), nil
+	output := convert.BytesToString(outputByte, convert.GB18030)
+	return output, nil
 }
