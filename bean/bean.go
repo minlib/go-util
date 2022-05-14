@@ -2,6 +2,7 @@ package bean
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"unsafe"
@@ -16,7 +17,6 @@ func Copy(source, target interface{}) {
 	//sourceType := reflect.TypeOf(source)
 	sourceValue := reflect.ValueOf(source).Elem()
 	targetValue := reflect.ValueOf(target).Elem()
-
 	sourceType := sourceValue.Type()
 	for i := 0; i < sourceValue.NumField(); i++ {
 		// 在要修改的结构体中查询有数据结构体中相同属性的字段，有则修改其值
@@ -27,60 +27,64 @@ func Copy(source, target interface{}) {
 	}
 }
 
-func CopyObj(source, target interface{}) {
-	//获取reflect.Type类型
-	//sourceType := reflect.TypeOf(source)
-	sourceType := reflect.TypeOf(source)
-	sourceValue := reflect.ValueOf(source)
-	targetValue := reflect.ValueOf(target)
-	//sourceType := sourceValue.Type()
-	for i := 0; i < sourceValue.NumField(); i++ {
-		// 在要修改的结构体中查询有数据结构体中相同属性的字段，有则修改其值
-		name := sourceType.Field(i).Name
-		if ok := targetValue.FieldByName(name).IsValid(); ok {
-			targetValue.FieldByName(name).Set(reflect.ValueOf(sourceValue.Field(i).Interface()))
-		}
-	}
-}
-
-func Copy2(source, target interface{}) {
+func Copy2(source, dest interface{}) error {
 
 	sourceType := reflect.TypeOf(source)
 	sourceValue := reflect.ValueOf(source)
-	targetType := reflect.TypeOf(target)
-	targetValue := reflect.ValueOf(target)
+	targetType := reflect.TypeOf(dest)
+	targetValue := reflect.ValueOf(dest)
 
 	fmt.Println(sourceValue.CanSet())
-	fmt.Println(targetValue.CanSet())
+	//fmt.Println(targetValue.CanSet())
 
-	fmt.Println("sourceType:", sourceType)               // []*bean.fruitA
-	fmt.Println("sourceValue:", sourceValue)             // [0xc000058740 0xc000058780 ... 0xc000058980 0xc0000589c0]
-	fmt.Println("targetType:", targetType)               // []*bean.fruitB
-	fmt.Println("targetValue:", targetValue)             // []
-	fmt.Println("TypeType:", reflect.TypeOf(targetType)) // *reflect.rtype
+	fmt.Println("sourceType:", sourceType)   // []*bean.FruitA
+	fmt.Println("sourceValue:", sourceValue) // [0xc000058740 0xc000058780 ... 0xc000058980 0xc0000589c0]
+	fmt.Println("targetType:", targetType)   // []*bean.FruitB
+	fmt.Println("targetValue:", targetValue) // []
+	//fmt.Println("TypeType:", reflect.TypeOf(targetType)) // *reflect.rtype
 	switch sourceType.Kind() {
 	case reflect.Array, reflect.Slice:
+		//targetValue := reflect.ValueOf(dest).Elem()
+		//if targetValue.Type().Kind() != reflect.Ptr {
+		//	return errors.New("接收不是指针类型")
+		//}
+
+		//targetValue := reflect.ValueOf(dest)
+		fmt.Println("targetValue:", targetValue) // &[]
+		for targetValue.Kind() == reflect.Ptr {
+			if targetValue.IsNil() && targetValue.CanAddr() {
+				targetValue.Set(reflect.New(targetValue.Type().Elem()))
+			}
+			targetValue = targetValue.Elem()
+		}
+		fmt.Println("targetValue:", targetValue) // []
+		if !targetValue.IsValid() {
+			return errors.New("接收不是指针类型")
+			// db.AddError(ErrInvalidValue)
+		}
+
 		//targetTypeSlice := reflect.MakeSlice(targetType, 0, 0)
 		//fmt.Println("targetTypeSlice:", reflect.TypeOf(targetTypeSlice))             // reflect.Value
-		//fmt.Println("targetTypeSlice:", reflect.TypeOf(targetTypeSlice.Interface())) // []*bean.fruitB
+		//fmt.Println("targetTypeSlice:", reflect.TypeOf(targetTypeSlice.Interface())) // []*bean.FruitB
 		values := make([]reflect.Value, 0)
 		fmt.Println("values:", reflect.TypeOf(values)) // []reflect.Value
 		for i := 0; i < sourceValue.Len(); i++ {
 			sour := sourceValue.Index(i)
 			fmt.Println(sour)
 			fmt.Println(sour.Interface())
-			value := reflect.New(targetType.Elem().Elem())
-			if value.Type().Kind() == reflect.Ptr {
 
-			}
+			// value := reflect.New(targetType.Elem().Elem())
+			value := reflect.New(targetValue.Type().Elem().Elem())
+			//targetValue.Set(reflect.New(targetValue.Type().Elem()))
+
 			fmt.Println(value)
 			fmt.Println(value.Interface())
 
 			Copy(sour.Interface(), value.Interface())
 
-			fmt.Println(reflect.TypeOf(sour.Interface()))   // *bean.fruitA
+			fmt.Println(reflect.TypeOf(sour.Interface()))   // *bean.FruitA
 			fmt.Println(reflect.ValueOf(sour.Interface()))  // &{1 名称1 81 0.5372820936538049 2022-05-14 15:20:45.6038055 +0800 CST m=+0.003174001}
-			fmt.Println(reflect.TypeOf(value.Interface()))  // *bean.fruitB
+			fmt.Println(reflect.TypeOf(value.Interface()))  // *bean.FruitB
 			fmt.Println(reflect.ValueOf(value.Interface())) // &{1 名称1 81 0.5372820936538049 2022-05-14 15:19:40.1222062 +0800 CST m=+0.002609001 0001-01-01 00:00:00 +0000 UTC }
 
 			values = append(values, value)
@@ -112,61 +116,61 @@ func Copy2(source, target interface{}) {
 		c := reflect.Append(targetValue, values...)
 
 		//fmt.Printf("变量的地址: %x\n", c)
-		//fmt.Printf("变量的地址: %X\n", target)
+		//fmt.Printf("变量的地址: %X\n", dest)
 		//fmt.Printf("变量的地址: %X\n", targetValue)
 
 		fmt.Println(targetValue.CanSet())
 		targetValue.Set(c)
 
-		//targetValue = reflect.Append(targetValue, values...)
-
-		fmt.Println(targetValue)
-
-		//targetValue.Set(c)
-
-		//SetUnexportedField(targetValue, values)
-
-		fmt.Printf("变量的地址: %x\n", c)
-		fmt.Printf("变量的地址: %x\n", target)
-
-		fmt.Println(reflect.TypeOf(c))
-		fmt.Println(reflect.ValueOf(c))
-
-		fmt.Println(reflect.TypeOf(targetValue))
-		fmt.Println(reflect.ValueOf(targetValue))
-
-		fmt.Println(c.Kind())
-		fmt.Println(c.IsNil())
-		fmt.Println(c.CanAddr())
-		fmt.Println(c.IsValid())
-
-		fmt.Println(targetValue.Kind())
-		fmt.Println(targetValue.IsNil())
-		fmt.Println(targetValue.CanAddr())
-		fmt.Println(targetValue.IsValid())
-
-		marshalc, _ := json.Marshal(c.Interface())
-		fmt.Println(string(marshalc))
-
-		marshalb, _ := json.Marshal(targetValue.Interface())
-		fmt.Println(string(marshalb))
-
-		fmt.Println(c.IsNil())
-		fmt.Println(targetValue.IsNil())
-
-		l := []int{1, 2}
-		typeOf := reflect.TypeOf(l)
-		fmt.Println(typeOf)
-		fmt.Println(typeOf.Name())
-
-		//SetUnexportedField(targetTypeSlice, values)
-		//targetValue.Set(c)
-		//targetTypeSlice.Set(c)
-
-		//targetTypeSlice2 := reflect.MakeSlice(targetType, 0, 0)
-		//targetTypeSlice2.Set(c)
-
-		fmt.Println(c)
+		////targetValue = reflect.Append(targetValue, values...)
+		//
+		//fmt.Println(targetValue)
+		//
+		////targetValue.Set(c)
+		//
+		////SetUnexportedField(targetValue, values)
+		//
+		//fmt.Printf("变量的地址: %x\n", c)
+		//fmt.Printf("变量的地址: %x\n", dest)
+		//
+		//fmt.Println(reflect.TypeOf(c))
+		//fmt.Println(reflect.ValueOf(c))
+		//
+		//fmt.Println(reflect.TypeOf(targetValue))
+		//fmt.Println(reflect.ValueOf(targetValue))
+		//
+		//fmt.Println(c.Kind())
+		//fmt.Println(c.IsNil())
+		//fmt.Println(c.CanAddr())
+		//fmt.Println(c.IsValid())
+		//
+		//fmt.Println(targetValue.Kind())
+		//fmt.Println(targetValue.IsNil())
+		//fmt.Println(targetValue.CanAddr())
+		//fmt.Println(targetValue.IsValid())
+		//
+		//marshalc, _ := json.Marshal(c.Interface())
+		//fmt.Println(string(marshalc))
+		//
+		//marshalb, _ := json.Marshal(targetValue.Interface())
+		//fmt.Println(string(marshalb))
+		//
+		//fmt.Println(c.IsNil())
+		//fmt.Println(targetValue.IsNil())
+		//
+		//l := []int{1, 2}
+		//typeOf := reflect.TypeOf(l)
+		//fmt.Println(typeOf)
+		//fmt.Println(typeOf.Name())
+		//
+		////SetUnexportedField(targetTypeSlice, values)
+		////targetValue.Set(c)
+		////targetTypeSlice.Set(c)
+		//
+		////targetTypeSlice2 := reflect.MakeSlice(targetType, 0, 0)
+		////targetTypeSlice2.Set(c)
+		//
+		//fmt.Println(c)
 		//
 		//SetUnexportedField(targetTypeSlice, c)
 
@@ -191,7 +195,7 @@ func Copy2(source, target interface{}) {
 	}
 
 	////获取reflect.Type类型
-	//targetValue := reflect.ValueOf(target).Elem()
+	//targetValue := reflect.ValueOf(dest).Elem()
 	//sourceValue := reflect.ValueOf(source).Elem()
 	////sourceType := sourceValue.Type()
 	//for i := 0; i < sourceValue.NumField(); i++ {
@@ -201,6 +205,7 @@ func Copy2(source, target interface{}) {
 	//		targetValue.FieldByName(name).Set(reflect.ValueOf(sourceValue.Field(i).Interface()))
 	//	}
 	//}
+	return nil
 }
 
 func GetUnexportedField(field reflect.Value) interface{} {
@@ -210,3 +215,19 @@ func GetUnexportedField(field reflect.Value) interface{} {
 func SetUnexportedField(field reflect.Value, value interface{}) {
 	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
 }
+
+//func CopyObj(source, target interface{}) {
+//	//获取reflect.Type类型
+//	//sourceType := reflect.TypeOf(source)
+//	sourceType := reflect.TypeOf(source)
+//	sourceValue := reflect.ValueOf(source)
+//	targetValue := reflect.ValueOf(target)
+//	//sourceType := sourceValue.Type()
+//	for i := 0; i < sourceValue.NumField(); i++ {
+//		// 在要修改的结构体中查询有数据结构体中相同属性的字段，有则修改其值
+//		name := sourceType.Field(i).Name
+//		if ok := targetValue.FieldByName(name).IsValid(); ok {
+//			targetValue.FieldByName(name).Set(reflect.ValueOf(sourceValue.Field(i).Interface()))
+//		}
+//	}
+//}
