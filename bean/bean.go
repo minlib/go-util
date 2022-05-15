@@ -12,6 +12,43 @@ import (
 // @dest 目标对象
 func Copy(source, dest interface{}) error {
 	sourceValue := reflect.ValueOf(source)
+	destValue := reflect.ValueOf(dest)
+	if !sourceValue.IsValid() {
+		return errors.New("source value invalid")
+	}
+	if destValue.Kind() != reflect.Ptr {
+		return errors.New("dest value can't a pointer type")
+	}
+	for sourceValue.Kind() == reflect.Ptr {
+		if sourceValue.IsNil() {
+			return nil
+			//sourceValue.Elem().Set(reflect.New(nil))
+		}
+		fmt.Println()
+		fmt.Println(sourceValue.CanAddr())
+		fmt.Println(destValue)
+		fmt.Println(destValue.CanAddr())
+		fmt.Println(reflect.ValueOf(sourceValue))
+		sourceValue = sourceValue.Elem()
+	}
+	fmt.Println(sourceValue)
+	fmt.Println(reflect.ValueOf(sourceValue))
+	fmt.Println(reflect.TypeOf(sourceValue))
+	for destValue.Kind() == reflect.Ptr {
+		//if sourceValue.IsNil() {
+		//	return nil
+		//	//sourceValue.Elem().Set(reflect.New(nil))
+		//}
+		if destValue.IsNil() {
+			destValue = reflect.New(destValue.Type().Elem())
+		}
+		fmt.Println(destValue)
+		fmt.Println(destValue.CanAddr())
+		destValue = destValue.Elem()
+	}
+	//if !destValue.IsValid() {
+	//	return errors.New("dest value invalid")
+	//}
 	//targetType := reflect.TypeOf(dest)
 	//if !destValue.CanSet() {
 	//	return errors.New("dest value can't be set")
@@ -23,22 +60,7 @@ func Copy(source, dest interface{}) error {
 	//fmt.Println("TypeType:", reflect.TypeOf(targetType)) // *reflect.rtype
 	switch sourceValue.Type().Kind() {
 	case reflect.Array, reflect.Slice:
-		destValue := reflect.ValueOf(dest)
-		if destValue.Kind() != reflect.Ptr {
-			return errors.New("dest value can't a pointer type")
-		}
-		for sourceValue.Kind() == reflect.Ptr {
-			sourceValue = sourceValue.Elem()
-		}
-		if !sourceValue.IsValid() {
-			return errors.New("source value invalid")
-		}
-		for destValue.Kind() == reflect.Ptr {
-			destValue = destValue.Elem()
-		}
-		if !destValue.IsValid() {
-			return errors.New("dest value invalid")
-		}
+
 		destItemType := destValue.Type().Elem()
 		fmt.Println(destItemType) // *bean.FruitB
 		ptrLevel := 0
@@ -80,9 +102,20 @@ func Copy(source, dest interface{}) error {
 		destValueTemp := reflect.Append(destValue, destValueSlice...)
 		destValue.Set(destValueTemp)
 	case reflect.Struct:
-		copyObj(source, dest)
+		copyObj(sourceValue.Interface(), destValue.Interface())
 	}
 	return errors.New("source type invalid")
+}
+
+func copyObjTest(a, dest interface{}) error {
+	destValue := reflect.ValueOf(dest)
+	fmt.Println(destValue.CanSet())
+	fmt.Println(destValue.Elem().CanSet())
+	//fmt.Println(destValue.Elem().Elem().CanSet())
+	fmt.Println(destValue.Elem().Type())
+	destValue.Elem().Set(reflect.ValueOf(a))
+	fmt.Println(reflect.ValueOf(a))
+	return nil
 }
 
 // copyObj 将数据源复制到目标对象
@@ -91,16 +124,29 @@ func Copy(source, dest interface{}) error {
 func copyObj(source, dest interface{}) error {
 	sourceValue := reflect.ValueOf(source)
 	destValue := reflect.ValueOf(dest)
-	if destValue.Kind() != reflect.Ptr {
-		return errors.New("dest value can't a pointer type")
-	}
+	fmt.Printf("%p\n", dest)
+	fmt.Println(destValue.CanSet())
+	fmt.Println(destValue.Elem().CanSet())
 	for sourceValue.Kind() == reflect.Ptr {
 		sourceValue = sourceValue.Elem()
 	}
 	if !sourceValue.IsValid() {
 		return errors.New("source value invalid")
 	}
+	fmt.Println(dest)
+	fmt.Println(destValue.IsNil())
+
+	if destValue.Kind() != reflect.Ptr {
+		return errors.New("dest value can't a pointer type")
+	} else if destValue.IsNil() {
+		return errors.New("dest value can't be nil")
+	}
 	for destValue.Kind() == reflect.Ptr {
+		fmt.Println(destValue.CanSet())
+		fmt.Println(destValue.CanAddr())
+		if destValue.IsNil() && destValue.CanAddr() {
+			destValue.Set(reflect.New(destValue.Type().Elem()))
+		}
 		destValue = destValue.Elem()
 	}
 	// 设置结构体中相同属性的值
