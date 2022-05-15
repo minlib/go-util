@@ -58,6 +58,7 @@ func TestCopyNil(t *testing.T) {
 	fmt.Println(a)
 	fmt.Println(b)
 }
+
 func TestCopyObj(t *testing.T) {
 	a := &FruitB{
 		ID:         100,
@@ -66,7 +67,6 @@ func TestCopyObj(t *testing.T) {
 		Price:      rand.ExpFloat64(),
 		CreateTime: time.Now(),
 	}
-
 	var b *FruitB
 	fmt.Println(b)
 	fmt.Println(&b)

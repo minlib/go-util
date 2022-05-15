@@ -34,18 +34,7 @@ func Copy(source, dest interface{}) error {
 	fmt.Println(sourceValue)
 	fmt.Println(reflect.ValueOf(sourceValue))
 	fmt.Println(reflect.TypeOf(sourceValue))
-	for destValue.Kind() == reflect.Ptr {
-		//if sourceValue.IsNil() {
-		//	return nil
-		//	//sourceValue.Elem().Set(reflect.New(nil))
-		//}
-		if destValue.IsNil() {
-			destValue = reflect.New(destValue.Type().Elem())
-		}
-		fmt.Println(destValue)
-		fmt.Println(destValue.CanAddr())
-		destValue = destValue.Elem()
-	}
+
 	//if !destValue.IsValid() {
 	//	return errors.New("dest value invalid")
 	//}
@@ -60,7 +49,18 @@ func Copy(source, dest interface{}) error {
 	//fmt.Println("TypeType:", reflect.TypeOf(targetType)) // *reflect.rtype
 	switch sourceValue.Type().Kind() {
 	case reflect.Array, reflect.Slice:
-
+		for destValue.Kind() == reflect.Ptr {
+			//if sourceValue.IsNil() {
+			//	return nil
+			//	//sourceValue.Elem().Set(reflect.New(nil))
+			//}
+			if destValue.IsNil() {
+				destValue = reflect.New(destValue.Type().Elem())
+			}
+			//fmt.Println(destValue)
+			//fmt.Println(destValue.CanAddr())
+			destValue = destValue.Elem()
+		}
 		destItemType := destValue.Type().Elem()
 		fmt.Println(destItemType) // *bean.FruitB
 		ptrLevel := 0
@@ -125,6 +125,8 @@ func copyObj(source, dest interface{}) error {
 	sourceValue := reflect.ValueOf(source)
 	destValue := reflect.ValueOf(dest)
 	fmt.Printf("%p\n", dest)
+	fmt.Println(dest)
+	fmt.Println(destValue.IsNil())
 	fmt.Println(destValue.CanSet())
 	fmt.Println(destValue.Elem().CanSet())
 	for sourceValue.Kind() == reflect.Ptr {
@@ -133,9 +135,6 @@ func copyObj(source, dest interface{}) error {
 	if !sourceValue.IsValid() {
 		return errors.New("source value invalid")
 	}
-	fmt.Println(dest)
-	fmt.Println(destValue.IsNil())
-
 	if destValue.Kind() != reflect.Ptr {
 		return errors.New("dest value can't a pointer type")
 	} else if destValue.IsNil() {
