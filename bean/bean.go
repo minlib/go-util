@@ -4,8 +4,48 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"unsafe"
 )
+
+// copyObj 将数据源复制到目标对象
+// @source 数据源对象
+// @dest 目标对象
+func copyObj(source, dest interface{}) error {
+	sourceValue := reflect.ValueOf(source)
+	destValue := reflect.ValueOf(dest)
+	//fmt.Printf("%p\n", dest)
+	//fmt.Println(dest)
+	//fmt.Println(destValue.IsNil())
+	//fmt.Println(destValue.CanSet())
+	//fmt.Println(destValue.Elem().CanSet())
+	for sourceValue.Kind() == reflect.Ptr {
+		sourceValue = sourceValue.Elem()
+	}
+	if !sourceValue.IsValid() || sourceValue.IsNil() {
+		return errors.New("source value invalid")
+	}
+	if destValue.Kind() != reflect.Ptr {
+		return errors.New("dest value can't a pointer type")
+	}
+	if destValue.IsNil() {
+		return errors.New("dest value can't be nil")
+	}
+	for destValue.Kind() == reflect.Ptr {
+		fmt.Println(destValue.CanSet())
+		fmt.Println(destValue.CanAddr())
+		if destValue.IsNil() && destValue.CanAddr() {
+			destValue.Set(reflect.New(destValue.Type().Elem()))
+		}
+		destValue = destValue.Elem()
+	}
+	// 设置结构体中相同属性的值
+	for i := 0; i < sourceValue.NumField(); i++ {
+		fieldName := sourceValue.Type().Field(i).Name
+		if ok := destValue.FieldByName(fieldName).IsValid(); ok {
+			destValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.Field(i).Interface()))
+		}
+	}
+	return nil
+}
 
 // Copy 将数据源复制到目标对象
 // @source 数据源对象
@@ -13,7 +53,7 @@ import (
 func Copy(source, dest interface{}) error {
 	sourceValue := reflect.ValueOf(source)
 	destValue := reflect.ValueOf(dest)
-	if !sourceValue.IsValid() {
+	if !sourceValue.IsValid() || sourceValue.IsNil() {
 		return errors.New("source value invalid")
 	}
 	if destValue.Kind() != reflect.Ptr {
@@ -21,14 +61,14 @@ func Copy(source, dest interface{}) error {
 	}
 	for sourceValue.Kind() == reflect.Ptr {
 		if sourceValue.IsNil() {
-			return nil
+			return errors.New("source value invalid")
 			//sourceValue.Elem().Set(reflect.New(nil))
 		}
-		fmt.Println()
-		fmt.Println(sourceValue.CanAddr())
-		fmt.Println(destValue)
-		fmt.Println(destValue.CanAddr())
-		fmt.Println(reflect.ValueOf(sourceValue))
+		//fmt.Println()
+		//fmt.Println(sourceValue.CanAddr())
+		//fmt.Println(destValue)
+		//fmt.Println(destValue.CanAddr())
+		//fmt.Println(reflect.ValueOf(sourceValue))
 		sourceValue = sourceValue.Elem()
 	}
 	fmt.Println(sourceValue)
@@ -107,61 +147,10 @@ func Copy(source, dest interface{}) error {
 	return errors.New("source type invalid")
 }
 
-func copyObjTest(a, dest interface{}) error {
-	destValue := reflect.ValueOf(dest)
-	fmt.Println(destValue.CanSet())
-	fmt.Println(destValue.Elem().CanSet())
-	//fmt.Println(destValue.Elem().Elem().CanSet())
-	fmt.Println(destValue.Elem().Type())
-	destValue.Elem().Set(reflect.ValueOf(a))
-	fmt.Println(reflect.ValueOf(a))
-	return nil
-}
-
-// copyObj 将数据源复制到目标对象
-// @source 数据源对象
-// @dest 目标对象
-func copyObj(source, dest interface{}) error {
-	sourceValue := reflect.ValueOf(source)
-	destValue := reflect.ValueOf(dest)
-	fmt.Printf("%p\n", dest)
-	fmt.Println(dest)
-	fmt.Println(destValue.IsNil())
-	fmt.Println(destValue.CanSet())
-	fmt.Println(destValue.Elem().CanSet())
-	for sourceValue.Kind() == reflect.Ptr {
-		sourceValue = sourceValue.Elem()
-	}
-	if !sourceValue.IsValid() {
-		return errors.New("source value invalid")
-	}
-	if destValue.Kind() != reflect.Ptr {
-		return errors.New("dest value can't a pointer type")
-	} else if destValue.IsNil() {
-		return errors.New("dest value can't be nil")
-	}
-	for destValue.Kind() == reflect.Ptr {
-		fmt.Println(destValue.CanSet())
-		fmt.Println(destValue.CanAddr())
-		if destValue.IsNil() && destValue.CanAddr() {
-			destValue.Set(reflect.New(destValue.Type().Elem()))
-		}
-		destValue = destValue.Elem()
-	}
-	// 设置结构体中相同属性的值
-	for i := 0; i < sourceValue.NumField(); i++ {
-		fieldName := sourceValue.Type().Field(i).Name
-		if ok := destValue.FieldByName(fieldName).IsValid(); ok {
-			destValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.Field(i).Interface()))
-		}
-	}
-	return nil
-}
-
-func GetUnexportedField(field reflect.Value) interface{} {
-	return reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Interface()
-}
-
-func SetUnexportedField(field reflect.Value, value interface{}) {
-	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
-}
+//func GetUnexportedField(field reflect.Value) interface{} {
+//	return reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Interface()
+//}
+//
+//func SetUnexportedField(field reflect.Value, value interface{}) {
+//	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
+//}
