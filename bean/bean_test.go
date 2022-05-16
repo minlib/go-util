@@ -123,7 +123,7 @@ func TestCopySlice(t *testing.T) {
 
 // 测试百万级切片复制
 func TestCopySliceTime(t *testing.T) {
-	a := getFruitsPointerA(1000000)
+	a := getFruitsPointerA(3000000)
 	//a := getFruitsA(3000000)
 	var b []*FruitB
 	//var b []FruitB

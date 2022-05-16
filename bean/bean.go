@@ -2,14 +2,13 @@ package bean
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 )
 
 // copyObj 将数据源复制到目标对象
 // @source 数据源对象
 // @dest 目标对象
-// @fields 复制的字段名，默认复制全部相同的
+// @fields 复制的字段名，默认复制全部相同的字段
 func copyObj(source, dest interface{}, fields ...string) error {
 	sourceValue := reflect.ValueOf(source)
 	destValue := reflect.ValueOf(dest)
@@ -37,46 +36,32 @@ func copyObj(source, dest interface{}, fields ...string) error {
 		destValue = destValue.Elem()
 	}
 	// 获取设置的属性列表
-	fieldLen := len(fields)
+	hasFieldAll := len(fields) == 0 // 不设置默认全部字段
 	fieldMap := make(map[string]struct{}, len(fields))
 	for _, fieldName := range fields {
 		fieldMap[fieldName] = struct{}{}
 	}
-	//var fieldNameSlice []string
 	for i := 0; i < sourceValue.NumField(); i++ {
 		fieldName := sourceValue.Type().Field(i).Name
-		if fieldLen > 0 {
+		hasField := hasFieldAll
+		if !hasFieldAll {
 			if _, found := fieldMap[fieldName]; found {
-				copyField(sourceValue, destValue, fieldName)
-				//fieldNameSlice = append(fieldNameSlice, fieldName)
+				hasField = true
 			}
-		} else {
-			copyField(sourceValue, destValue, fieldName)
-			//fieldNameSlice = append(fieldNameSlice, fieldName)
+		}
+		if hasField {
+			if ok := destValue.FieldByName(fieldName).IsValid(); ok {
+				destValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface()))
+			}
 		}
 	}
-	//if len(fieldNameSlice) == 0 {
-	//	return errors.New("no column names are selected")
-	//}
-	//// 设置属性的值
-	//for _, fieldName := range fieldNameSlice {
-	//	if ok := destValue.FieldByName(fieldName).IsValid(); ok {
-	//		destValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface()))
-	//	}
-	//}
 	return nil
-}
-
-func copyField(sourceValue, destValue reflect.Value, fieldName string) {
-	if ok := destValue.FieldByName(fieldName).IsValid(); ok {
-		destValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface()))
-	}
 }
 
 // Copy 将数据源复制到目标对象
 // @source 数据源对象
 // @dest 目标对象
-// @fields 复制的字段名，默认复制全部相同的
+// @fields 复制的字段名，默认复制全部相同的字段
 func Copy(source, dest interface{}, fields ...string) error {
 	sourceValue := reflect.ValueOf(source)
 	if !sourceValue.IsValid() {
@@ -109,7 +94,6 @@ func Copy(source, dest interface{}, fields ...string) error {
 			destItemType = destItemType.Elem()
 		}
 		destValueSlice := make([]reflect.Value, 0)
-		fmt.Println(reflect.TypeOf(destValueSlice)) // []reflect.Value
 		for i := 0; i < sourceValue.Len(); i++ {
 			sourceItemValue := sourceValue.Index(i)
 			//if sourceItemValue.Kind() != reflect.Ptr {
