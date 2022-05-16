@@ -89,21 +89,42 @@ func Copy(source, dest interface{}) error {
 		if destValue.Kind() != reflect.Ptr {
 			return errors.New("dest value can't a pointer type")
 		}
+
 		for destValue.Kind() == reflect.Ptr {
+			fmt.Println(destValue.CanSet())
+			fmt.Println(destValue.CanAddr())
 			if destValue.IsNil() && destValue.CanSet() {
 				destValue.Set(reflect.New(destValue.Type().Elem()))
+				//destValue = destValue.Elem()
+				//break
 			}
 			destValue = destValue.Elem()
 		}
+
+		testPrintf(destValue)
 		// 切片中项的类型
 		destItemType := destValue.Type().Elem()
-		//fmt.Println(destItemType) // *bean.FruitB
-		ptrLevel := 0
-		for destItemType.Kind() == reflect.Ptr {
-			ptrLevel++
+
+		isPtr := false
+		if destItemType.Kind() == reflect.Ptr {
+			isPtr = true
 			destItemType = destItemType.Elem()
-			//fmt.Println(destItemType) // bean.FruitB
 		}
+		fmt.Println(destItemType)
+
+		//fmt.Println(destItemType) // *bean.FruitB
+		//ptrLevel := 0
+		//for destItemType.Kind() == reflect.Ptr {
+		//	ptrLevel++
+		//	destItemType = destItemType.Elem()
+		//	//fmt.Println(destItemType) // bean.FruitB
+		//}
+
+		//for destItemType.Kind() == reflect.Ptr {
+		//	destItemType = destItemType.Elem()
+		//	//fmt.Println(destItemType) // bean.FruitB
+		//}
+
 		//targetTypeSlice := reflect.MakeSlice(targetType, 0, 0)
 		//fmt.Println("targetTypeSlice:", reflect.TypeOf(targetTypeSlice))             // reflect.Value
 		//fmt.Println("targetTypeSlice:", reflect.TypeOf(targetTypeSlice.Interface())) // []*bean.FruitB
@@ -114,20 +135,37 @@ func Copy(source, dest interface{}) error {
 			//if sourceItemValue.Kind() != reflect.Ptr {
 			//	sourceItemValue = sourceItemValue.Addr()
 			//}
+
 			destItemValue := reflect.New(destItemType)
+
+			testPrintf(destItemValue)
+
+			//for destItemValue.Kind() == reflect.Ptr {
+			//	//ptrLevel++
+			//	destItemValue = destItemValue.Elem()
+			//	//fmt.Println(destItemType) // bean.FruitB
+			//}
+
+			//testPrintf(destItemValue)
+
 			copyObj(sourceItemValue.Interface(), destItemValue.Interface())
-			if ptrLevel == 0 {
+
+			if !isPtr {
 				destItemValue = destItemValue.Elem()
-			} else if ptrLevel > 1 {
-				//for j := 0; j < ptrLevel-1; j++ {
-				//	destItemValue = destItemValue.Addr()
-				//}
 			}
-			fmt.Println(reflect.ValueOf(destItemValue))
-			fmt.Println(reflect.ValueOf(destItemValue.Elem()))
-			fmt.Println(reflect.TypeOf(destItemValue))
-			fmt.Println(reflect.ValueOf(destValueSlice))
-			fmt.Println(reflect.TypeOf(destValueSlice))
+
+			//if ptrLevel == 0 {
+			//	destItemValue = destItemValue.Elem()
+			//} else if ptrLevel > 1 {
+			//	//for j := 0; j < ptrLevel-1; j++ {
+			//	//	destItemValue = destItemValue.Addr()
+			//	//}
+			//}
+			//fmt.Println(reflect.ValueOf(destItemValue))
+			//fmt.Println(reflect.ValueOf(destItemValue.Elem()))
+			//fmt.Println(reflect.TypeOf(destItemValue))
+			//fmt.Println(reflect.ValueOf(destValueSlice))
+			//fmt.Println(reflect.TypeOf(destValueSlice))
 
 			destValueSlice = append(destValueSlice, destItemValue)
 
@@ -150,6 +188,12 @@ func Copy(source, dest interface{}) error {
 		copyObj(sourceValue.Interface(), dest)
 	}
 	return errors.New("source type invalid")
+}
+
+func testPrintf(value reflect.Value) {
+	fmt.Println("value:", value)
+	fmt.Println("type:", value.Type())
+	fmt.Println("canSet:", value.CanSet())
 }
 
 //func GetUnexportedField(field reflect.Value) interface{} {

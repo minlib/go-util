@@ -50,34 +50,84 @@ func TestCopy(t *testing.T) {
 	fmt.Println(b7)
 }
 
-func TestCopySlice(t *testing.T) {
+func TestCopySliceBySourceValue(t *testing.T) {
 	a1 := getFruitsA(10)
-	a2 := getFruitsPointerA(10)
-
-	var b5 []**FruitB
-	Copy(a2, &b5)
-	fmt.Println("b5", b5)
 
 	var b1 []FruitB
 	Copy(a1, &b1)
 	fmt.Println("b1", b1)
 
 	var b2 []*FruitB
-	Copy(a1, b2)
+	Copy(a1, &b2)
 	fmt.Println("b2", b2) // []
 
-	var b3 = new([]FruitB)
+	var b3 []**FruitB
 	Copy(a1, &b3)
 	fmt.Println("b3", b3)
 
-	var b4 []FruitB
-	Copy(a2, &b4)
+	var b4 = new([]FruitB)
+	Copy(a1, b4)
 	fmt.Println("b4", b4)
 
+	var b5 = new([]FruitB)
+	Copy(a1, &b5)
+	fmt.Println("b5", b5)
+
 	var b6 = make([]FruitB, 0, 0)
-	Copy(a2, &b6)
+	Copy(a1, &b6)
 	fmt.Println("b6", b6)
 
+	var b7 = make([]*FruitB, 0, 0)
+	Copy(a1, &b7)
+	fmt.Println("b7", b7)
+
+	var b8 = make([]**FruitB, 0, 0)
+	Copy(a1, &b8)
+	fmt.Println("b8", b8)
+
+	var b9 = make([]**FruitB, 0, 0)
+	Copy(a1, b9)
+	fmt.Println("b9", b9) // []
+}
+
+func TestCopySliceByPointer(t *testing.T) {
+	a1 := getFruitsPointerA(10)
+
+	var b1 []FruitB
+	Copy(a1, &b1)
+	fmt.Println("b1", b1)
+
+	var b2 []*FruitB
+	Copy(a1, &b2)
+	fmt.Println("b2", b2) // []
+
+	var b3 []**FruitB
+	Copy(a1, &b3)
+	fmt.Println("b3", b3)
+
+	var b4 = new([]FruitB)
+	Copy(a1, b4)
+	fmt.Println("b4", b4)
+
+	var b5 = new([]FruitB)
+	Copy(a1, &b5)
+	fmt.Println("b5", b5)
+
+	var b6 = make([]FruitB, 0, 0)
+	Copy(a1, &b6)
+	fmt.Println("b6", b6)
+
+	var b7 = make([]*FruitB, 0, 0)
+	Copy(a1, &b7)
+	fmt.Println("b7", b7)
+
+	var b8 = make([]**FruitB, 0, 0)
+	Copy(a1, &b8)
+	fmt.Println("b8", b8)
+
+	var b9 = make([]**FruitB, 0, 0)
+	Copy(a1, b9)
+	fmt.Println("b9", b9) // []
 }
 
 /**
