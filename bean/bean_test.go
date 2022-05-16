@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-func TestCopy(t *testing.T) {
+// 测试对象复制
+func TestCopyObject(t *testing.T) {
 	a1 := FruitA{
 		ID:         100,
 		Name:       "名称100",
@@ -44,30 +45,30 @@ func TestCopy(t *testing.T) {
 
 	// 空源数据测试
 	var a3 *FruitA
-	b7 := &FruitB{}
-	err := Copy(a3, &b7)
-	println(err)
-	fmt.Println(b7)
+	b10 := &FruitB{}
+	err10 := Copy(a3, &b10)
+	fmt.Println(err10)
+	fmt.Println(b10)
+
+	var b21 FruitB
+	copyObj(a1, &b21, "Name", "Age")
+	fmt.Println(b21)
+
+	var b22 *FruitB
+	copyObj(a1, &b22, "Name", "Age")
+	fmt.Println(b22)
+
+	// 没有的属性
+	var b23 FruitB
+	err23 := copyObj(a1, &b23, "Name2", "Age")
+	fmt.Println(err23)
+	fmt.Println(b23)
 }
 
-func Test_copyField(t *testing.T) {
-	a1 := FruitA{
-		ID:         100,
-		Name:       "名称100",
-		Age:        rand.Intn(100),
-		Price:      rand.ExpFloat64(),
-		CreateTime: time.Now(),
-	}
-	//a2 := &a1
-	var b1 FruitB
-	copyField(a1, &b1)
-	copyField(a1, &b1, "Name", "Age")
-
-	fmt.Println(b1)
-}
-
-func TestCopySliceBySourceValue(t *testing.T) {
+// 测试切片复制
+func TestCopySlice(t *testing.T) {
 	a1 := getFruitsA(10)
+	//a1 := getFruitsPointerA(10)
 
 	var b1 []FruitB
 	Copy(a1, &b1)
@@ -113,64 +114,21 @@ func TestCopySliceBySourceValue(t *testing.T) {
 	Copy(a1, &b12)
 	fmt.Println("---------------")
 	fmt.Println("b12:", b12)
+
+	var b21 = make([]*FruitB, 0, 0)
+	Copy(a1, &b21, "Name", "Age")
+	fmt.Println("---------------")
+	fmt.Println("b21:", len(b21), b21)
 }
 
-func TestCopySliceByPointer(t *testing.T) {
-	a1 := getFruitsPointerA(10)
-
-	var b1 []FruitB
-	Copy(a1, &b1)
-	fmt.Println("---------------")
-	fmt.Println("b1:", len(b1), b1)
-
-	var b2 []*FruitB
-	Copy(a1, &b2)
-	fmt.Println("---------------")
-	fmt.Println("b2:", len(b2), b2)
-
-	var b3 []**FruitB
-	Copy(a1, &b3)
-	fmt.Println("---------------")
-	fmt.Println("b3:", len(b3), b3)
-
-	var b4 = make([]FruitB, 0, 0)
-	Copy(a1, &b4)
-	fmt.Println("---------------")
-	fmt.Println("b4:", len(b4), b4)
-
-	var b5 = make([]*FruitB, 0, 0)
-	Copy(a1, &b5)
-	fmt.Println("---------------")
-	fmt.Println("b5:", len(b5), b5)
-
-	var b6 = make([]**FruitB, 0, 0)
-	Copy(a1, &b6)
-	fmt.Println("---------------")
-	fmt.Println("b6:", len(b6), b6)
-
-	var b7 = make([]**FruitB, 0, 0)
-	Copy(a1, b7)
-	fmt.Println("---------------")
-	fmt.Println("b7:", len(b7), b7) // []
-
-	var b11 = new([]FruitB)
-	Copy(a1, b11)
-	fmt.Println("---------------")
-	fmt.Println("b11:", b11)
-
-	var b12 = new([]FruitB)
-	Copy(a1, &b12)
-	fmt.Println("---------------")
-	fmt.Println("b12:", b12)
-}
-
-// TestCopySliceTime 性能测试
+// 测试百万级切片复制
 func TestCopySliceTime(t *testing.T) {
-	//a := getFruitsPointerA(3000000)
-	//var b []*FruitB
-	a := getFruitsA(3000000)
-	var b []FruitB
+	a := getFruitsPointerA(1000000)
+	//a := getFruitsA(3000000)
+	var b []*FruitB
+	//var b []FruitB
 	err := Copy(a, &b)
+	//err := Copy(a, &b, "Name", "Age")
 	fmt.Println(err)
 	fmt.Println(len(b))
 }
@@ -188,9 +146,9 @@ type FruitB struct {
 	Name       string
 	Age        int
 	Price      float64
+	Address    string
 	CreateTime time.Time
 	UpdateTime time.Time
-	Xss        string
 }
 
 func getFruitsPointerA(len int) []*FruitA {
