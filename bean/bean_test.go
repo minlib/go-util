@@ -54,6 +54,10 @@ func TestCopySlice(t *testing.T) {
 	a1 := getFruitsA(10)
 	a2 := getFruitsPointerA(10)
 
+	var b5 []**FruitB
+	Copy(a2, &b5)
+	fmt.Println("b5", b5)
+
 	var b1 []FruitB
 	Copy(a1, &b1)
 	fmt.Println("b1", b1)
@@ -69,10 +73,6 @@ func TestCopySlice(t *testing.T) {
 	var b4 []FruitB
 	Copy(a2, &b4)
 	fmt.Println("b4", b4)
-
-	var b5 []*FruitB
-	Copy(a2, b5)
-	fmt.Println("b5", b5)
 
 	var b6 = make([]FruitB, 0, 0)
 	Copy(a2, &b6)

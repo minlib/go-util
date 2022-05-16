@@ -118,7 +118,17 @@ func Copy(source, dest interface{}) error {
 			copyObj(sourceItemValue.Interface(), destItemValue.Interface())
 			if ptrLevel == 0 {
 				destItemValue = destItemValue.Elem()
+			} else if ptrLevel > 1 {
+				//for j := 0; j < ptrLevel-1; j++ {
+				//	destItemValue = destItemValue.Addr()
+				//}
 			}
+			fmt.Println(reflect.ValueOf(destItemValue))
+			fmt.Println(reflect.ValueOf(destItemValue.Elem()))
+			fmt.Println(reflect.TypeOf(destItemValue))
+			fmt.Println(reflect.ValueOf(destValueSlice))
+			fmt.Println(reflect.TypeOf(destValueSlice))
+
 			destValueSlice = append(destValueSlice, destItemValue)
 
 			//fmt.Println(sourceItemValue)                              // &{1 名称1 81 0.5372820936538049 2022-05-14 23:08:55.776294 +0  800 CST m=+0.017055401}
