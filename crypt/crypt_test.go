@@ -1,6 +1,10 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"testing"
 )
@@ -20,4 +24,15 @@ func TestMD5(t *testing.T) {
 	fmt.Println("HmacSha256:", HmacSha256(s, secret))
 	fmt.Println("HmacSha384:", HmacSha384(s, secret))
 	fmt.Println("HmacSha512:", HmacSha512(s, secret))
+}
+
+func Test2(t *testing.T) {
+	stringToSign := "123456"
+	secret := "MZ0011234"
+	hash := hmac.New(sha256.New, []byte(secret))
+	hash.Write([]byte(stringToSign))
+	signData := hash.Sum(nil)
+	fmt.Println(hex.EncodeToString(signData))
+	fmt.Println(base64.StdEncoding.EncodeToString(signData))
+
 }
