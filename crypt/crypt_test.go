@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMD5(t *testing.T) {
+func TestEncrypt(t *testing.T) {
 	s := "123456"
 	secret := "minzhan.com"
 	fmt.Println("Md5:", Md5Hex(s))
