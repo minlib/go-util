@@ -2,6 +2,6 @@
 ## 开始使用
 
 ```bash
-go get github.com/vue5/go-util
+go get github.com/minlib/go-util
 ```
 

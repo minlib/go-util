@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/vue5/go-util/convert"
+	"github.com/minlib/go-util/convert"
 	"os/exec"
 )
 
