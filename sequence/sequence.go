@@ -1,7 +1,6 @@
 package sequence
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -26,7 +25,7 @@ type Sequence struct {
 }
 
 // New 创建一个实例化对象
-func New(dataCenterId int64, workerId int64) Sequence {
+func New(dataCenterId int64, workerId int64) *Sequence {
 	var s = Sequence{}
 	// 开始时间戳，默认为 2010-01-01 00:00:00
 	s.startTimestamp = 1262275200000
@@ -49,10 +48,10 @@ func New(dataCenterId int64, workerId int64) Sequence {
 	// 生成序列的掩码最大值，最大为4095
 	s.sequenceMask = -1 ^ (-1 << s.sequenceBits)
 	if workerId < 0 || workerId > s.maxWorkerId {
-		panic(errors.New(fmt.Sprintf("Worker ID can't be greater than %d or less than 0", s.maxWorkerId)))
+		panic(fmt.Errorf("workerId can't be greater than %d or less than 0", s.maxWorkerId))
 	}
 	if dataCenterId < 0 || dataCenterId > s.maxDataCenterId {
-		panic(errors.New(fmt.Sprintf("DataCenter ID can't be greater than %d or less than 0", s.maxDataCenterId)))
+		panic(fmt.Errorf("dataCenterId can't be greater than %d or less than 0", s.maxDataCenterId))
 	}
 	s.workerId = workerId
 	s.dataCenterId = dataCenterId
@@ -60,7 +59,7 @@ func New(dataCenterId int64, workerId int64) Sequence {
 	s.sequence = 0
 	// 上次生成 ID 的时间戳
 	s.lastTimestamp = -1
-	return s
+	return &s
 }
 
 // NextId 生成ID，注意此方法已经通过加锁来保证线程安全
@@ -70,7 +69,7 @@ func (s *Sequence) NextId() int64 {
 	timestamp := time.Now().UnixMilli()
 	// 如果当前时间小于上一次 ID 生成的时间戳，说明发生时钟回拨，为保证ID不重复抛出异常。
 	if timestamp < s.lastTimestamp {
-		panic(errors.New(fmt.Sprintf("Clock moved backwards. Refusing to generate id for %d milliseconds", s.lastTimestamp-timestamp)))
+		panic(fmt.Errorf("clock moved backwards. Refusing to generate id for %d milliseconds", s.lastTimestamp-timestamp))
 	}
 	if s.lastTimestamp == timestamp {
 		// 同一时间生成的，则序号+1

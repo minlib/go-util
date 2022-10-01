@@ -6,10 +6,10 @@ import (
 )
 
 func TestSequence(t *testing.T) {
-	var sequence = New(0, 1)
+	sequence1 := New(0, 1)
 	for i := 0; i < 1000000; i++ {
-		sequence.NextId()
+		sequence1.NextId()
 	}
-	var sequence1 = New(1, 1)
-	fmt.Println(sequence1.NextId())
+	sequence2 := New(1, 1)
+	fmt.Println(sequence2.NextId())
 }
