@@ -27,10 +27,3 @@ func TestLowerString(t *testing.T) {
 func TestNumberString(t *testing.T) {
 	fmt.Println(NumberString(50))
 }
-
-func TestNumberUpZeroString(t *testing.T) {
-	fmt.Println(NumberUpZeroString(1, 5))       // 00001
-	fmt.Println(NumberUpZeroString(100, 6))     // 000100
-	fmt.Println(NumberUpZeroString(123456, 6))  // 123456
-	fmt.Println(NumberUpZeroString(1234567, 6)) // 1234567
-}

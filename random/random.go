@@ -1,9 +1,7 @@
 package random
 
 import (
-	"fmt"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -47,9 +45,4 @@ func LowerString(count int) string {
 // NumberString 生成随机数字字符串
 func NumberString(count int) string {
 	return String(NUMBER, count)
-}
-
-// NumberUpZeroString 数字不超过指定位数，前面补0
-func NumberUpZeroString(number, bit int) string {
-	return fmt.Sprintf("%0"+strconv.Itoa(bit)+"d", number)
 }
