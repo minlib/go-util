@@ -7,7 +7,10 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/hex"
+	"errors"
 	"hash"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Encrypt 加密
@@ -134,4 +137,19 @@ func HmacSha512(s, secret string) []byte {
 // HmacSha512Hex HmacSha512加密的16进制字符串
 func HmacSha512Hex(s, secret string) string {
 	return hex.EncodeToString(HmacSha512(s, secret))
+}
+
+// Bcrypt Bcrypt加密
+func Bcrypt(s string) string {
+	hash, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
+	if err != nil {
+		panic(errors.New("加密失败," + err.Error()))
+	}
+	return string(hash)
+}
+
+// BcryptMatches Bcrypt验证
+func BcryptMatches(s string, encodedPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(encodedPassword), []byte(s))
+	return err == nil
 }

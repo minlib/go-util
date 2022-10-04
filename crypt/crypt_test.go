@@ -20,4 +20,6 @@ func TestEncrypt(t *testing.T) {
 	fmt.Println("HmacSha256:", HmacSha256Hex(s, secret))
 	fmt.Println("HmacSha384:", HmacSha384Hex(s, secret))
 	fmt.Println("HmacSha512:", HmacSha512Hex(s, secret))
+	fmt.Println("Bcrypt:", Bcrypt(s))
+	fmt.Println("BcryptMatches:", BcryptMatches(s, "$2a$04$Mm1ezETBYxskau2pbSPTI.Dqhpj9SGd5yzGSDKilRV8.WQVKtRpMC"))
 }
