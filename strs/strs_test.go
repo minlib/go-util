@@ -43,29 +43,27 @@ func TestHideLeftLimit(t *testing.T) {
 	fmt.Println(RuneLength("abcde123")) // 8
 	fmt.Println(RuneLength("我是程序员123")) // 8
 
-	fmt.Println(Hide("123456789abcd", '*', 4, 4))  // 1234****9abcd
-	fmt.Println(Hide("123456789abcd", '*', 4, 8))  // 1234********d
-	fmt.Println(Hide("123456789abcd", '*', 4, 9))  // 1234*********
-	fmt.Println(Hide("123456789abcd", '*', 4, 10)) // 1234*********
-	fmt.Println(Hide("我是一个热爱编程的程序员", '*', 2, 7))   // 我是*******程序员
-	fmt.Println(Hide("123456789abcd", '*', 20, 4)) // 123456789abcd
+	fmt.Println(ReplaceOffset("123456789abcd", '*', 4, 4)) // 1234****9abcd
 
-	fmt.Println(HideRightLimit("123456789abcd", '*', 4, 4))  // 12345****abcd
-	fmt.Println(HideRightLimit("123456789abcd", '*', 4, 8))  // 1********abcd
-	fmt.Println(HideRightLimit("123456789abcd", '*', 4, 9))  // *********abcd
-	fmt.Println(HideRightLimit("123456789abcd", '*', 4, 10)) // *********abcd
-	fmt.Println(HideRightLimit("我是一个热爱编程的程序员", '*', 3, 5))   // 我是一个*******程序员
+	fmt.Println(HideLeftLimit("123456789abcd", 4, 4))  // 1234****9abcd
+	fmt.Println(HideLeftLimit("123456789abcd", 4, 8))  // 1234********d
+	fmt.Println(HideLeftLimit("123456789abcd", 4, 9))  // 1234*********
+	fmt.Println(HideLeftLimit("123456789abcd", 4, 10)) // 1234*********
+	fmt.Println(HideLeftLimit("我是一个热爱编程的程序员", 2, 7))   // 我是*******程序员
+	fmt.Println(HideLeftLimit("123456789abcd", 20, 4)) // 123456789abcd
 
-	fmt.Println(HideLeft("李", '*', 1))        // 李
-	fmt.Println(HideLeft("张三", '*', 1))       // 张*
-	fmt.Println(HideLeft("王五五", '*', 1))      // 王**
-	fmt.Println(HideLeft("我是程序员123", '*', 5)) // 我是程序员***
+	fmt.Println(HideRightLimit("123456789abcd", 4, 4))  // 12345****abcd
+	fmt.Println(HideRightLimit("123456789abcd", 4, 8))  // 1********abcd
+	fmt.Println(HideRightLimit("123456789abcd", 4, 9))  // *********abcd
+	fmt.Println(HideRightLimit("123456789abcd", 4, 10)) // *********abcd
+	fmt.Println(HideRightLimit("我是一个热爱编程的程序员", 3, 5))   // 我是一个*******程序员
 
-	fmt.Println(HideRight("李", '*', 1))   // 李
-	fmt.Println(HideRight("张三", '*', 1))  // *三
-	fmt.Println(HideRight("王五五", '*', 1)) // **五
+	fmt.Println(HideLeft("李", 1))        // 李
+	fmt.Println(HideLeft("张三", 1))       // 张*
+	fmt.Println(HideLeft("王五五", 1))      // 王**
+	fmt.Println(HideLeft("我是程序员123", 5)) // 我是程序员***
+
+	fmt.Println(HideRight("李", 1))   // 李
+	fmt.Println(HideRight("张三", 1))  // *三
+	fmt.Println(HideRight("王五五", 1)) // **五
 }
-
-// func TestHideName(t *testing.T) {
-// 	fmt.Println(HideName("张三丰"))
-// }

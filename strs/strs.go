@@ -64,37 +64,49 @@ func RuneLength(s string) int {
 	return len(result)
 }
 
-// HideLeft
-func HideLeft(s string, repl rune, offset int) string {
-	length := RuneLength(s)
-	limit := length - offset + 1
-	return Hide(s, repl, offset, limit)
-}
-
-// Hide offset 为开始的索引值,limit 为替换的个数
-func Hide(s string, repl rune, offset, limit int) string {
+// ReplaceOffset 替换指定位置与数量的字符串
+// s 原字符串
+// repl 替换的字符
+// offset 开始替换字符串的索引
+// limit 替换的字符串数
+func ReplaceOffset(s string, repl rune, offset, limit int) string {
 	result := []rune(s)
 	length := len(result)
+	if offset < 0 {
+		offset = 0
+	}
 	for i := offset; i < offset+limit && i < length; i++ {
 		result[i] = repl
 	}
 	return string(result)
 }
 
+// HideLeft
+func HideLeft(s string, offset int) string {
+	length := RuneLength(s)
+	limit := length - offset + 1
+	return HideLeftLimit(s, offset, limit)
+}
+
+// HideLeftLimit
+func HideLeftLimit(s string, offset, limit int) string {
+	return ReplaceOffset(s, '*', offset, limit)
+}
+
 // HideRight
-func HideRight(s string, repl rune, offset int) string {
+func HideRight(s string, offset int) string {
 	length := RuneLength(s)
 	limit := length - offset
-	return HideRightLimit(s, repl, offset, limit)
+	return HideRightLimit(s, offset, limit)
 }
 
 // HideRightLimit
-func HideRightLimit(s string, repl rune, offset, limit int) string {
+func HideRightLimit(s string, offset, limit int) string {
 	length := RuneLength(s)
 	offsetNew := length - offset - limit
 	if offsetNew < 0 {
 		offsetNew = 0
 		limit = length - offset
 	}
-	return Hide(s, repl, offsetNew, limit)
+	return ReplaceOffset(s, '*', offsetNew, limit)
 }
