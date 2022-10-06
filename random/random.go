@@ -2,47 +2,67 @@ package random
 
 import (
 	"math/rand"
+	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
-	UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	LOWER_CASE = "abcdefghijklmnopqrstuvwxyz"
-	NUMBER     = "0123456789"
+	NUMERAL          = "0123456789"
+	LOWER_CASE       = "abcdefghijklmnopqrstuvwxyz"
+	UPPER_CASE       = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	CAPTCHA_EXPLICIT = "ABCDEFGHJKLMNPQRSTWXYabcdefghjkmnprstwxy3456789"
 )
 
-// RangeInt  returns, as an int, a non-negative pseudo-random number in the range interval [min,max]
+// RangeInt returns, as an int, a non-negative pseudo-random number in the range interval [min,max]
 func RangeInt(min, max int) int {
 	if min > max {
-		panic("the min is greater than max!")
+		panic("the min value cannot be greater than the max value")
 	} else if min == max {
 		return min
 	}
 	return min + rand.Intn(max+1-min)
 }
 
-// String 生成随机大写字符串
-func String(s string, count int) string {
-	length := len(s)
-	result := make([]byte, count)
+// Random 随机生成字符串
+func Random(s string, count int) string {
+	runes := []rune(s)
+	length := len(runes)
+	result := make([]rune, count)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < count; i++ {
-		result[i] = s[r.Intn(length)]
+		result[i] = runes[r.Intn(length)]
 	}
 	return string(result)
 }
 
-// LowerString 生成随机大写字符串
-func UpperString(count int) string {
-	return String(UPPER_CASE, count)
+// UpperCase 生成随机大写字符串
+func UpperCase(count int) string {
+	return Random(UPPER_CASE, count)
 }
 
-// LowerString 生成随机小写字符串
-func LowerString(count int) string {
-	return String(LOWER_CASE, count)
+// LowerCase 生成随机小写字符串
+func LowerCase(count int) string {
+	return Random(LOWER_CASE, count)
 }
 
-// NumberString 生成随机数字字符串
-func NumberString(count int) string {
-	return String(NUMBER, count)
+// Numeral 生成随机数字字符串
+func Numeral(count int) string {
+	return Random(NUMERAL, count)
+}
+
+// NumeralOrCase 生成随机数字或字母字符串
+func NumeralOrCase(count int) string {
+	return Random(NUMERAL+UPPER_CASE+LOWER_CASE, count)
+}
+
+// CaptchaExplicit 生成明确的验证码（排除容易混淆的字符串）
+func CaptchaExplicit(count int) string {
+	return Random(CAPTCHA_EXPLICIT, count)
+}
+
+// NewUUID create uuid
+func NewUUID() string {
+	return strings.ReplaceAll(uuid.NewString(), "-", "")
 }

@@ -3,6 +3,8 @@ package random
 import (
 	"fmt"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestRangeIntn(t *testing.T) {
@@ -12,18 +14,32 @@ func TestRangeIntn(t *testing.T) {
 	fmt.Println(RangeInt(1, 1))  // 1
 }
 
-func TestString(t *testing.T) {
-	fmt.Println(String("ABCDEFGHJKLMNPQRSTWXYZabcdefghjkmnpqrstwxyz23456789", 50))
+func TestRandom(t *testing.T) {
+	fmt.Println(Random("ABCDEFGHJKLMNPQRSTWXYZabcdefghjkmnpqrstwxyz23456789", 50))
+	fmt.Println(Random("我不是猪", 50))
 }
 
-func TestUpperString(t *testing.T) {
-	fmt.Println(UpperString(50))
+func TestUpperCase(t *testing.T) {
+	fmt.Println(UpperCase(50))
 }
 
-func TestLowerString(t *testing.T) {
-	fmt.Println(LowerString(50))
+func TestLowerCase(t *testing.T) {
+	fmt.Println(LowerCase(50))
 }
 
-func TestNumberString(t *testing.T) {
-	fmt.Println(NumberString(50))
+func TestNumeral(t *testing.T) {
+	fmt.Println(Numeral(50))
+}
+
+func TestNumeralOrCase(t *testing.T) {
+	fmt.Println(NumeralOrCase(50))
+}
+
+func TestCaptchaExplicit(t *testing.T) {
+	fmt.Println(CaptchaExplicit(50))
+}
+
+func TestNewUUID(t *testing.T) {
+	fmt.Println(NewUUID())
+	fmt.Println(uuid.NewString())
 }
