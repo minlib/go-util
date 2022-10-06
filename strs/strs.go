@@ -47,12 +47,12 @@ func UnderlineToLowerHump(s string) string {
 	return FirstToLower(str)
 }
 
-// FixedLengthNumber 固定长度数字的字符串，前面补零
-// FixedLengthNumber(1, 5) // 00001
-// FixedLengthNumber(100, 6) // 000100
-// FixedLengthNumber(123456, 6)  // 123456
-// FixedLengthNumber(1234567, 6) // 1234567
-func FixedLengthNumber(number, bit int) string {
+// ZeroFill 固定长度数字的字符串，前面补零
+// ZeroFill(1, 5) // 00001
+// ZeroFill(100, 6) // 000100
+// ZeroFill(123456, 6)  // 123456
+// ZeroFill(1234567, 6) // 1234567
+func ZeroFill(number, bit int) string {
 	return fmt.Sprintf("%0"+strconv.Itoa(bit)+"d", number)
 }
 

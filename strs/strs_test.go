@@ -30,11 +30,11 @@ func TestHumpToUnderline(t *testing.T) {
 	fmt.Println(s4)
 }
 
-func TestFixedLengthNumber(t *testing.T) {
-	fmt.Println(FixedLengthNumber(1, 5))       // 00001
-	fmt.Println(FixedLengthNumber(100, 6))     // 000100
-	fmt.Println(FixedLengthNumber(123456, 6))  // 123456
-	fmt.Println(FixedLengthNumber(1234567, 6)) // 1234567
+func TestZeroFill(t *testing.T) {
+	fmt.Println(ZeroFill(1, 5))       // 00001
+	fmt.Println(ZeroFill(100, 6))     // 000100
+	fmt.Println(ZeroFill(123456, 6))  // 123456
+	fmt.Println(ZeroFill(1234567, 6)) // 1234567
 }
 
 func TestHideLeftLimit(t *testing.T) {
