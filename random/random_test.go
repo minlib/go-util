@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func TestRangeIntn(t *testing.T) {
-	fmt.Println(RangeInt(0, 5))  // [0,5]
-	fmt.Println(RangeInt(5, 10)) // [5,10]
-	fmt.Println(RangeInt(1, 2))  // [1,2]
-	fmt.Println(RangeInt(1, 1))  // 1
+func TestIntRange(t *testing.T) {
+	fmt.Println(IntRange(0, 5))  // [0,5]
+	fmt.Println(IntRange(5, 10)) // [5,10]
+	fmt.Println(IntRange(1, 2))  // [1,2]
+	fmt.Println(IntRange(1, 1))  // 1
 }
 
 func TestRandom(t *testing.T) {

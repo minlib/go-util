@@ -15,8 +15,8 @@ const (
 	CAPTCHA_EXPLICIT = "ABCDEFGHJKLMNPQRSTWXYabcdefghjkmnprstwxy3456789"
 )
 
-// RangeInt returns, as an int, a non-negative pseudo-random number in the range interval [min,max]
-func RangeInt(min, max int) int {
+// IntRange returns, as an int, a non-negative pseudo-random number in the range interval [min,max]
+func IntRange(min, max int) int {
 	if min > max {
 		panic("the min value cannot be greater than the max value")
 	} else if min == max {
