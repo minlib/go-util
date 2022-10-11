@@ -1,12 +1,12 @@
-package json
+package jsonx
 
 import (
 	"encoding/json"
 	"errors"
 )
 
-// ToJsonString 对象转为Json字符串
-func ToJsonString(v any) string {
+// Marshal returns the JSON encoding string of v.
+func Marshal(v any) string {
 	if buf, err := json.Marshal(v); err == nil {
 		return string(buf)
 	} else {
@@ -14,7 +14,7 @@ func ToJsonString(v any) string {
 	}
 }
 
-// Parse Json字符串转为对象
-func Parse(data string, v any) error {
+// Unmarshal parses the JSON-encoded data and stores the result.
+func Unmarshal(data string, v any) error {
 	return json.Unmarshal([]byte(data), v)
 }
