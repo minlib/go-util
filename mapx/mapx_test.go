@@ -1,4 +1,4 @@
-package maputil
+package mapx
 
 import (
 	"fmt"

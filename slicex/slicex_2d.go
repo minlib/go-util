@@ -1,7 +1,7 @@
-package sliceutil
+package slicex
 
 import (
-	"github.com/minlib/go-util/jsonutil"
+	"github.com/minlib/go-util/jsonx"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 )
@@ -11,7 +11,7 @@ func Distinct2D[E constraints.Ordered](s [][]E) [][]E {
 	var res [][]E
 	m := make(map[string]struct{}, len(s))
 	for i := range s {
-		key := jsonutil.Marshal(s[i])
+		key := jsonx.Marshal(s[i])
 		if _, found := m[key]; !found {
 			m[key] = struct{}{}
 			res = append(res, s[i])
@@ -42,11 +42,11 @@ func EqualIgnoreOrder2D[E constraints.Ordered](s1, s2 [][]E) bool {
 	ss2 := make([]string, len(s2))
 	for i := range s1 {
 		slices.Sort(s1[i])
-		ss1[i] = jsonutil.Marshal(s1[i])
+		ss1[i] = jsonx.Marshal(s1[i])
 	}
 	for i := range s2 {
 		slices.Sort(s2[i])
-		ss2[i] = jsonutil.Marshal(s2[i])
+		ss2[i] = jsonx.Marshal(s2[i])
 	}
 	slices.Sort(ss1)
 	slices.Sort(ss2)
@@ -64,11 +64,11 @@ func Subtract2D[E comparable](s1, s2 [][]E) [][]E {
 	if len(s1) > 0 {
 		m := make(map[string]struct{}, len(s2))
 		for i := range s2 {
-			key := jsonutil.Marshal(s2[i])
+			key := jsonx.Marshal(s2[i])
 			m[key] = struct{}{}
 		}
 		for i := range s1 {
-			key := jsonutil.Marshal(s1[i])
+			key := jsonx.Marshal(s1[i])
 			if _, found := m[key]; !found {
 				res = append(res, s1[i])
 			}
