@@ -8,7 +8,7 @@ import (
 )
 
 // Slice
-func Slice[E constraints.Ordered](s ...E) []E {
+func Slice[E any](s ...E) []E {
 	return []E(s)
 }
 
@@ -18,7 +18,7 @@ func Delete[S ~[]E, E any](s S, i int) S {
 }
 
 // Subtract returns the elements in `s1` that aren't in `s2`
-func Subtract[S ~[]E, E constraints.Ordered](s1, s2 S) S {
+func Subtract[S ~[]E, E comparable](s1, s2 S) S {
 	var res S
 	if len(s1) > 0 {
 		var m = make(map[E]struct{}, len(s2))
@@ -35,7 +35,7 @@ func Subtract[S ~[]E, E constraints.Ordered](s1, s2 S) S {
 }
 
 // Distinct 去重
-func Distinct[S ~[]E, E constraints.Ordered](s S) S {
+func Distinct[S ~[]E, E comparable](s S) S {
 	var res S
 	m := map[E]struct{}{}
 	for _, v := range s {
