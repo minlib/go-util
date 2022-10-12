@@ -1,4 +1,4 @@
-package random
+package randutil
 
 import (
 	"fmt"

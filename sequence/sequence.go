@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Sequence Struct
 type Sequence struct {
 	startTimestamp     int64      // 开始时间戳
 	workerIdBits       int64      // 机器ID所占的位数
@@ -27,8 +28,8 @@ type Sequence struct {
 // New 创建一个实例化对象
 func New(dataCenterId int64, workerId int64) *Sequence {
 	var s = Sequence{}
-	// 开始时间戳，默认为 2010-01-01 00:00:00
-	s.startTimestamp = 1262275200000
+	// 开始时间戳，默认为 2022-01-01 00:00:00
+	s.startTimestamp = 1640966400000
 	// 机器ID所占的位数
 	s.workerIdBits = 5
 	// 数据标识ID所占的位数
