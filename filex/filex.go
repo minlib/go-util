@@ -1,4 +1,4 @@
-package file
+package filex
 
 import (
 	"os"
@@ -8,17 +8,6 @@ import (
 // Dir get directory in path.
 func Dir(path string) string {
 	return filepath.Dir(path)
-}
-
-// MkdirAll create directory of paths.
-func MkdirAll(paths ...string) error {
-	for _, path := range paths {
-		directory := Dir(path)
-		if err := os.MkdirAll(directory, os.ModePerm); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 // IsDir returns the path is a directory.
@@ -35,4 +24,15 @@ func Exist(path string) bool {
 		return true
 	}
 	return false
+}
+
+// MkdirAll create directory of paths.
+func MkdirAll(paths ...string) error {
+	for _, path := range paths {
+		directory := Dir(path)
+		if err := os.MkdirAll(directory, os.ModePerm); err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -1,4 +1,4 @@
-package file
+package filex
 
 import (
 	"fmt"
@@ -17,11 +17,6 @@ func TestDir(t *testing.T) {
 	fmt.Println(Dir(path4)) // d:\temp
 }
 
-func Test_MkdirAll(t *testing.T) {
-	err := MkdirAll(path1, path2, path3, path4)
-	fmt.Println(err)
-}
-
 func TestIsDir(t *testing.T) {
 	fmt.Println(IsDir(path1)) // true
 	fmt.Println(IsDir(path2)) // false, The system cannot find the file specified.
@@ -34,4 +29,9 @@ func TestExist(t *testing.T) {
 	fmt.Println(Exist(path2)) //
 	fmt.Println(Exist(path3)) //
 	fmt.Println(Exist(path4)) // Windows create file e command: echo > e
+}
+
+func TestMkdirAll(t *testing.T) {
+	err := MkdirAll(path1, path2, path3, path4)
+	fmt.Println(err)
 }
