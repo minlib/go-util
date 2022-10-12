@@ -1,4 +1,4 @@
-package slice
+package slicex
 
 import (
 	"github.com/minlib/go-util/jsonx"
