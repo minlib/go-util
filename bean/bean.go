@@ -113,19 +113,3 @@ func Copy(source, dest interface{}, fields ...string) error {
 	}
 	return errors.New("source type invalid")
 }
-
-//func valuePrint(value reflect.Value) {
-//	fmt.Println("value:", value)
-//	fmt.Println("type:", value.Type())
-//	fmt.Println("type:", value.IsNil())
-//	fmt.Println("canSet:", value.CanSet())
-//	fmt.Printf("%p\n", value.Interface())
-//}
-
-//func GetUnexportedField(field reflect.Value) interface{} {
-//	return reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Interface()
-//}
-//
-//func SetUnexportedField(field reflect.Value, value interface{}) {
-//	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
-//}
