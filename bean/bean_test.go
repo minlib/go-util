@@ -8,129 +8,156 @@ import (
 	"time"
 )
 
-// 测试对象复制
-func TestCopyObject(t *testing.T) {
-	a1 := FruitA{
+func TestCopyToObject(t *testing.T) {
+	source1 := FruitA{
 		ID:         100,
 		Name:       "名称100",
 		Age:        rand.Intn(100),
 		Price:      rand.ExpFloat64(),
 		CreateTime: time.Now(),
 	}
-	a2 := &a1
+	source2 := &source1
 
-	var b1 FruitB
-	Copy(a1, &b1)
-	fmt.Println(b1)
+	target1, err := CopyTo[FruitB](source1)
+	fmt.Println("target1", target1, err)
 
-	var b2 *FruitB
-	Copy(a1, &b2)
-	fmt.Println(b2)
+	target2, err := CopyTo[*FruitB](source1)
+	fmt.Println("target2", target2, err)
 
-	var b3 FruitB
-	Copy(a2, &b3)
-	fmt.Println(b3)
+	target3, err := CopyTo[FruitB](source2)
+	fmt.Println("target3", target3, err)
 
-	var b4 *FruitB
-	Copy(a2, &b4)
-	fmt.Println(b4)
+	target4, err := CopyTo[*FruitB](source2)
+	fmt.Println("target4", target4, err)
 
-	b5 := FruitB{}
-	Copy(a1, &b5)
-	fmt.Println(b5)
+}
 
-	b6 := &FruitB{}
-	Copy(&a1, &b6)
-	fmt.Println(b6)
+// 测试切片复制
+func TestCopyToSlice(t *testing.T) {
+	source1 := getFruitsA(10)
+	//source1 := getFruitsPointerA(10)
+
+	target1, err := CopyTo[[]FruitB](source1)
+	fmt.Println("target1:", len(target1), target1, err)
+
+	target2, err := CopyTo[[]*FruitB](source1)
+	fmt.Println("target2:", len(target2), target2, err)
+
+	target3, err := CopyTo[[]**FruitB](source1)
+	fmt.Println("target3:", len(target3), target3, err)
+
+}
+
+// 测试对象复制
+func TestCopyObject(t *testing.T) {
+	source1 := FruitA{
+		ID:         100,
+		Name:       "名称100",
+		Age:        rand.Intn(100),
+		Price:      rand.ExpFloat64(),
+		CreateTime: time.Now(),
+	}
+	source2 := &source1
+
+	var target1 FruitB
+	err1 := Copy(source1, &target1)
+	fmt.Println("target1:", target1, err1)
+
+	var target2 *FruitB
+	err2 := Copy(source1, &target2)
+	fmt.Println("target2:", target2, err2)
+
+	var target3 FruitB
+	err3 := Copy(source2, &target3)
+	fmt.Println("target3:", target3, err3)
+
+	var target4 *FruitB
+	err4 := Copy(source2, &target4)
+	fmt.Println("target4:", target4, err4)
+
+	target5 := FruitB{}
+	err5 := Copy(source1, &target5)
+	fmt.Println("target5:", target5, err5)
+
+	target6 := &FruitB{}
+	err6 := Copy(&source1, &target6)
+	fmt.Println("target6:", target6, err6)
 
 	// 空源数据测试
-	var a3 *FruitA
-	b10 := &FruitB{}
-	err10 := Copy(a3, &b10)
-	fmt.Println(err10)
-	fmt.Println(b10)
+	var obj3 *FruitA
+	target10 := &FruitB{}
+	err10 := Copy(obj3, &target10)
+	fmt.Println("target10:", target10, err10)
 
-	var b21 FruitB
-	copyObj(a1, &b21, "Name", "Age")
-	fmt.Println(b21)
+	var target21 FruitB
+	err21 := copyObj(source1, &target21, "Name", "Age")
+	fmt.Println("target21:", target21, err21)
 
-	var b22 *FruitB
-	copyObj(a1, &b22, "Name", "Age")
-	fmt.Println(b22)
+	var target22 *FruitB
+	err22 := copyObj(source1, &target22, "Name", "Age")
+	fmt.Println("target22:", target22, err22)
 
 	// 没有的属性
-	var b23 FruitB
-	err23 := copyObj(a1, &b23, "Name2", "Age")
-	fmt.Println(err23)
-	fmt.Println(b23)
+	var target23 FruitB
+	err23 := copyObj(source1, &target23, "Name2", "Age")
+	fmt.Println("target23:", target23, err23)
 }
 
 // 测试切片复制
 func TestCopySlice(t *testing.T) {
-	a1 := getFruitsA(10)
-	//a1 := getFruitsPointerA(10)
+	source1 := getFruitsA(10)
+	//source1 := getFruitsPointerA(10)
 
-	var b1 []FruitB
-	Copy(a1, &b1)
-	fmt.Println("---------------")
-	fmt.Println("b1:", len(b1), b1)
+	var target1 []FruitB
+	err1 := Copy(source1, &target1)
+	fmt.Println("target1:", len(target1), target1, err1)
 
-	var b2 []*FruitB
-	Copy(a1, &b2)
-	fmt.Println("---------------")
-	fmt.Println("b2:", len(b2), b2)
+	var target2 []*FruitB
+	err2 := Copy(source1, &target2)
+	fmt.Println("target2:", len(target2), target2, err2)
 
-	var b3 []**FruitB
-	Copy(a1, &b3)
-	fmt.Println("---------------")
-	fmt.Println("b3:", len(b3), b3)
+	var target3 []**FruitB
+	err3 := Copy(source1, &target3)
+	fmt.Println("target3:", len(target3), target3, err3)
 
-	var b4 = make([]FruitB, 0, 0)
-	Copy(a1, &b4)
-	fmt.Println("---------------")
-	fmt.Println("b4:", len(b4), b4)
+	var target4 = make([]FruitB, 0)
+	err4 := Copy(source1, &target4)
+	fmt.Println("target4:", len(target4), target4, err4)
 
-	var b5 = make([]*FruitB, 0, 0)
-	Copy(a1, &b5)
-	fmt.Println("---------------")
-	fmt.Println("b5:", len(b5), b5)
+	var target5 = make([]*FruitB, 0)
+	err5 := Copy(source1, &target5)
+	fmt.Println("target5:", len(target5), target5, err5)
 
-	var b6 = make([]**FruitB, 0, 0)
-	Copy(a1, &b6)
-	fmt.Println("---------------")
-	fmt.Println("b6:", len(b6), b6)
+	var target6 = make([]**FruitB, 0)
+	err6 := Copy(source1, &target6)
+	fmt.Println("target6:", len(target6), target6, err6)
 
-	var b7 = make([]**FruitB, 0, 0)
-	Copy(a1, b7)
-	fmt.Println("---------------")
-	fmt.Println("b7:", len(b7), b7) // []
+	var target7 = make([]**FruitB, 0)
+	err7 := Copy(source1, target7)
+	fmt.Println("target7:", len(target7), target7, err7) // []
 
-	var b11 = new([]FruitB)
-	Copy(a1, b11)
-	fmt.Println("---------------")
-	fmt.Println("b11:", b11)
+	var target11 = new([]FruitB)
+	err11 := Copy(source1, target11)
+	fmt.Println("target11:", target11, err11)
 
-	var b12 = new([]FruitB)
-	Copy(a1, &b12)
-	fmt.Println("---------------")
-	fmt.Println("b12:", b12)
+	var target12 = new([]FruitB)
+	err12 := Copy(source1, &target12)
+	fmt.Println("target12:", target12, err12)
 
-	var b21 = make([]*FruitB, 0, 0)
-	Copy(a1, &b21, "Name", "Age")
-	fmt.Println("---------------")
-	fmt.Println("b21:", len(b21), b21)
+	var target21 = make([]*FruitB, 0)
+	err21 := Copy(source1, &target21, "Name", "Age")
+	fmt.Println("target21:", len(target21), target21, err21)
 }
 
 // 测试百万级切片复制
 func TestCopySliceTime(t *testing.T) {
-	a := getFruitsPointerA(3000000)
+	source1 := getFruitsPointerA(3000000)
 	//a := getFruitsA(3000000)
-	var b []*FruitB
+	var target1 []*FruitB
 	//var b []FruitB
-	err := Copy(a, &b)
+	err := Copy(source1, &target1)
 	//err := Copy(a, &b, "Name", "Age")
-	fmt.Println(err)
-	fmt.Println(len(b))
+	fmt.Println(len(target1), target1, err)
 }
 
 type FruitA struct {
