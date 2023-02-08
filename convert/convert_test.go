@@ -38,6 +38,13 @@ func TestStringToInt(t *testing.T) {
 	print2(StringToInt[int64]("100"))
 }
 
+func TestStringToFloat(t *testing.T) {
+	print2(StringToFloat[float32]("100.1111"))
+	print2(StringToFloat[float32]("100.9999"))
+	print2(StringToFloat[float64]("100.1111"))
+	print2(StringToFloat[float64]("100.9999"))
+}
+
 func TestFloatToString(t *testing.T) {
 	print(FloatToString(float32(100.1111), -1))
 	print(FloatToString(float32(100.1111), 2))
@@ -47,11 +54,10 @@ func TestFloatToString(t *testing.T) {
 	print(FloatToString(float64(100.9999), 2))
 }
 
-func TestStringToFloat(t *testing.T) {
-	print2(StringToFloat[float32]("100.1111"))
-	print2(StringToFloat[float32]("100.9999"))
-	print2(StringToFloat[float64]("100.1111"))
-	print2(StringToFloat[float64]("100.9999"))
+func TestStringToIntSlice(t *testing.T) {
+	print2(StringToIntSlice[int16]("1111,222,333", ","))
+	print2(StringToIntSlice[int32]("1111,222,333", ","))
+	print2(StringToIntSlice[int64]("1111,222,333", ","))
 }
 
 func print(i any) {
