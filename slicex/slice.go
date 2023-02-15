@@ -3,6 +3,7 @@ package slicex
 import (
 	"strconv"
 
+	"github.com/minlib/go-util/json"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 )
@@ -93,4 +94,15 @@ func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 		}
 	}
 	return res, nil
+}
+
+// LongToInt64 convert long slice to int64 slice
+func LongToInt64(ls []*json.Long) []int64 {
+	var rs []int64
+	for _, v := range ls {
+		if v != nil {
+			rs = append(rs, v.Int64)
+		}
+	}
+	return rs
 }
