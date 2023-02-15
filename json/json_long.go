@@ -23,8 +23,7 @@ func NewLong[E constraints.Integer](value E) *Long {
 func NewLongSlice[E constraints.Integer](values []E) []*Long {
 	var ls []*Long
 	for _, v := range values {
-		l := NewLong(v)
-		ls = append(ls, l)
+		ls = append(ls, NewLong(v))
 	}
 	return ls
 }

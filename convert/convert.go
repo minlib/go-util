@@ -68,3 +68,8 @@ func StringToIntSlice[E constraints.Integer](s, sep string) ([]E, error) {
 func LongSliceToInt64Slice(ls []*json.Long) []int64 {
 	return slicex.LongToInt64(ls)
 }
+
+// Int64SliceToLongSlice convert long slice to int64 slice
+func Int64SliceToLongSlice(ls []int64) []*json.Long {
+	return slicex.Int64ToLong(ls)
+}

@@ -97,12 +97,17 @@ func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 }
 
 // LongToInt64 convert long slice to int64 slice
-func LongToInt64(ls []*json.Long) []int64 {
+func LongToInt64(s []*json.Long) []int64 {
 	var rs []int64
-	for _, v := range ls {
+	for _, v := range s {
 		if v != nil {
 			rs = append(rs, v.Int64)
 		}
 	}
 	return rs
+}
+
+// Int64ToLong convert int64 slice to long slice
+func Int64ToLong(s []int64) []*json.Long {
+	return json.NewLongSlice(s)
 }
