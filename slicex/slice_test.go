@@ -17,13 +17,33 @@ func TestDelete(t *testing.T) {
 }
 
 func TestSubtract(t *testing.T) {
-	intSlice1 := []int{1, 2, 3}
+	intSlice1 := []int{1, 2, 2, 2, 3, 3, 4, 5, 6}
 	intSlice2 := []int{2, 1, 4}
 	fmt.Println(Subtract(intSlice1, intSlice2))
 
 	stringSlice1 := []string{"A1", "A2", "A3", "A7"}
 	stringSlice2 := []string{"A1", "A2", "A4", "A5", "A6"}
 	fmt.Println(Subtract(stringSlice1, stringSlice2))
+}
+
+func TestIntersect(t *testing.T) {
+	intSlice1 := []int{1, 2, 2, 2, 3, 4, 6}
+	intSlice2 := []int{2, 1, 4}
+	fmt.Println(Intersect(intSlice1, intSlice2))
+
+	stringSlice1 := []string{"A1", "A2", "A3", "A7"}
+	stringSlice2 := []string{"A1", "A2", "A4", "A5", "A6"}
+	fmt.Println(Intersect(stringSlice1, stringSlice2))
+}
+
+func TestUnion(t *testing.T) {
+	intSlice1 := []int{1, 2, 2, 2, 6, 4, 8, 3}
+	intSlice2 := []int{2, 2, 1, 4}
+	fmt.Println(Union(intSlice1, intSlice2))
+
+	stringSlice1 := []string{"A1", "A2", "A3", "A7"}
+	stringSlice2 := []string{"A1", "A2", "A4", "A5", "A6"}
+	fmt.Println(Union(stringSlice1, stringSlice2))
 }
 
 func TestDistinct(t *testing.T) {
