@@ -26,6 +26,16 @@ func TestSubtract(t *testing.T) {
 	fmt.Println(Subtract(stringSlice1, stringSlice2))
 }
 
+func TestSubtractDistinct(t *testing.T) {
+	intSlice1 := []int{1, 2, 2, 2, 3, 3, 4, 5, 6}
+	intSlice2 := []int{2, 1, 4}
+	fmt.Println(SubtractDistinct(intSlice1, intSlice2))
+
+	stringSlice1 := []string{"A1", "A2", "A3", "A7"}
+	stringSlice2 := []string{"A1", "A2", "A4", "A5", "A6"}
+	fmt.Println(SubtractDistinct(stringSlice1, stringSlice2))
+}
+
 func TestIntersect(t *testing.T) {
 	intSlice1 := []int{1, 2, 2, 2, 3, 4, 6}
 	intSlice2 := []int{2, 1, 4}

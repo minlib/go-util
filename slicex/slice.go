@@ -85,6 +85,12 @@ func Subtract[S ~[]E, E comparable](s1, s2 S) S {
 	return s
 }
 
+// SubtractDistinct 返回差集并去重
+func SubtractDistinct[S ~[]E, E comparable](s1, s2 S) S {
+	s := Subtract(s1, s2)
+	return Distinct(s)
+}
+
 // Intersect 返回交集并去重
 func Intersect[S ~[]E, E comparable](s1, s2 S) S {
 	var s S
