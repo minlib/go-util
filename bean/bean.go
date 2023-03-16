@@ -33,6 +33,9 @@ func Copy(source, target interface{}, fields ...string) error {
 	}
 	switch sourceValue.Type().Kind() {
 	case reflect.Array, reflect.Slice:
+		if sourceValue.IsNil() {
+			return nil
+		}
 		targetValue := reflect.ValueOf(target)
 		if targetValue.Kind() != reflect.Ptr {
 			return errors.New("target value can't a pointer type")
@@ -49,7 +52,7 @@ func Copy(source, target interface{}, fields ...string) error {
 		if isPointer {
 			targetItemType = targetItemType.Elem()
 		}
-		targetValueSlice := make([]reflect.Value, 0)
+		var targetValueSlice []reflect.Value
 		for i := 0; i < sourceValue.Len(); i++ {
 			sourceItemValue := sourceValue.Index(i)
 			//if sourceItemValue.Kind() != reflect.Ptr {
@@ -62,8 +65,11 @@ func Copy(source, target interface{}, fields ...string) error {
 			}
 			targetValueSlice = append(targetValueSlice, targetItemValue)
 		}
-		targetValueTemp := reflect.Append(targetValue, targetValueSlice...)
-		targetValue.Set(targetValueTemp)
+		if len(targetValueSlice) > 0 {
+			targetValue.Set(reflect.Append(targetValue, targetValueSlice...))
+		} else {
+			targetValue.Set(reflect.MakeSlice(targetValue.Type(), 0, 0))
+		}
 	case reflect.Struct:
 		copyObj(sourceValue.Interface(), target, fields...)
 	default:
