@@ -126,3 +126,7 @@ func copyObj(source, target interface{}, fields ...string) error {
 	}
 	return nil
 }
+
+func New[E any](e E) *E {
+	return &e
+}

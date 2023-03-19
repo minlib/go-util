@@ -329,3 +329,13 @@ func getFruitsA(len int) []FruitA {
 	}
 	return data
 }
+
+func TestNew(t *testing.T) {
+	c1 := New(1)
+	c2 := New(int64(1))
+	c3 := New(float32(100.1))
+	c4 := New(float64(200.20))
+	c5 := New(true)
+	c6 := New(time.Now())
+	fmt.Println(c1, c2, c3, c4, c5, c6)
+}
