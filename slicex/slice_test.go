@@ -1,9 +1,12 @@
 package slicex
 
 import (
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 
+	"github.com/minlib/go-util/jsonx"
 	"golang.org/x/exp/slices"
 )
 
@@ -165,4 +168,17 @@ func TestFunc(t *testing.T) {
 	// fmt.Println(Delete(stringSlice, 2))
 	// fmt.Println(Delete(stringSlice, 0))
 	// fmt.Println(stringSlice)
+}
+
+func TestLongToInt64(t *testing.T) {
+	type args struct {
+		s []jsonx.Long
+	}
+	var args1 []jsonx.Long
+	json.Unmarshal([]byte(`["",null,"null","0","100"]`), &args1)
+	want1 := []int64{0, 100}
+	got1 := LongToInt64(args1)
+	if !reflect.DeepEqual(got1, want1) {
+		t.Errorf("LongToInt64() = %v, want %v", got1, want1)
+	}
 }

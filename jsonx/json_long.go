@@ -1,4 +1,4 @@
-package json
+package jsonx
 
 import (
 	"database/sql/driver"
@@ -10,43 +10,43 @@ import (
 )
 
 type Long struct {
-	Int64 int64
-	Valid bool
+	Int64 *int64
 }
 
 // NewLong returns a new Long
-func NewLong[E constraints.Integer](value E) *Long {
-	return &Long{int64(value), true}
+func NewLong[E constraints.Integer](value E) Long {
+	v := int64(value)
+	return Long{Int64: &v}
 }
 
-// NewLongSlice returns a new Long slice
-func NewLongSlice[E constraints.Integer](values []E) []*Long {
-	var ls []*Long
-	for _, v := range values {
-		ls = append(ls, NewLong(v))
+// Int64 获取值
+func (l Long) Int64Def() int64 {
+	if l.Int64 == nil {
+		return 0
+	} else {
+		return *l.Int64
 	}
-	return ls
 }
 
 // Scan implements the Scanner interface.
 func (l *Long) Scan(value interface{}) error {
-	if value == nil {
-		l.Int64, l.Valid = 0, false
-		return nil
-	}
+	// if value == nil {
+	// 	*l = NewLong(0)
+	// 	return nil
+	// }
 	switch v := value.(type) {
 	case int64:
-		l.Int64, l.Valid = v, true
+		*l = NewLong(v)
 		return nil
 	case int:
-		l.Int64, l.Valid = int64(v), true
+		*l = NewLong(v)
 		return nil
 	case []byte:
 		i, err := strconv.ParseInt(string(v), 10, 64)
 		if err != nil {
 			return err
 		}
-		l.Int64, l.Valid = i, true
+		*l = NewLong(i)
 		return nil
 	default:
 		// fmt.Printf("---- %v.%T\n", v, v)
@@ -56,32 +56,28 @@ func (l *Long) Scan(value interface{}) error {
 
 // Value implements the driver Valuer interface.
 func (l Long) Value() (driver.Value, error) {
-	if !l.Valid {
-		return nil, nil
+	if l.Int64 != nil {
+		return *l.Int64, nil
 	} else {
-		return l.Int64, nil
+		return nil, nil
 	}
 }
 
 // MarshalJSON implements the json.Marshaler interface.
 func (l Long) MarshalJSON() ([]byte, error) {
-	if !l.Valid {
-		return nil, nil
+	if l.Int64 != nil {
+		return []byte(fmt.Sprintf(`"%v"`, *l.Int64)), nil
 	} else {
-		return []byte(fmt.Sprintf(`"%v"`, l.Int64)), nil
+		return []byte("null"), nil
 	}
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (l *Long) UnmarshalJSON(data []byte) error {
-	if data == nil {
-		return nil
-	}
 	str := string(data)
 	str = strings.Trim(str, "\"")
 	str = strings.Trim(str, " ")
 	if str == "" || str == "null" {
-		//l.Valid = false
 		return nil
 	}
 	value, err := strconv.ParseInt(str, 10, 64)
@@ -90,7 +86,6 @@ func (l *Long) UnmarshalJSON(data []byte) error {
 		// return fmt.Errorf("'%s' must be numeric", str)
 		return err
 	}
-	l.Valid = true
-	(*l).Int64 = value
+	l.Int64 = &value
 	return nil
 }

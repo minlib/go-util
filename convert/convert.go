@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/minlib/go-util/json"
 	"github.com/minlib/go-util/slicex"
 	"golang.org/x/exp/constraints"
 )
@@ -62,14 +61,4 @@ func IntSliceToStringSlice[S ~[]E, E constraints.Integer](s S) []string {
 func StringToIntSlice[E constraints.Integer](s, sep string) ([]E, error) {
 	slice := strings.Split(s, sep)
 	return StringSliceToIntSlice[E](slice)
-}
-
-// LongSliceToInt64Slice convert long slice to int64 slice
-func LongSliceToInt64Slice(ls []*json.Long) []int64 {
-	return slicex.LongToInt64(ls)
-}
-
-// Int64SliceToLongSlice convert long slice to int64 slice
-func Int64SliceToLongSlice(ls []int64) []*json.Long {
-	return slicex.Int64ToLong(ls)
 }
