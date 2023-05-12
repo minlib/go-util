@@ -65,10 +65,23 @@ func TestSubtract2D(t *testing.T) {
 }
 
 func TestCombine2D(t *testing.T) {
-	arrays := [][]string{{"A1", "A2"}, {"B1", "B2"}, {"C1", "C2"}}
-	items := Combine2D(arrays)
-	result := Join2D(items, " ")
-	for _, v := range result {
+	array1 := [][]string{{"A1", "A2"}, {"B1", "B2"}, {"C1", "C2"}}
+	items1 := Combine2D(array1)
+	fmt.Println(items1)
+
+	array2 := [][]string{{"A1", "A2"}}
+	items2 := Combine2D(array2)
+	fmt.Println(items2)
+
+	array3 := [][]string{{}}
+	items3 := Combine2D(array3)
+	fmt.Println(items3)
+}
+
+func TestJoin2D(t *testing.T) {
+	array1 := [][]string{{"A1", "A2"}, {"B1", "B2"}, {"C1", "C2"}}
+	result1 := Join2D(array1, " ")
+	for _, v := range result1 {
 		fmt.Println(v)
 	}
 }
