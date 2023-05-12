@@ -63,3 +63,12 @@ func TestSubtract2D(t *testing.T) {
 	fmt.Println(Subtract2D(s1, s2)) // [[C D E]]
 	fmt.Println(Subtract2D(s2, s1)) // [[F G] [H I]]
 }
+
+func TestCombine2D(t *testing.T) {
+	arrays := [][]string{{"A1", "A2"}, {"B1", "B2"}, {"C1", "C2"}}
+	items := Combine2D(arrays)
+	result := Join2D(items, " ")
+	for _, v := range result {
+		fmt.Println(v)
+	}
+}

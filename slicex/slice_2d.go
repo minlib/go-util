@@ -4,9 +4,10 @@ import (
 	"github.com/minlib/go-util/jsonx"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
+	"strings"
 )
 
-// Distinct2D 移除重复的二维数组
+// Distinct2D remove duplicate two-dimensional arrays
 func Distinct2D[E constraints.Ordered](s [][]E) [][]E {
 	var res [][]E
 	m := make(map[string]struct{}, len(s))
@@ -20,7 +21,7 @@ func Distinct2D[E constraints.Ordered](s [][]E) [][]E {
 	return res
 }
 
-// Equal2D
+// Equal2D reports whether two slices are equal: the same length and all
 func Equal2D[E comparable](s1, s2 [][]E) bool {
 	if len(s1) != len(s2) {
 		return false
@@ -33,7 +34,7 @@ func Equal2D[E comparable](s1, s2 [][]E) bool {
 	return true
 }
 
-// EqualIgnoreOrder2D
+// EqualIgnoreOrder2D reports whether two slices are equal: the same length and all
 func EqualIgnoreOrder2D[E constraints.Ordered](s1, s2 [][]E) bool {
 	if len(s1) != len(s2) {
 		return false
@@ -75,4 +76,41 @@ func Subtract2D[E comparable](s1, s2 [][]E) [][]E {
 		}
 	}
 	return res
+}
+
+// Combine2D returns the combination of s1 and s2 elements
+func Combine2D[E comparable](arrays [][]E) [][]E {
+	var total = 0
+	var count = make([]int, len(arrays))
+	if len(arrays) > 0 {
+		total = 1
+		for i := len(arrays) - 1; i >= 0; i-- {
+			total *= len(arrays[i])
+			count[i] = len(arrays[i])
+		}
+	}
+	var result [][]E
+	for i := 0; i < total; i++ {
+		var p = make([]int, len(arrays))
+		var val = i
+		var item []E
+		for row := len(arrays) - 1; row >= 0; row-- {
+			col := val % count[row]
+			p[row] = col
+			val = val / count[row]
+			item = append([]E{arrays[row][col]}, item...)
+		}
+		result = append(result, item)
+	}
+	return result
+}
+
+// Join2D concatenate the elements of an array with sep
+func Join2D(s [][]string, sep string) []string {
+	var result []string
+	for _, v := range s {
+		item := strings.Join(v, sep)
+		result = append(result, item)
+	}
+	return result
 }
