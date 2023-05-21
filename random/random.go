@@ -1,6 +1,7 @@
 package random
 
 import (
+	"github.com/minlib/go-util/stringx"
 	"math/rand"
 	"strings"
 	"time"
@@ -23,6 +24,16 @@ func IntRange(min, max int) int {
 		return min
 	}
 	return min + rand.Intn(max+1-min)
+}
+
+func Next(min, max int) int {
+	return IntRange(min, max)
+}
+
+// NextZeroFill Returns a string of random numbers,if less than the specified length, preceded by zeros.
+func NextZeroFill(min, max, length int) string {
+	randNum := Next(min, max)
+	return stringx.ZeroFill(randNum, length)
 }
 
 // Random 随机生成字符串

@@ -43,3 +43,13 @@ func TestNewUUID(t *testing.T) {
 	fmt.Println(NewUUID())
 	fmt.Println(uuid.NewString())
 }
+
+func TestNextZeroFill(t *testing.T) {
+	fmt.Println(NextZeroFill(1, 1, 2))       // 01
+	fmt.Println(NextZeroFill(12, 12, 2))     // 12
+	fmt.Println(NextZeroFill(123, 123, 2))   // 123
+	fmt.Println(NextZeroFill(1234, 1234, 2)) // 1234
+
+	fmt.Println(NextZeroFill(123, 123, 4))   // 0123
+	fmt.Println(NextZeroFill(1234, 1234, 4)) // 1234
+}
