@@ -24,3 +24,15 @@ func TestPost(t *testing.T) {
 		fmt.Println(resp)
 	}
 }
+
+func TestPostForm(t *testing.T) {
+	data := map[string][]string{
+		"prompt": {"this is key"},
+		"value":  {"this is value"},
+	}
+	if resp, err := PostForm("http://localhost:8080/test2", data); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(resp)
+	}
+}
