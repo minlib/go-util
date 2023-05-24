@@ -27,16 +27,20 @@ func TestLowerCase(t *testing.T) {
 	fmt.Println(LowerCase(50))
 }
 
-func TestNumeral(t *testing.T) {
-	fmt.Println(Numeral(50))
+func TestNumeric(t *testing.T) {
+	fmt.Println(Numeric(50))
 }
 
-func TestNumeralOrCase(t *testing.T) {
-	fmt.Println(NumeralOrCase(50))
+func TestAlphanumeric(t *testing.T) {
+	fmt.Println(Alphanumeric(50))
 }
 
-func TestCaptchaExplicit(t *testing.T) {
-	fmt.Println(CaptchaExplicit(50))
+func TestAlphanumericOrSymbol(t *testing.T) {
+	fmt.Println(AlphanumericOrSymbol(50))
+}
+
+func TestClarityCaptcha(t *testing.T) {
+	fmt.Println(ClarityCaptcha(50))
 }
 
 func TestNewUUID(t *testing.T) {
@@ -44,12 +48,12 @@ func TestNewUUID(t *testing.T) {
 	fmt.Println(uuid.NewString())
 }
 
-func TestNextZeroFill(t *testing.T) {
-	fmt.Println(NextZeroFill(1, 1, 2))       // 01
-	fmt.Println(NextZeroFill(12, 12, 2))     // 12
-	fmt.Println(NextZeroFill(123, 123, 2))   // 123
-	fmt.Println(NextZeroFill(1234, 1234, 2)) // 1234
+func TestIntRangeZeroFill(t *testing.T) {
+	fmt.Println(IntRangeZeroFill(1, 1, 2))       // 01
+	fmt.Println(IntRangeZeroFill(12, 12, 2))     // 12
+	fmt.Println(IntRangeZeroFill(123, 123, 2))   // 123
+	fmt.Println(IntRangeZeroFill(1234, 1234, 2)) // 1234
 
-	fmt.Println(NextZeroFill(123, 123, 4))   // 0123
-	fmt.Println(NextZeroFill(1234, 1234, 4)) // 1234
+	fmt.Println(IntRangeZeroFill(123, 123, 4))   // 0123
+	fmt.Println(IntRangeZeroFill(1234, 1234, 4)) // 1234
 }

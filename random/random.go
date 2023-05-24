@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	NUMERAL          = "0123456789"
-	LOWER_CASE       = "abcdefghijklmnopqrstuvwxyz"
-	UPPER_CASE       = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	CAPTCHA_EXPLICIT = "ABCDEFGHJKLMNPQRSTWXYabcdefghjkmnprstwxy3456789"
+	NUMERAL   = "0123456789"
+	LOWERCASE = "abcdefghijklmnopqrstuvwxyz"
+	UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	SYMBOL    = "~!@#$%^&*()_+=<>/,./;'[]{}|"
+	CAPTCHA   = "ABCDEFGHJKLMNPQRSTWXYabcdefghjkmnprstwxy3456789"
 )
 
 // IntRange returns, as an int, a non-negative pseudo-random number in the range interval [min,max]
@@ -26,13 +27,9 @@ func IntRange(min, max int) int {
 	return min + rand.Intn(max+1-min)
 }
 
-func Next(min, max int) int {
-	return IntRange(min, max)
-}
-
-// NextZeroFill Returns a string of random numbers,if less than the specified length, preceded by zeros.
-func NextZeroFill(min, max, length int) string {
-	randNum := Next(min, max)
+// IntRangeZeroFill Returns a string of random numbers,if less than the specified length, preceded by zeros.
+func IntRangeZeroFill(min, max, length int) string {
+	randNum := IntRange(min, max)
 	return stringx.ZeroFill(randNum, length)
 }
 
@@ -48,29 +45,34 @@ func Random(s string, count int) string {
 	return string(result)
 }
 
-// UpperCase 生成随机大写字符串
-func UpperCase(count int) string {
-	return Random(UPPER_CASE, count)
-}
-
 // LowerCase 生成随机小写字符串
 func LowerCase(count int) string {
-	return Random(LOWER_CASE, count)
+	return Random(LOWERCASE, count)
 }
 
-// Numeral 生成随机数字字符串
-func Numeral(count int) string {
+// UpperCase 生成随机大写字符串
+func UpperCase(count int) string {
+	return Random(UPPERCASE, count)
+}
+
+// Numeric 生成随机数字字符串
+func Numeric(count int) string {
 	return Random(NUMERAL, count)
 }
 
-// NumeralOrCase 生成随机数字或字母字符串
-func NumeralOrCase(count int) string {
-	return Random(NUMERAL+UPPER_CASE+LOWER_CASE, count)
+// Alphanumeric 生成随机字母数字
+func Alphanumeric(count int) string {
+	return Random(NUMERAL+LOWERCASE+UPPERCASE, count)
 }
 
-// CaptchaExplicit 生成明确的验证码（排除容易混淆的字符串）
-func CaptchaExplicit(count int) string {
-	return Random(CAPTCHA_EXPLICIT, count)
+// AlphanumericOrSymbol 生成随机字母数字或符号
+func AlphanumericOrSymbol(count int) string {
+	return Random(NUMERAL+LOWERCASE+UPPERCASE+SYMBOL, count)
+}
+
+// ClarityCaptcha 生成明确的验证码（排除容易混淆的字符串）
+func ClarityCaptcha(count int) string {
+	return Random(CAPTCHA, count)
 }
 
 // NewUUID create uuid
