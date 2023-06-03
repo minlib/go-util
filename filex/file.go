@@ -36,3 +36,20 @@ func MkdirAll(paths ...string) error {
 	}
 	return nil
 }
+
+// WriteFile write file
+func WriteFile(filename string, data string) error {
+	if err := MkdirAll(filename); err != nil {
+		return err
+	}
+	return os.WriteFile(filename, []byte(data), os.ModePerm)
+}
+
+// ReadFile read file
+func ReadFile(filename string) (string, error) {
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
+}

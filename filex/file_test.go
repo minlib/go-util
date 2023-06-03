@@ -35,3 +35,19 @@ func TestMkdirAll(t *testing.T) {
 	err := MkdirAll(path1, path2, path3, path4)
 	fmt.Println(err)
 }
+
+func TestWriteFile(t *testing.T) {
+	fileName := "C:\\Users\\Administrator\\Desktop\\temp\\temp.json"
+	err := WriteFile(fileName, "this is test content.")
+	if err != nil {
+		t.Errorf("WriteFile() error = %v", err)
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	content, err := ReadFile("C:\\Users\\Administrator\\Desktop\\temp\\temp.json")
+	if err != nil {
+		t.Errorf("ReadFile() error = %v", err)
+	}
+	fmt.Println(content)
+}
