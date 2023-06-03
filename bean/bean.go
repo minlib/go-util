@@ -2,8 +2,6 @@ package bean
 
 import (
 	"errors"
-	"fmt"
-	"github.com/minlib/go-util/jsonx"
 	"reflect"
 )
 
@@ -80,6 +78,7 @@ func Copy(source, target interface{}, fields ...string) error {
 	return nil
 }
 
+// copyObj 复制对象
 func copyObj(source, target interface{}, fields ...string) error {
 	sourceValue := reflect.ValueOf(source)
 	targetValue := reflect.ValueOf(target)
@@ -122,12 +121,7 @@ func copyObj(source, target interface{}, fields ...string) error {
 		if !targetFieldValue.IsValid() {
 			continue
 		}
-		//fieldValue := reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface())
-		//targetValue.FieldByName(fieldName).Set(fieldValue)
 		sourceFieldValue := sourceValue.FieldByName(fieldName)
-		fmt.Println(jsonx.MarshalString(source))
-		fmt.Println(targetFieldValue)
-		fmt.Println(sourceFieldValue)
 		if targetFieldValue.Kind() == sourceFieldValue.Kind() {
 			fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
 			targetFieldValue.Set(fieldValue)
@@ -138,8 +132,8 @@ func copyObj(source, target interface{}, fields ...string) error {
 				targetFieldValue.Set(fieldValue)
 			}
 		} else if targetFieldValue.Kind() == reflect.Ptr && sourceFieldValue.Kind() != reflect.Ptr {
-			fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
 			targetFieldValue = NewPointer(targetFieldValue)
+			fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
 			targetFieldValue.Set(fieldValue)
 		}
 	}
@@ -156,6 +150,7 @@ func NewPointer(targetFieldValue reflect.Value) reflect.Value {
 	return targetFieldValue
 }
 
+// New 创建对象
 func New[E any](e E) *E {
 	return &e
 }
