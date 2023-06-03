@@ -2,11 +2,93 @@ package bean
 
 import (
 	"fmt"
+	"github.com/minlib/go-util/jsonx"
+	"github.com/shopspring/decimal"
 	"math/rand"
 	"strconv"
 	"testing"
 	"time"
 )
+
+type FruitA struct {
+	ID         uint
+	Name       string
+	Age        int
+	Price      float64
+	CreateTime time.Time
+}
+
+type FruitB struct {
+	ID         uint
+	Name       string
+	Age        int
+	Price      *float64
+	Address    string
+	CreateTime time.Time
+	UpdateTime time.Time
+}
+
+type DecimalA struct {
+	Price1 decimal.Decimal
+	Price2 *decimal.Decimal
+}
+
+type DecimalB struct {
+	Price1 decimal.Decimal
+	Price2 *decimal.Decimal
+}
+
+type DecimalC struct {
+	Price1 decimal.Decimal
+	Price2 *decimal.Decimal
+}
+
+type DecimalD struct {
+	Price1 *decimal.Decimal
+	Price2 decimal.Decimal
+}
+
+func copyDecimal1(source1 *DecimalA) {
+	target1, err := CopyTo[*DecimalB](source1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("生成结果： %v -> %v\n", jsonx.MarshalString(source1), jsonx.MarshalString(target1))
+}
+
+func copyDecimal2(source1 *DecimalC) {
+	target1, err := CopyTo[DecimalD](source1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("生成结果： %v -> %v\n", jsonx.MarshalString(source1), jsonx.MarshalString(target1))
+}
+
+func TestDecimal1(t *testing.T) {
+	price1, _ := decimal.NewFromString("11.11")
+	price2, _ := decimal.NewFromString("22.22")
+	copyDecimal1(&DecimalA{
+		Price1: price1,
+		Price2: &price2,
+	})
+	copyDecimal1(&DecimalA{
+		Price1: decimal.Zero,
+		Price2: nil,
+	})
+}
+
+func TestDecimal2(t *testing.T) {
+	price1, _ := decimal.NewFromString("11.11")
+	price2, _ := decimal.NewFromString("22.22")
+	copyDecimal2(&DecimalC{
+		Price1: price1,
+		Price2: &price2,
+	})
+	copyDecimal2(&DecimalC{
+		Price1: decimal.Zero,
+		Price2: nil,
+	})
+}
 
 func TestCopyToObject(t *testing.T) {
 	source1 := FruitA{
@@ -282,24 +364,6 @@ func TestCopySliceTime(t *testing.T) {
 	err := Copy(source1, &target1)
 	//err := Copy(a, &b, "Name", "Age")
 	fmt.Println(len(target1), target1, err)
-}
-
-type FruitA struct {
-	ID         uint
-	Name       string
-	Age        int
-	Price      float64
-	CreateTime time.Time
-}
-
-type FruitB struct {
-	ID         uint
-	Name       string
-	Age        int
-	Price      float64
-	Address    string
-	CreateTime time.Time
-	UpdateTime time.Time
 }
 
 func getFruitsPointerA(len int) []*FruitA {

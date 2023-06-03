@@ -2,6 +2,8 @@ package bean
 
 import (
 	"errors"
+	"fmt"
+	"github.com/minlib/go-util/jsonx"
 	"reflect"
 )
 
@@ -98,12 +100,7 @@ func copyObj(source, target interface{}, fields ...string) error {
 	if targetValue.IsNil() {
 		return errors.New("target value can't be nil")
 	}
-	for targetValue.Kind() == reflect.Ptr {
-		if targetValue.IsNil() && targetValue.CanSet() {
-			targetValue.Set(reflect.New(targetValue.Type().Elem()))
-		}
-		targetValue = targetValue.Elem()
-	}
+	targetValue = NewPointer(targetValue)
 	// 获取设置的属性列表
 	hasFieldAll := len(fields) == 0 // 不设置默认全部字段
 	fieldMap := make(map[string]struct{}, len(fields))
@@ -118,13 +115,45 @@ func copyObj(source, target interface{}, fields ...string) error {
 				hasField = true
 			}
 		}
-		if hasField {
-			if ok := targetValue.FieldByName(fieldName).IsValid(); ok {
-				targetValue.FieldByName(fieldName).Set(reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface()))
+		if !hasField {
+			continue
+		}
+		targetFieldValue := targetValue.FieldByName(fieldName)
+		if !targetFieldValue.IsValid() {
+			continue
+		}
+		//fieldValue := reflect.ValueOf(sourceValue.FieldByName(fieldName).Interface())
+		//targetValue.FieldByName(fieldName).Set(fieldValue)
+		sourceFieldValue := sourceValue.FieldByName(fieldName)
+		fmt.Println(jsonx.MarshalString(source))
+		fmt.Println(targetFieldValue)
+		fmt.Println(sourceFieldValue)
+		if targetFieldValue.Kind() == sourceFieldValue.Kind() {
+			fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
+			targetFieldValue.Set(fieldValue)
+		} else if targetFieldValue.Kind() != reflect.Ptr && sourceFieldValue.Kind() == reflect.Ptr {
+			if !sourceFieldValue.IsNil() {
+				sourceFieldValue = sourceFieldValue.Elem()
+				fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
+				targetFieldValue.Set(fieldValue)
 			}
+		} else if targetFieldValue.Kind() == reflect.Ptr && sourceFieldValue.Kind() != reflect.Ptr {
+			fieldValue := reflect.ValueOf(sourceFieldValue.Interface())
+			targetFieldValue = NewPointer(targetFieldValue)
+			targetFieldValue.Set(fieldValue)
 		}
 	}
 	return nil
+}
+
+func NewPointer(targetFieldValue reflect.Value) reflect.Value {
+	for targetFieldValue.Kind() == reflect.Ptr {
+		if targetFieldValue.IsNil() && targetFieldValue.CanSet() {
+			targetFieldValue.Set(reflect.New(targetFieldValue.Type().Elem()))
+		}
+		targetFieldValue = targetFieldValue.Elem()
+	}
+	return targetFieldValue
 }
 
 func New[E any](e E) *E {
