@@ -6,6 +6,6 @@ import (
 )
 
 func TestBase64(t *testing.T) {
-	fmt.Println("Base64Encode:", Base64Encode("minzhan.com"))
-	fmt.Println("Base64Decode:", Base64Decode("bWluemhhbi5jb20="))
+	fmt.Println("Base64Encode:", Base64EncodeString("minzhan.com"))
+	fmt.Println("Base64Decode:", Base64DecodeString("bWluemhhbi5jb20="))
 }
