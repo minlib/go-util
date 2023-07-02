@@ -44,6 +44,17 @@ func TestUnderlineToUpperHump(t *testing.T) {
 	fmt.Println(UnderlineToUpperHump(s3)) // SysUserRole
 }
 
+func TestUnderlineToLowerHump(t *testing.T) {
+	s1 := "sys_user_role"
+	fmt.Println(UnderlineToLowerHump(s1)) // sysUserRole
+
+	s2 := "sys_user_role_2022"
+	fmt.Println(UnderlineToLowerHump(s2)) // sysUserRole_2022
+
+	s3 := "_sys_user_role"
+	fmt.Println(UnderlineToLowerHump(s3)) // sysUserRole
+}
+
 func TestHumpToUnderline(t *testing.T) {
 	s1 := HumpToUnderline("SysUserToken2022") // sys_user_token2022
 	fmt.Println(s1)
