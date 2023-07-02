@@ -5,6 +5,34 @@ import (
 	"testing"
 )
 
+func TestHasAnyPrefix(t *testing.T) {
+	fmt.Println(HasAnyPrefix("abc.png"))
+	fmt.Println(HasAnyPrefix("abc.png", "bb", "cc", "dd"))
+	fmt.Println(HasAnyPrefix("abc.png", "bb", "cc", "dd", "abc"))
+	fmt.Println(HasAnyPrefix("abc.png", "ab"))
+}
+
+func TestHasAnySuffix(t *testing.T) {
+	fmt.Println(HasAnySuffix("1234.png"))
+	fmt.Println(HasAnySuffix("1234.png", "jpg", "jpeg", "gif"))
+	fmt.Println(HasAnySuffix("1234.png", "jpg", "jpeg", "gif", "png"))
+	fmt.Println(HasAnySuffix("1234.png", "png"))
+}
+
+func TestContainsAnyString(t *testing.T) {
+	fmt.Println(ContainsAnyString("1234.png1"))
+	fmt.Println(ContainsAnyString("1234.png2", "jpg", "jpeg", "gif"))
+	fmt.Println(ContainsAnyString("1234.png3", "jpg", "jpeg", "gif", "png"))
+	fmt.Println(ContainsAnyString("1234.png4", "PNG"))
+}
+
+func TestEqualAnyFold(t *testing.T) {
+	fmt.Println(EqualAnyFold("png"))
+	fmt.Println(EqualAnyFold("png", "jpg", "jpeg", "gif"))
+	fmt.Println(EqualAnyFold("png", "jpg", "jpeg", "gif", "png"))
+	fmt.Println(EqualAnyFold("png", "PNG"))
+}
+
 func TestUnderlineToUpperHump(t *testing.T) {
 	s1 := "sys_user_role"
 	fmt.Println(UnderlineToUpperHump(s1)) // SysUserToken

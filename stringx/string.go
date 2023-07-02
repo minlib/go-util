@@ -7,6 +7,46 @@ import (
 	"strings"
 )
 
+// HasAnyPrefix tests whether the string s ends with any prefix.
+func HasAnyPrefix(s string, prefixes ...string) bool {
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(s, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// HasAnySuffix tests whether the string s ends with any suffix.
+func HasAnySuffix(s string, suffixes ...string) bool {
+	for _, suffix := range suffixes {
+		if strings.HasSuffix(s, suffix) {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsAnyString reports whether substr is within any s.
+func ContainsAnyString(s string, substrings ...string) bool {
+	for _, substr := range substrings {
+		if strings.Contains(s, substr) {
+			return true
+		}
+	}
+	return false
+}
+
+// EqualAnyFold tests whether the string s equal under simple Unicode case-folding
+func EqualAnyFold(s string, ts ...string) bool {
+	for _, t := range ts {
+		if strings.EqualFold(s, t) {
+			return true
+		}
+	}
+	return false
+}
+
 // FirstToUpper First letter to upper case
 func FirstToUpper(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
