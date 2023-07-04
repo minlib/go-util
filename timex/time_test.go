@@ -22,4 +22,8 @@ func TestTodayAddDay(t *testing.T) {
 	fmt.Println(StartDateTime(now))       // 2022-10-05 00:00:00 +0800 CST
 	fmt.Println(EndDateTime(now))         // 2022-10-05 23:59:59.999999999 +0800 CST
 	fmt.Println(RangeDateTime(now))       // 2022-10-05 00:00:00 +0800 CST  2022-10-05 23:59:59.999999999 +0800 CST
+
+	fmt.Println(UnixFormat(now))      // 2023-07-05 02:21:25
+	fmt.Println(UnixMilliFormat(now)) // 2023-07-05 02:21:25.622
+	fmt.Println(UnixMicroFormat(now)) // 2023-07-05 02:21:25.622508
 }

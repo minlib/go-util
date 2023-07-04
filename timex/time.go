@@ -68,3 +68,15 @@ func EndDateTime(t time.Time) time.Time {
 func RangeDateTime(t time.Time) (time.Time, time.Time) {
 	return StartDateTime(t), EndDateTime(t)
 }
+
+func UnixFormat(t time.Time) string {
+	return time.Unix(t.Unix(), 0).Format("2006-01-02 15:04:05")
+}
+
+func UnixMilliFormat(t time.Time) string {
+	return time.UnixMilli(t.UnixMilli()).Format("2006-01-02 15:04:05.000")
+}
+
+func UnixMicroFormat(t time.Time) string {
+	return time.UnixMicro(t.UnixMicro()).Format("2006-01-02 15:04:05.000000")
+}
