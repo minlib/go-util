@@ -132,26 +132,26 @@ func DrawCircle(srcImage image.Image) image.Image {
 
 // DrawText draw text
 func DrawText(text *Text) error {
-	font, err := GetFont(text.FontPath)
+	fontType, err := GetFont(text.FontPath)
 	if err != nil {
 		return err
 	}
-	fc := freetype.NewContext()
+	ctx := freetype.NewContext()
 	//设置屏幕每英寸的分辨率
-	fc.SetDPI(72)
+	ctx.SetDPI(72)
 	//设置用于绘制文本的字体
-	fc.SetFont(font)
+	ctx.SetFont(fontType)
 	//以磅为单位设置字体大小
-	fc.SetFontSize(text.Size)
+	ctx.SetFontSize(text.Size)
 	//设置剪裁矩形以进行绘制
-	fc.SetClip(text.Canvas.Bounds())
+	ctx.SetClip(text.Canvas.Bounds())
 	//设置目标图像
-	fc.SetDst(text.Canvas)
+	ctx.SetDst(text.Canvas)
 	r, g, b := colorx.Hex2RGB(text.Color)
 	//设置绘制操作的源图像，通常为 image.Uniform
-	fc.SetSrc(image.NewUniform(color.RGBA{R: r, G: g, B: b, A: 255}))
+	ctx.SetSrc(image.NewUniform(color.RGBA{R: r, G: g, B: b, A: 255}))
 	pt := freetype.Pt(text.X, text.Y)
-	_, err = fc.DrawString(text.Content, pt)
+	_, err = ctx.DrawString(text.Content, pt)
 	if err != nil {
 		return err
 	}
