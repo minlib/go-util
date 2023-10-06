@@ -8,6 +8,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
 	golang.org/x/exp v0.0.0-20221004215720-b9f4876ce741
+	golang.org/x/text v0.10.0
 )
 
 require (
