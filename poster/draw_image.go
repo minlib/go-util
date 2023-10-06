@@ -1,6 +1,7 @@
 package poster
 
 import (
+	"github.com/minlib/go-util/imagex"
 	"image"
 )
 
@@ -14,7 +15,7 @@ type ImageDraw struct {
 }
 
 func (d *ImageDraw) Do(c *Context) error {
-	srcImage, err := ReadImage(d.Path)
+	srcImage, err := imagex.ReadImage(d.Path)
 	if err != nil {
 		return err
 	}

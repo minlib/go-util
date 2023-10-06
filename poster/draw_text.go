@@ -15,15 +15,14 @@ func (d *TextDraw) Do(c *Context) error {
 		d.Size = 24
 	}
 	text := &Text{
-		Canvas:   c.Canvas,
-		FontPath: d.FontPath,
 		Content:  d.Content,
+		FontPath: d.FontPath,
 		Color:    d.Color,
 		Size:     d.Size,
 		X:        d.X,
 		Y:        d.Y,
 	}
-	err := DrawText(text)
+	err := DrawText(c.Canvas, text)
 	if err != nil {
 		return err
 	}
