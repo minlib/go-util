@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"github.com/minlib/go-util/jsonx"
 	"io"
 	"net/http"
 	"strings"
@@ -30,6 +31,10 @@ func Post(url, contentType, data string) (string, error) {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+func PostJson(url string, data any) (string, error) {
+	return Post(url, "application/json", jsonx.MarshalString(data))
 }
 
 func PostForm(url string, data map[string][]string) (string, error) {
