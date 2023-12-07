@@ -5,11 +5,39 @@ import (
 	"testing"
 )
 
-func TestAesCBCEncrypt(t *testing.T) {
-	var key = []byte("KEY_ABCDEFGHIJKL")
+func TestAESEncrypt(t *testing.T) {
+	var key = []byte("F78D51171B9186B7639B70D619090EEC")
+	text := "https://minzhan.com/AESEncryptStd"
+	encrypted, err := AESEncrypt(text, key)
+	decrypted, err := AESDecrypt(encrypted, key)
+	fmt.Println(encrypted, err)
+	fmt.Println(decrypted, err)
+	if text != decrypted {
+		t.Errorf("AESEncrypt() got = %v, want %v", decrypted, text)
+	}
+}
+
+func TestAESEncryptRawURL(t *testing.T) {
+	var key = []byte("F78D51171B9186B7639B70D619090EEC")
+	text := "https://minzhan.com/AESEncryptRawURL"
+	encrypted, err := AESEncryptRawURL(text, key)
+	decrypted, err := AESDecryptRawURL(encrypted, key)
+	fmt.Println(encrypted, err)
+	fmt.Println(decrypted, err)
+	if text != decrypted {
+		t.Errorf("AESEncrypt() got = %v, want %v", decrypted, text)
+	}
+}
+
+func TestAESCBCEncryptStd(t *testing.T) {
+	var key = []byte("F78D51171B9186B7639B70D619090EEC")
 	var iv = []byte("IV_ABCDEFGHIJKLM")
-	c, _ := AesEncrypt([]byte("https://minzhan.com/"), key, iv)
-	d, _ := AesDecrypt("y5X0slKLtZbY6f3CkJXxali8JhyXk19alm5AfFFSWxA=", key, iv)
-	fmt.Println(c)
-	fmt.Println(d)
+	text := "https://minzhan.com/AESEncryptRawURL"
+	encrypted, err := AESCBCEncryptStd(text, key, iv)
+	decrypted, err := AESCBCDecryptStd(encrypted, key, iv)
+	fmt.Println(encrypted, err)
+	fmt.Println(decrypted, err)
+	if text != decrypted {
+		t.Errorf("AESEncrypt() got = %v, want %v", decrypted, text)
+	}
 }
