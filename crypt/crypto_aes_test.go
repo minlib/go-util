@@ -6,7 +6,7 @@ import (
 )
 
 func TestAESEncrypt(t *testing.T) {
-	var key = []byte("F78D51171B9186B7639B70D619090EEC")
+	var key = "F78D51171B9186B7639B70D619090EEC"
 	text := "https://minzhan.com/AESEncryptStd"
 	encrypted, err := AESEncrypt(text, key)
 	decrypted, err := AESDecrypt(encrypted, key)
@@ -18,7 +18,7 @@ func TestAESEncrypt(t *testing.T) {
 }
 
 func TestAESEncryptRawURL(t *testing.T) {
-	var key = []byte("F78D51171B9186B7639B70D619090EEC")
+	var key = "F78D51171B9186B7639B70D619090EEC"
 	text := "https://minzhan.com/AESEncryptRawURL"
 	encrypted, err := AESEncryptRawURL(text, key)
 	decrypted, err := AESDecryptRawURL(encrypted, key)
@@ -30,8 +30,8 @@ func TestAESEncryptRawURL(t *testing.T) {
 }
 
 func TestAESCBCEncryptStd(t *testing.T) {
-	var key = []byte("F78D51171B9186B7639B70D619090EEC")
-	var iv = []byte("IV_ABCDEFGHIJKLM")
+	var key = "F78D51171B9186B7639B70D619090EEC"
+	var iv = "IV_ABCDEFGHIJKLM"
 	text := "https://minzhan.com/AESEncryptRawURL"
 	encrypted, err := AESCBCEncryptStd(text, key, iv)
 	decrypted, err := AESCBCDecryptStd(encrypted, key, iv)

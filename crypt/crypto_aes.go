@@ -7,56 +7,64 @@ import (
 	"encoding/base64"
 )
 
-func AESEncrypt(text string, key []byte) (string, error) {
+func AESEncrypt(text string, key string) (string, error) {
 	return AESCBCEncryptStd(text, key, key)
 }
 
-func AESDecrypt(text string, key []byte) (string, error) {
+func AESDecrypt(text string, key string) (string, error) {
 	return AESCBCDecryptStd(text, key, key)
 }
 
-func AESEncryptRawURL(text string, key []byte) (string, error) {
+func AESEncryptStd(text string, key string) (string, error) {
+	return AESCBCEncryptStd(text, key, key)
+}
+
+func AESDecryptStd(text string, key string) (string, error) {
+	return AESCBCDecryptStd(text, key, key)
+}
+
+func AESEncryptRawURL(text string, key string) (string, error) {
 	return AESCBCEncryptRawURL(text, key, key)
 }
 
-func AESDecryptRawURL(text string, key []byte) (string, error) {
+func AESDecryptRawURL(text string, key string) (string, error) {
 	return AESCBCDecryptRawURL(text, key, key)
 }
 
-func AESCBCEncryptRawURL(text string, key []byte, iv []byte) (string, error) {
-	encrypted, err := AESCBCEncrypt([]byte(text), key, iv)
+func AESCBCEncryptRawURL(text string, key string, iv string) (string, error) {
+	encrypted, err := AESCBCEncrypt([]byte(text), []byte(key), []byte(iv))
 	if err != nil {
 		return "", err
 	}
 	return base64.RawURLEncoding.EncodeToString(encrypted), nil
 }
 
-func AESCBCDecryptRawURL(text string, key []byte, iv []byte) (string, error) {
+func AESCBCDecryptRawURL(text string, key string, iv string) (string, error) {
 	encrypted, err := base64.RawURLEncoding.DecodeString(text)
 	if err != nil {
 		return "", err
 	}
-	decrypted, err := AESCBCDecrypt(encrypted, key, iv)
+	decrypted, err := AESCBCDecrypt(encrypted, []byte(key), []byte(iv))
 	if err != nil {
 		return "", err
 	}
 	return string(decrypted), nil
 }
 
-func AESCBCEncryptStd(text string, key []byte, iv []byte) (string, error) {
-	encrypted, err := AESCBCEncrypt([]byte(text), key, iv)
+func AESCBCEncryptStd(text string, key string, iv string) (string, error) {
+	encrypted, err := AESCBCEncrypt([]byte(text), []byte(key), []byte(iv))
 	if err != nil {
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(encrypted), nil
 }
 
-func AESCBCDecryptStd(text string, key []byte, iv []byte) (string, error) {
+func AESCBCDecryptStd(text string, key string, iv string) (string, error) {
 	encrypted, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {
 		return "", err
 	}
-	decrypted, err := AESCBCDecrypt(encrypted, key, iv)
+	decrypted, err := AESCBCDecrypt(encrypted, []byte(key), []byte(iv))
 	if err != nil {
 		return "", err
 	}
