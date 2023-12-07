@@ -11,24 +11,24 @@ func AESEncrypt(text string, key string) (string, error) {
 	return AESCBCEncryptStd(text, key, key)
 }
 
-func AESDecrypt(text string, key string) (string, error) {
-	return AESCBCDecryptStd(text, key, key)
+func AESDecrypt(ciphertext string, key string) (string, error) {
+	return AESCBCDecryptStd(ciphertext, key, key)
 }
 
 func AESEncryptStd(text string, key string) (string, error) {
 	return AESCBCEncryptStd(text, key, key)
 }
 
-func AESDecryptStd(text string, key string) (string, error) {
-	return AESCBCDecryptStd(text, key, key)
+func AESDecryptStd(ciphertext string, key string) (string, error) {
+	return AESCBCDecryptStd(ciphertext, key, key)
 }
 
 func AESEncryptRawURL(text string, key string) (string, error) {
 	return AESCBCEncryptRawURL(text, key, key)
 }
 
-func AESDecryptRawURL(text string, key string) (string, error) {
-	return AESCBCDecryptRawURL(text, key, key)
+func AESDecryptRawURL(ciphertext string, key string) (string, error) {
+	return AESCBCDecryptRawURL(ciphertext, key, key)
 }
 
 func AESCBCEncryptRawURL(text string, key string, iv string) (string, error) {
@@ -39,8 +39,8 @@ func AESCBCEncryptRawURL(text string, key string, iv string) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(encrypted), nil
 }
 
-func AESCBCDecryptRawURL(text string, key string, iv string) (string, error) {
-	encrypted, err := base64.RawURLEncoding.DecodeString(text)
+func AESCBCDecryptRawURL(ciphertext string, key string, iv string) (string, error) {
+	encrypted, err := base64.RawURLEncoding.DecodeString(ciphertext)
 	if err != nil {
 		return "", err
 	}
@@ -59,8 +59,8 @@ func AESCBCEncryptStd(text string, key string, iv string) (string, error) {
 	return base64.StdEncoding.EncodeToString(encrypted), nil
 }
 
-func AESCBCDecryptStd(text string, key string, iv string) (string, error) {
-	encrypted, err := base64.StdEncoding.DecodeString(text)
+func AESCBCDecryptStd(ciphertext string, key string, iv string) (string, error) {
+	encrypted, err := base64.StdEncoding.DecodeString(ciphertext)
 	if err != nil {
 		return "", err
 	}
