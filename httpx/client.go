@@ -21,11 +21,7 @@ func Get(url string) (string, error) {
 }
 
 func Post(url, contentType, data string) (string, error) {
-	var body io.Reader = nil
-	if data != "" {
-		body = strings.NewReader(data)
-	}
-	resp, err := http.Post(url, contentType, body)
+	resp, err := http.Post(url, contentType, strings.NewReader(data))
 	if err != nil {
 		return "", err
 	}
