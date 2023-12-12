@@ -24,7 +24,7 @@ func New(code int, message string) *Error {
 func NewParams(code int, message string, params ...any) *Error {
 	return &Error{
 		Code:    code,
-		Message: fmt.Sprint(message, params),
+		Message: fmt.Sprintf(message, params),
 	}
 }
 
