@@ -4,6 +4,7 @@ import (
 	"github.com/minlib/go-util/jsonx"
 	"io"
 	"net/http"
+	netUrl "net/url"
 	"strings"
 )
 
@@ -48,4 +49,19 @@ func PostForm(url string, data map[string][]string) (string, error) {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+func RawUrl(url string, urlParams netUrl.Values) (string, error) {
+	u, err := netUrl.Parse(url)
+	if err != nil {
+		return "", err
+	}
+	values := u.Query()
+	for key, v := range urlParams {
+		for _, value := range v {
+			values.Add(key, value)
+		}
+	}
+	u.RawQuery = values.Encode()
+	return u.String(), nil
 }
