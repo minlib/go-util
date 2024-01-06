@@ -51,13 +51,13 @@ func PostForm(url string, data map[string][]string) (string, error) {
 	return string(bytes), nil
 }
 
-func RawUrl(url string, urlParams netUrl.Values) (string, error) {
+func RawUrl(url string, params map[string][]string) (string, error) {
 	u, err := netUrl.Parse(url)
 	if err != nil {
 		return "", err
 	}
 	values := u.Query()
-	for key, v := range urlParams {
+	for key, v := range params {
 		for _, value := range v {
 			values.Add(key, value)
 		}
