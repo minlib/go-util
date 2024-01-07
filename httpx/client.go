@@ -1,67 +1,52 @@
 package httpx
 
 import (
-	"github.com/minlib/go-util/jsonx"
 	"io"
 	"net/http"
-	netUrl "net/url"
 	"strings"
+
+	"github.com/minlib/go-util/jsonx"
 )
 
-func Get(url string) (string, error) {
+func Get(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(bytes), nil
+	return bytes, nil
 }
 
-func Post(url, contentType, data string) (string, error) {
+func Post(url, contentType, data string) ([]byte, error) {
 	resp, err := http.Post(url, contentType, strings.NewReader(data))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(bytes), nil
+	return bytes, nil
 }
 
-func PostJson(url string, data any) (string, error) {
+func PostJson(url string, data any) ([]byte, error) {
 	return Post(url, "application/json", jsonx.MarshalString(data))
 }
 
-func PostForm(url string, data map[string][]string) (string, error) {
+func PostForm(url string, data map[string][]string) ([]byte, error) {
 	resp, err := http.PostForm(url, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(bytes), nil
-}
-
-func RawUrl(url string, params map[string][]string) (string, error) {
-	u, err := netUrl.Parse(url)
-	if err != nil {
-		return "", err
-	}
-	values := u.Query()
-	for key, v := range params {
-		for _, value := range v {
-			values.Add(key, value)
-		}
-	}
-	u.RawQuery = values.Encode()
-	return u.String(), nil
+	return bytes, nil
 }

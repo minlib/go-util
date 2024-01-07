@@ -2,9 +2,9 @@ package httpx
 
 import (
 	"fmt"
-	"github.com/minlib/go-util/jsonx"
-	"net/url"
 	"testing"
+
+	"github.com/minlib/go-util/jsonx"
 )
 
 func TestGet(t *testing.T) {
@@ -35,17 +35,5 @@ func TestPostForm(t *testing.T) {
 		fmt.Println(err)
 	} else {
 		fmt.Println(resp)
-	}
-}
-
-func TestRawUrl(t *testing.T) {
-	urlParams := url.Values{}
-	urlParams.Add("b", "456")
-	urlParams.Add("c", "abc")
-	rawUrl, err := RawUrl("https://api.weixin.qq.com/wxa/revertcoderelease?a=123", urlParams)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(rawUrl)
 	}
 }
