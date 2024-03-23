@@ -26,17 +26,17 @@ func AddDuration(t time.Time, interval int, unit string) time.Time {
 
 // AddSecond add seconds
 func AddSecond(t time.Time, seconds int) time.Time {
-	return AddDuration(t, seconds, "s")
+	return t.Add(time.Duration(seconds) * time.Second)
 }
 
 // AddMinute add minutes
 func AddMinute(t time.Time, minutes int) time.Time {
-	return AddDuration(t, minutes, "m")
+	return t.Add(time.Duration(minutes) * time.Minute)
 }
 
 // AddHour add hours
 func AddHour(t time.Time, hours int) time.Time {
-	return AddDuration(t, hours, "h")
+	return t.Add(time.Duration(hours) * time.Hour)
 }
 
 // AddDay add days

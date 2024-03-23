@@ -43,8 +43,8 @@ func StringToFloat[E constraints.Float](s string) (E, error) {
 }
 
 // FloatToString convert string to float
-func FloatToString[E constraints.Float](f E, prec int) string {
-	return strconv.FormatFloat(float64(f), 'f', prec, 64)
+func FloatToString[E constraints.Float](f E, digits int) string {
+	return strconv.FormatFloat(float64(f), 'f', digits, 64)
 }
 
 // StringSliceToIntSlice convert string slice to int slice
