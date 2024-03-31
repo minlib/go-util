@@ -3,10 +3,9 @@ package jsonx
 import (
 	"database/sql/driver"
 	"fmt"
+	"golang.org/x/exp/constraints"
 	"strconv"
 	"strings"
-
-	"golang.org/x/exp/constraints"
 )
 
 type Int struct {
@@ -19,7 +18,7 @@ func NewInt[E constraints.Integer](value E) Int {
 	return Int{Int32: &v}
 }
 
-// Int32 获取值
+// Int32Def 获取值
 func (l Int) Int32Def() int32 {
 	if l.Int32 == nil {
 		return 0

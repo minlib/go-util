@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// Slice
+// Slice return a slice type
 func Slice[E any](s ...E) []E {
 	return []E(s)
 }

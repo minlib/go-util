@@ -8,7 +8,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	if resp, err := Get("http://localhost:8080/test"); err != nil {
+	if resp, err := Get("https://minzhan.com"); err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println(resp)

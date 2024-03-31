@@ -3,11 +3,10 @@ package slicex
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"testing"
-
 	"github.com/minlib/go-util/jsonx"
-	"golang.org/x/exp/slices"
+	"reflect"
+	"sort"
+	"testing"
 )
 
 func TestSlice(t *testing.T) {
@@ -129,8 +128,8 @@ func TestSliceSortFunc(t *testing.T) {
 	datas = append(datas, Model{3, "a3"})
 	datas = append(datas, Model{2, "a2"})
 	datas = append(datas, Model{2, "a1"})
-	slices.SortFunc(datas, func(a, b Model) bool {
-		return a.id < b.id
+	sort.Slice(datas, func(i, j int) bool {
+		return datas[i].id < datas[j].id
 	})
 	fmt.Println(datas) // [{1 a1} {2 a2} {3 a3} {4 a4}]
 }
