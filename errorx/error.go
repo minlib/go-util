@@ -22,13 +22,9 @@ func New(code int, message string) *Error {
 // NewParams returns an error that formats as the given text.
 // Each call to New returns a distinct error value even if the text is identical.
 func NewParams(code int, message string, params ...any) *Error {
-	errMessage := message
-	if len(params) > 0 {
-		errMessage = fmt.Sprintf(errMessage, params)
-	}
 	return &Error{
 		Code:    code,
-		Message: errMessage,
+		Message: fmt.Sprintf(message, params...),
 	}
 }
 
@@ -41,6 +37,6 @@ func (e *Error) Error() string {
 func (e *Error) Format(params ...any) *Error {
 	return &Error{
 		Code:    e.Code,
-		Message: fmt.Sprintf(e.Message, params),
+		Message: fmt.Sprintf(e.Message, params...),
 	}
 }
