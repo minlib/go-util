@@ -27,8 +27,5 @@ func TestNewParams(t *testing.T) {
 }
 
 func TestFormat(t *testing.T) {
-	var err = New(501, "Hello %s")
-	fmt.Println(fmt.Sprintf(err.Message, "Zhang San"))
-	fmt.Println(err.Message)
-	fmt.Println(Format(*err, "Zhang San"))
+	fmt.Println(New(501, "Hello %s").Format("Zhang San"))
 }

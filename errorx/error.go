@@ -32,15 +32,15 @@ func NewParams(code int, message string, params ...any) *Error {
 	}
 }
 
-// Format returns an error that formats as the given text.
-// Each call to New returns a distinct error value even if the text is identical.
-func Format(err Error, params ...any) *Error {
-	return &Error{
-		Code:    err.Code,
-		Message: fmt.Sprintf(err.Message, params),
-	}
-}
-
+// Error return error message
 func (e *Error) Error() string {
 	return e.Message
+}
+
+// Format return a formatted and new error object
+func (e *Error) Format(params ...any) *Error {
+	return &Error{
+		Code:    e.Code,
+		Message: fmt.Sprintf(e.Message, params),
+	}
 }
