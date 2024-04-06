@@ -12,10 +12,34 @@ type NameValue struct {
 
 type NameValueSlice []NameValue
 
+// Scan implements the Scanner interface.
+func (t *NameValueSlice) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &t)
+}
+
+// Value implements the driver Valuer interface.
 func (t *NameValueSlice) Value() (driver.Value, error) {
 	return json.Marshal(t)
 }
 
-func (t *NameValueSlice) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &t)
+// GetNames get name list
+func (t *NameValueSlice) GetNames() []string {
+	var names []string
+	if t != nil {
+		for _, v := range *t {
+			names = append(names, v.Name)
+		}
+	}
+	return names
+}
+
+// GetValues get value list
+func (t *NameValueSlice) GetValues() []string {
+	var values []string
+	if t != nil {
+		for _, v := range *t {
+			values = append(values, v.Value)
+		}
+	}
+	return values
 }
