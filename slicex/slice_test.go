@@ -181,3 +181,31 @@ func TestLongToInt64(t *testing.T) {
 		t.Errorf("LongToInt64() = %v, want %v", got1, want1)
 	}
 }
+
+func TestExtract(t *testing.T) {
+	// 定义一个结构体
+	type person struct {
+		Name string
+		Age  int
+	}
+
+	// 创建一个Person结构体的切片
+	people := []person{
+		{"Alice", 25},
+		{"Bob", 30},
+		{"Charlie", 35},
+	}
+
+	// 使用泛型函数提取所有人的名字
+	names := Extract(people, func(p person) string {
+		return p.Name
+	})
+
+	names2 := Extract(people, func(p person) *person {
+		return &person{p.Name, 1}
+	})
+
+	// 打印名字切片
+	fmt.Println(names)                       // 输出: [Alice Bob Charlie]
+	fmt.Println(jsonx.MarshalString(names2)) // 输出: [Alice Bob Charlie]
+}

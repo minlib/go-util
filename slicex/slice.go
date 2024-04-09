@@ -171,3 +171,12 @@ func Int64ToLong(s []int64) []jsonx.Long {
 	}
 	return res
 }
+
+// Extract 提取切片中某个属性的集合
+func Extract[T any, U any](slice []T, extractor func(T) U) []U {
+	var result []U
+	for _, item := range slice {
+		result = append(result, extractor(item))
+	}
+	return result
+}
