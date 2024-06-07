@@ -3,6 +3,7 @@ package imagex
 import (
 	"bytes"
 	"github.com/minlib/go-util/stringx"
+	"golang.org/x/image/webp"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -58,6 +59,20 @@ func GetSize(path string) (int, int, error) {
 	width := srcBounds.Max.X - srcBounds.Min.X
 	height := srcBounds.Max.Y - srcBounds.Min.Y
 	return width, height, nil
+}
+
+// GetWebpSize Get the size of the webp image
+func GetWebpSize(path string) (int, int, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return 0, 0, err
+	}
+	defer file.Close()
+	cfg, err := webp.DecodeConfig(file)
+	if err != nil {
+		return 0, 0, err
+	}
+	return cfg.Width, cfg.Height, nil
 }
 
 // SavePNG save as png image
