@@ -3,8 +3,8 @@ package imagex
 import (
 	"bytes"
 	"github.com/minlib/go-util/stringx"
-	"golang.org/x/image/webp"
 	"image"
+	"image/color"
 	"image/jpeg"
 	"image/png"
 	"io"
@@ -61,20 +61,6 @@ func GetSize(path string) (int, int, error) {
 	return width, height, nil
 }
 
-// GetWebpSize Get the size of the webp image
-func GetWebpSize(path string) (int, int, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return 0, 0, err
-	}
-	defer file.Close()
-	cfg, err := webp.DecodeConfig(file)
-	if err != nil {
-		return 0, 0, err
-	}
-	return cfg.Width, cfg.Height, nil
-}
-
 // SavePNG save as png image
 func SavePNG(src image.Image, outputPath string) error {
 	file, err := os.Create(outputPath)
@@ -95,4 +81,35 @@ func SaveJPG(src image.Image, outputPath string, quality int) error {
 	return jpeg.Encode(file, src, &jpeg.Options{
 		Quality: quality,
 	})
+}
+
+func CreateImage(filename string, width, height int, c color.Color) *os.File {
+	//// 定义图片的宽度和高度
+	//width := 1920
+	//height := 1080
+	// 定义红色，Go中使用预定义的颜色或者使用RGBA创建
+	//red := color.RGBA{R: 255, G: 0, B: 0, A: 255}
+
+	// 创建一个新的RGBA图片
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			img.Set(x, y, c)
+		}
+	}
+
+	// 创建一个文件用于保存图片
+	file, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// 使用png编码器将图片写入文件
+	err = png.Encode(file, img)
+	if err != nil {
+		panic(err)
+	}
+	return file
 }
