@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // GetResourceReader get local or remote resource file
@@ -50,6 +51,9 @@ func ReadImage(pathOrUrl string) (image.Image, error) {
 
 // GetSize get the size of the image
 func GetSize(path string) (int, int, error) {
+	if strings.HasSuffix(path, ".webp") {
+		return GetWebpSize(path)
+	}
 	srcImage, err := ReadImage(path)
 	if err != nil {
 		return 0, 0, err
@@ -83,30 +87,19 @@ func SaveJPG(src image.Image, outputPath string, quality int) error {
 	})
 }
 
+// CreateImage 创建新的图片
 func CreateImage(filename string, width, height int, c color.Color) *os.File {
-	//// 定义图片的宽度和高度
-	//width := 1920
-	//height := 1080
-	// 定义红色，Go中使用预定义的颜色或者使用RGBA创建
-	//red := color.RGBA{R: 255, G: 0, B: 0, A: 255}
-
-	// 创建一个新的RGBA图片
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
-
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
 			img.Set(x, y, c)
 		}
 	}
-
-	// 创建一个文件用于保存图片
 	file, err := os.Create(filename)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-
-	// 使用png编码器将图片写入文件
 	err = png.Encode(file, img)
 	if err != nil {
 		panic(err)
