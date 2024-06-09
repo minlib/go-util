@@ -46,10 +46,19 @@ func WriteFile(filename string, data string) error {
 }
 
 // ReadFile read file
-func ReadFile(filename string) (string, error) {
-	bytes, err := os.ReadFile(filename)
+func ReadFile(path string) (string, error) {
+	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+// GetSize get file size
+func GetSize(path string) (int64, error) {
+	if file, err := os.Stat(path); err != nil {
+		return 0, err
+	} else {
+		return file.Size(), nil
+	}
 }
