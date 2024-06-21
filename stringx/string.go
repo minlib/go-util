@@ -187,6 +187,32 @@ func IsAnyBlank(strings ...string) bool {
 	return false
 }
 
+// IsAnyNotEmpty 判断是否存在非空字符串（任意一个不为空，返回true）
+func IsAnyNotEmpty(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if s != "" {
+			return true
+		}
+	}
+	return false
+}
+
+// IsAnyNotBlank 判断是否存在非空白字符串（任意一个不为空白，返回true）
+func IsAnyNotBlank(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if !IsBlank(s) {
+			return true
+		}
+	}
+	return false
+}
+
 // IsNoneEmpty 判断不存在空（全部不为空，返回true）
 func IsNoneEmpty(strings ...string) bool {
 	if len(strings) == 0 {

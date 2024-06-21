@@ -140,6 +140,24 @@ func TestIsAnyBlank(t *testing.T) {
 	fmt.Println(IsAnyBlank("min", "minzhan") == false)
 }
 
+func TestIsAnyNotEmpty(t *testing.T) {
+	fmt.Println(IsAnyNotEmpty() == false)
+	fmt.Println(IsAnyNotEmpty("") == false)
+	fmt.Println(IsAnyNotEmpty("", " ") == true)
+	fmt.Println(IsAnyNotEmpty("", "			") == true)
+	fmt.Println(IsAnyNotEmpty("", "minzhan") == true)
+	fmt.Println(IsAnyNotEmpty("min", "minzhan") == true)
+}
+
+func TestIsAnyNotBlank(t *testing.T) {
+	fmt.Println(IsAnyNotBlank() == false)
+	fmt.Println(IsAnyNotBlank("") == false)
+	fmt.Println(IsAnyNotBlank("", " 		") == false)
+	fmt.Println(IsAnyNotBlank("	", " 		") == false)
+	fmt.Println(IsAnyNotBlank("", "minzhan") == true)
+	fmt.Println(IsAnyNotBlank("min", "minzhan") == true)
+}
+
 func TestIsNoneEmpty(t *testing.T) {
 	fmt.Println(IsNoneEmpty() == false)
 	fmt.Println(IsNoneEmpty("") == false)
