@@ -151,9 +151,19 @@ func HideRightLimit(s string, offset, limit int) string {
 	return ReplaceOffset(s, '*', offsetNew, limit)
 }
 
+// IsEmpty 判断空
+func IsEmpty(s string) bool {
+	return s == ""
+}
+
 // IsBlank 判断空白
 func IsBlank(s string) bool {
 	return s == "" || len(strings.TrimSpace(s)) == 0
+}
+
+// IsNotEmpty 判断非空
+func IsNotEmpty(s string) bool {
+	return s != ""
 }
 
 // IsNotBlank 判断非空白
