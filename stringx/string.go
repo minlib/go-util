@@ -121,26 +121,26 @@ func ReplaceOffset(s string, repl rune, offset, limit int) string {
 	return string(result)
 }
 
-// HideLeft
+// HideLeft 隐藏字符串，从左边指定位置的所有字符串数
 func HideLeft(s string, offset int) string {
 	length := RuneLength(s)
 	limit := length - offset + 1
 	return HideLeftLimit(s, offset, limit)
 }
 
-// HideLeftLimit
+// HideLeftLimit  隐藏字符串，从左边开始的字符串数
 func HideLeftLimit(s string, offset, limit int) string {
 	return ReplaceOffset(s, '*', offset, limit)
 }
 
-// HideRight
+// HideRight 隐藏字符串，从右边指定位置的所有字符串数
 func HideRight(s string, offset int) string {
 	length := RuneLength(s)
 	limit := length - offset
 	return HideRightLimit(s, offset, limit)
 }
 
-// HideRightLimit
+// HideRightLimit 隐藏字符串，从右边开始限定的字符串数
 func HideRightLimit(s string, offset, limit int) string {
 	length := RuneLength(s)
 	offsetNew := length - offset - limit
@@ -149,4 +149,66 @@ func HideRightLimit(s string, offset, limit int) string {
 		limit = length - offset
 	}
 	return ReplaceOffset(s, '*', offsetNew, limit)
+}
+
+// IsBlank 判断空白
+func IsBlank(s string) bool {
+	return s == "" || len(strings.TrimSpace(s)) == 0
+}
+
+// IsNotBlank 判断非空白
+func IsNotBlank(s string) bool {
+	return len(strings.TrimSpace(s)) > 0
+}
+
+// IsAnyEmpty 判断是否存在空（任意一个为空，返回true）
+func IsAnyEmpty(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if s == "" {
+			return true
+		}
+	}
+	return false
+}
+
+// IsAnyBlank 判断是否存在空白（任意一个为空白，返回true）
+func IsAnyBlank(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if IsBlank(s) {
+			return true
+		}
+	}
+	return false
+}
+
+// IsNoneEmpty 判断不存在空（全部不为空，返回true）
+func IsNoneEmpty(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if s == "" {
+			return false
+		}
+	}
+	return true
+}
+
+// IsNoneBlank 判断不存在空白（全部不为空白，返回true）
+func IsNoneBlank(strings ...string) bool {
+	if len(strings) == 0 {
+		return false
+	}
+	for _, s := range strings {
+		if IsBlank(s) {
+			return false
+		}
+	}
+	return true
 }

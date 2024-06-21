@@ -106,3 +106,54 @@ func TestHideLeftLimit(t *testing.T) {
 	fmt.Println(HideRight("张三", 1))  // *三
 	fmt.Println(HideRight("王五五", 1)) // **五
 }
+
+func TestIsBlank(t *testing.T) {
+	fmt.Println(IsBlank(""))
+	fmt.Println(IsBlank(" "))
+	fmt.Println(IsBlank("  "))
+	fmt.Println(IsBlank("	"))
+	fmt.Println(IsBlank("minzhan.com") == false)
+}
+
+func TestIsNotBlank(t *testing.T) {
+	fmt.Println(IsNotBlank("") == false)
+	fmt.Println(IsNotBlank(" ") == false)
+	fmt.Println(IsNotBlank("  ") == false)
+	fmt.Println(IsNotBlank("		") == false)
+	fmt.Println(IsNotBlank("minzhan.com"))
+}
+
+func TestIsAnyEmpty(t *testing.T) {
+	fmt.Println(IsAnyEmpty() == false)
+	fmt.Println(IsAnyEmpty("") == true)
+	fmt.Println(IsAnyEmpty("", " ") == true)
+	fmt.Println(IsAnyEmpty("", "minzhan") == true)
+	fmt.Println(IsAnyEmpty("min", "minzhan") == false)
+}
+
+func TestIsAnyBlank(t *testing.T) {
+	fmt.Println(IsAnyBlank() == false)
+	fmt.Println(IsAnyBlank("") == true)
+	fmt.Println(IsAnyBlank("", " 		") == true)
+	fmt.Println(IsAnyBlank("	", " 		") == true)
+	fmt.Println(IsAnyBlank("", "minzhan") == true)
+	fmt.Println(IsAnyBlank("min", "minzhan") == false)
+}
+
+func TestIsNoneEmpty(t *testing.T) {
+	fmt.Println(IsNoneEmpty() == false)
+	fmt.Println(IsNoneEmpty("") == false)
+	fmt.Println(IsNoneEmpty("", " 		") == false)
+	fmt.Println(IsNoneEmpty("	", " 		") == true)
+	fmt.Println(IsNoneEmpty("", "minzhan") == false)
+	fmt.Println(IsNoneEmpty("min", "minzhan") == true)
+}
+
+func TestIsNoneBlank(t *testing.T) {
+	fmt.Println(IsNoneBlank() == false)
+	fmt.Println(IsNoneBlank("") == false)
+	fmt.Println(IsNoneBlank("", " 		") == false)
+	fmt.Println(IsNoneBlank("	", " 		") == false)
+	fmt.Println(IsNoneBlank("", "minzhan") == false)
+	fmt.Println(IsNoneBlank("min", "minzhan") == true)
+}
