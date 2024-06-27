@@ -29,7 +29,7 @@ func (t *DateTime) Scan(v interface{}) error {
 }
 
 // Value insert timestamp into mysql need this function.
-func (t DateTime) Value() (driver.Value, error) {
+func (t *DateTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.Unix() == zeroTime.Unix() {
 		return nil, nil
@@ -40,7 +40,7 @@ func (t DateTime) Value() (driver.Value, error) {
 
 // MarshalJSON implements the json.Marshaler interface.
 // MarshalJSON on DateTime format Time field with %Y-%m-%d %H:%M:%S
-func (t DateTime) MarshalJSON() ([]byte, error) {
+func (t *DateTime) MarshalJSON() ([]byte, error) {
 	var zeroTime time.Time
 	if t.Time.Unix() == zeroTime.Unix() {
 		return []byte("null"), nil
