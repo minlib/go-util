@@ -106,3 +106,31 @@ func CreateImage(filename string, width, height int, c color.Color) *os.File {
 	}
 	return file
 }
+
+// ResizeImage 图像按比例缩放到指定宽度
+func ResizeImage(src image.Image, width int) (image.Image, error) {
+	bounds := src.Bounds()
+	srcWidth, srcHeight := bounds.Dx(), bounds.Dy()
+	newHeight := int(float64(srcHeight) * (float64(width) / float64(srcWidth)))
+	newImage := image.NewRGBA(image.Rect(0, 0, width, newHeight))
+	for x := 0; x < width; x++ {
+		for y := 0; y < newHeight; y++ {
+			srcX := int(float64(x) * (float64(srcWidth) / float64(width)))
+			srcY := int(float64(y) * (float64(srcHeight) / float64(newHeight)))
+			if srcX < 0 {
+				srcX = 0
+			}
+			if srcY < 0 {
+				srcY = 0
+			}
+			if srcX >= srcWidth {
+				srcX = srcWidth - 1
+			}
+			if srcY >= srcHeight {
+				srcY = srcHeight - 1
+			}
+			newImage.Set(x, y, src.At(srcX, srcY))
+		}
+	}
+	return newImage, nil
+}
