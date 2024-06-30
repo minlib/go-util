@@ -40,3 +40,11 @@ func (e *Error) Format(params ...any) *Error {
 		Message: fmt.Sprintf(e.Message, params...),
 	}
 }
+
+// MessageOf return a message and new error object
+func (e *Error) MessageOf(message string) *Error {
+	return &Error{
+		Code:    e.Code,
+		Message: message,
+	}
+}
