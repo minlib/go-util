@@ -19,7 +19,7 @@ func NewInt[E constraints.Integer](value E) Int {
 }
 
 // Int32Def 获取值
-func (l *Int) Int32Def() int32 {
+func (l Int) Int32Def() int32 {
 	if l.Int32 == nil {
 		return 0
 	} else {
@@ -54,7 +54,7 @@ func (l *Int) Scan(value interface{}) error {
 }
 
 // Value implements the driver Valuer interface.
-func (l *Int) Value() (driver.Value, error) {
+func (l Int) Value() (driver.Value, error) {
 	if l.Int32 != nil {
 		return *l.Int32, nil
 	} else {
@@ -63,7 +63,7 @@ func (l *Int) Value() (driver.Value, error) {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (l *Int) MarshalJSON() ([]byte, error) {
+func (l Int) MarshalJSON() ([]byte, error) {
 	if l.Int32 != nil {
 		return []byte(fmt.Sprintf(`%v`, *l.Int32)), nil
 	} else {

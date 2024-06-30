@@ -20,7 +20,7 @@ func NewLong[E constraints.Integer](value E) Long {
 }
 
 // Int64Def 获取值
-func (l *Long) Int64Def() int64 {
+func (l Long) Int64Def() int64 {
 	if l.Int64 == nil {
 		return 0
 	} else {
@@ -55,7 +55,7 @@ func (l *Long) Scan(value interface{}) error {
 }
 
 // Value implements the driver Valuer interface.
-func (l *Long) Value() (driver.Value, error) {
+func (l Long) Value() (driver.Value, error) {
 	if l.Int64 != nil {
 		return *l.Int64, nil
 	} else {
@@ -64,7 +64,7 @@ func (l *Long) Value() (driver.Value, error) {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (l *Long) MarshalJSON() ([]byte, error) {
+func (l Long) MarshalJSON() ([]byte, error) {
 	if l.Int64 != nil {
 		return []byte(fmt.Sprintf(`"%v"`, *l.Int64)), nil
 	} else {
