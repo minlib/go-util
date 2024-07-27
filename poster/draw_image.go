@@ -10,7 +10,7 @@ type ImageDraw struct {
 	Y     int
 	Path  string
 	Round bool
-	//Width  int
+	Width int
 	NextStep
 }
 
@@ -19,9 +19,12 @@ func (d *ImageDraw) Do(c *Context) error {
 	if err != nil {
 		return err
 	}
-	//if d.Width > 0 {
-	//	// TODO 处理图片的宽和高
-	//}
+	if d.Width > 0 {
+		srcImage, err = imagex.ResizeImage(srcImage, d.Width)
+		if err != nil {
+			return err
+		}
+	}
 	var newImage image.Image
 	if d.Round {
 		newImage = DrawCircle(srcImage)
