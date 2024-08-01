@@ -52,3 +52,8 @@ func Decimal(d decimal.Decimal) *decimal.Decimal {
 func Long(i int64) *jsonx.Long {
 	return &jsonx.Long{Int64: &i}
 }
+
+// DateTime 复制 time.Time 对象，并返回复制体的指针
+func DateTime(t time.Time) *jsonx.DateTime {
+	return &jsonx.DateTime{Time: t}
+}
