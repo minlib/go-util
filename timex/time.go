@@ -1,3 +1,5 @@
+// Copyright 2024 Minzhan.com Inc. All rights reserved.
+
 package timex
 
 import (
@@ -79,4 +81,16 @@ func UnixMilliFormat(t time.Time) string {
 
 func UnixMicroFormat(t time.Time) string {
 	return time.UnixMicro(t.UnixMicro()).Format("2006-01-02 15:04:05.000000")
+}
+
+// ToBeijingTime 转成北京时间
+func ToBeijingTime(t time.Time) time.Time {
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	return t.In(loc)
+}
+
+// ToBeijingZone 转成北京时区，时间字符串保持不变
+func ToBeijingZone(t time.Time) time.Time {
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
 }
