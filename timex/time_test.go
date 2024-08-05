@@ -8,9 +8,11 @@ import (
 
 func TestTodayAddDay(t *testing.T) {
 	now := time.Now()
-	fmt.Println(now)             // 2022-10-05 23:35:22.3942125 +0800 CST m=+0.003905101
-	fmt.Println(DateString(now)) // 20221005
-	fmt.Println(TimeString(now)) // 23:35:22
+	fmt.Println(now)                        // 2024-08-05 22:10:56.2059197 +0800 CST m=+0.001098601
+	fmt.Println(DateString(now))            // 2024-08-05
+	fmt.Println(TimeString(now))            // 22:10:56
+	fmt.Println(DateTimeString(now))        // 2024-08-05 22:10:56
+	fmt.Println(IsSameDay(now, time.Now())) // true
 	// 增加1小时
 	fmt.Println(AddDuration(now, 1, "h")) // 2022-10-06 00:35:22.3942125 +0800 CST m=+3600.003905101
 	fmt.Println(AddSecond(now, 1))        // 2022-10-05 23:35:23.3942125 +0800 CST m=+1.003905101

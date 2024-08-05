@@ -9,12 +9,24 @@ import (
 
 // DateString 获取日期字符串
 func DateString(t time.Time) string {
-	return t.Format("20060102")
+	return t.Format("2006-01-02")
 }
 
 // TimeString 获取时间字符串
 func TimeString(t time.Time) string {
 	return t.Format("15:04:05")
+}
+
+// DateTimeString 获取日期时间字符串
+func DateTimeString(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// IsSameDay 判断两个日期是同一天
+func IsSameDay(t1, t2 time.Time) bool {
+	y1, m1, d1 := t1.Date()
+	y2, m2, d2 := t2.Date()
+	return y1 == y2 && m1 == m2 && d1 == d2
 }
 
 // AddDuration 增加时间
