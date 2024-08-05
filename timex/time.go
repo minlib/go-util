@@ -7,19 +7,24 @@ import (
 	"time"
 )
 
-// DateString 获取日期字符串
-func DateString(t time.Time) string {
+// FormatDate 获取日期字符串
+func FormatDate(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 
-// TimeString 获取时间字符串
-func TimeString(t time.Time) string {
+// FormatTime 获取时间字符串
+func FormatTime(t time.Time) string {
 	return t.Format("15:04:05")
 }
 
-// DateTimeString 获取日期时间字符串
-func DateTimeString(t time.Time) string {
+// FormatDateTime 获取日期时间字符串
+func FormatDateTime(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
+}
+
+// ParseDateTime 时间字符串转换为日期时间
+func ParseDateTime(format string) (time.Time, error) {
+	return time.Parse("2006-01-02 15:04:05", format)
 }
 
 // IsSameDay 判断两个日期是同一天
@@ -105,4 +110,37 @@ func ToBeijingTime(t time.Time) time.Time {
 func ToBeijingZone(t time.Time) time.Time {
 	loc, _ := time.LoadLocation("Asia/Shanghai")
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
+}
+
+// GetIntervalString 获取两个时间差字符串
+func GetIntervalString(startTime time.Time, endTime time.Time) string {
+	duration := endTime.Sub(startTime)
+	if duration < 0 {
+		return ""
+	}
+	days := int(duration.Hours() / 24)
+	years := days / 365
+	if years > 0 {
+		return strconv.Itoa(years) + "年"
+	}
+	months := days / 30
+	if months > 0 {
+		return strconv.Itoa(months) + "个月"
+	}
+	if days > 0 {
+		return strconv.Itoa(days) + "天"
+	}
+	hours := int(duration.Hours())
+	if hours > 0 {
+		return strconv.Itoa(hours) + "小时"
+	}
+	minutes := int(duration.Minutes())
+	if minutes > 0 {
+		return strconv.Itoa(minutes) + "分钟"
+	}
+	seconds := int(duration.Seconds())
+	if seconds > 0 {
+		return strconv.Itoa(seconds) + "秒"
+	}
+	return ""
 }
