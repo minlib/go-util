@@ -30,6 +30,16 @@ func Contains[E comparable](s []E, v E) bool {
 	return slices.Contains(s, v)
 }
 
+// ContainsAny 数组中包含任意一个元素
+func ContainsAny[S ~[]E, E comparable](s S, e ...E) bool {
+	for _, v := range e {
+		if slices.Contains(s, v) {
+			return true
+		}
+	}
+	return false
+}
+
 // Equal reports whether two slices are equal: the same length and all
 // elements equal. If the lengths are different, Equal returns false.
 // Otherwise, the elements are compared in increasing index order, and the
@@ -53,16 +63,33 @@ func Delete[S ~[]E, E any](s S, i int) S {
 	return slices.Delete(s, i, i+1)
 }
 
-// Distinct 去重
+// Distinct 返回去重后的元素
 func Distinct[S ~[]E, E comparable](s S) S {
+	if len(s) == 0 {
+		return s
+	}
 	var res S
-	if len(s) > 0 {
-		m := map[E]struct{}{}
-		for _, v := range s {
-			if _, found := m[v]; !found {
-				m[v] = struct{}{}
-				res = append(res, v)
-			}
+	m := make(map[E]struct{})
+	for _, v := range s {
+		if _, found := m[v]; !found {
+			m[v] = struct{}{}
+			res = append(res, v)
+		}
+	}
+	return res
+}
+
+// Duplicate 返回重复的元素
+func Duplicate[S ~[]E, E comparable](s S) S {
+	if len(s) == 0 {
+		return s
+	}
+	var res S
+	m := make(map[E]int)
+	for _, v := range s {
+		m[v]++
+		if m[v] == 2 {
+			res = append(res, v)
 		}
 	}
 	return res

@@ -58,6 +58,17 @@ func TestUnion(t *testing.T) {
 	fmt.Println(Union(stringSlice1, stringSlice2))
 }
 
+func TestDuplicate(t *testing.T) {
+	intSlice := []int{1, 2, 2, 3, 3, 3, 4, 4, 4, 4}
+	strSlice := []string{"apple", "banana", "apple", "orange", "banana"}
+
+	intDuplicates := Duplicate(intSlice)
+	strDuplicates := Duplicate(strSlice)
+
+	fmt.Println("整数切片中的重复元素:", intDuplicates)
+	fmt.Println("字符串切片中的重复元素:", strDuplicates)
+}
+
 func TestDistinct(t *testing.T) {
 	intSlice1 := []int64{1, 2, 3, 4, 4, 1, 5, 6}
 	fmt.Println(Distinct(intSlice1))
@@ -84,6 +95,15 @@ func TestSum(t *testing.T) {
 
 	stringSlice5 := []string{"A1", "A2", "A3"}
 	fmt.Println(Sum(stringSlice5))
+}
+
+func TestContainsAny(t *testing.T) {
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5, 6, 7, 8}, 1))     // true
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5, 6, 7, 8}, 1, 2))  // true
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5, 6, 7, 8}, 1, 9))  // true
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5}, 1, 2, 3, 4, 5))  // true
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5, 6, 7, 8}, 9, 10)) // false
+	fmt.Println(ContainsAny([]int{1, 2, 3, 4, 5, 6, 7, 8}, 10))    // false
 }
 
 func TestEqual(t *testing.T) {
