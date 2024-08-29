@@ -46,3 +46,151 @@ func TestGetIntervalString(t *testing.T) {
 	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:03:11"))) // 3分钟
 	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:00:11"))) // 11秒
 }
+
+func parseDateTime(value string) time.Time {
+	start, _ := ParseInLocation(value, time.Local)
+	return start
+}
+
+func TestBetweenDays(t *testing.T) {
+	type args struct {
+		startTime time.Time
+		endTime   time.Time
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{{
+		name: "test1",
+		args: args{
+			startTime: parseDateTime("2024-08-06 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 03:10:56"),
+		},
+		want: 0,
+	}, {
+		name: "test2",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 03:10:56"),
+		},
+		want: 0,
+	}, {
+		name: "test3",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 23:10:56"),
+		},
+		want: 1,
+	}, {
+		name: "test4",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-06 11:10:56"),
+		},
+		want: 2,
+	}, {
+		name: "test5",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-09 11:10:56"),
+		},
+		want: 5,
+	}, {
+		name: "test6",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-09-05 11:10:56"),
+		},
+		want: 32,
+	}, {
+		name: "test7",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2025-08-05 11:10:56"),
+		},
+		want: 366,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := BetweenDays(tt.args.startTime, tt.args.endTime); got != tt.want {
+				t.Errorf("name %v, BetweenDays() = %v, want %v", tt.name, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSubDays(t *testing.T) {
+	type args struct {
+		startTime time.Time
+		endTime   time.Time
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{{
+		name: "test1",
+		args: args{
+			startTime: parseDateTime("2024-08-06 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 03:10:56"),
+		},
+		want: 0,
+	}, {
+		name: "test2",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 03:10:56"),
+		},
+		want: 0,
+	}, {
+		name: "test3",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-05 23:10:56"),
+		},
+		want: 0,
+	}, {
+		name: "test4",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-06 12:10:56"),
+		},
+		want: 1,
+	}, {
+		name: "test4",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-06 13:10:56"),
+		},
+		want: 1,
+	}, {
+		name: "test5",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-08-09 11:10:56"),
+		},
+		want: 3,
+	}, {
+		name: "test6",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2024-09-05 11:10:56"),
+		},
+		want: 30,
+	}, {
+		name: "test7",
+		args: args{
+			startTime: parseDateTime("2024-08-05 12:10:56"),
+			endTime:   parseDateTime("2025-08-05 11:10:56"),
+		},
+		want: 364,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SubDays(tt.args.startTime, tt.args.endTime); got != tt.want {
+				t.Errorf("name %v, BetweenDays() = %v, want %v", tt.name, got, tt.want)
+			}
+		})
+	}
+}

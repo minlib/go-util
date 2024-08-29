@@ -2,6 +2,7 @@ package stringx
 
 import (
 	"fmt"
+	"golang.org/x/exp/constraints"
 	"testing"
 )
 
@@ -174,4 +175,93 @@ func TestIsNoneBlank(t *testing.T) {
 	fmt.Println(IsNoneBlank("	", " 		") == false)
 	fmt.Println(IsNoneBlank("", "minzhan") == false)
 	fmt.Println(IsNoneBlank("min", "minzhan") == true)
+}
+
+func TestSplitToIntegers(t *testing.T) {
+	printf(SplitToIntegers[int16]("1111,222,333", ","))
+	printf(SplitToIntegers[int32]("1111,222,333", ","))
+	printf(SplitToIntegers[int64]("1111,222,333", ","))
+}
+
+func TestJoin(t *testing.T) {
+	type args[E constraints.Integer] struct {
+		elems []E
+		sep   string
+	}
+	type testCase[E constraints.Integer] struct {
+		name string
+		args args[E]
+		want string
+	}
+	intTests := []testCase[int]{{
+		name: "test1",
+		args: args[int]{
+			elems: []int{1, 2, 3, 4, 5},
+			sep:   ",",
+		},
+		want: "1,2,3,4,5",
+	}, {
+		name: "test2",
+		args: args[int]{
+			elems: []int{1, 2, 3, 4, 5},
+			sep:   " & ",
+		},
+		want: "1 & 2 & 3 & 4 & 5",
+	}}
+	for _, tt := range intTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Join(tt.args.elems, tt.args.sep); got != tt.want {
+				t.Errorf("Join() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+	int64Tests := []testCase[int64]{{
+		name: "test1",
+		args: args[int64]{
+			elems: []int64{1, 2, 3, 4, 5},
+			sep:   ",",
+		},
+		want: "1,2,3,4,5",
+	}, {
+		name: "test2",
+		args: args[int64]{
+			elems: []int64{1, 2, 3, 4, 5},
+			sep:   " & ",
+		},
+		want: "1 & 2 & 3 & 4 & 5",
+	}}
+	for _, tt := range int64Tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Join(tt.args.elems, tt.args.sep); got != tt.want {
+				t.Errorf("Join() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+	uintTests := []testCase[uint]{{
+		name: "test1",
+		args: args[uint]{
+			elems: []uint{1, 2, 3, 4, 5},
+			sep:   ",",
+		},
+		want: "1,2,3,4,5",
+	}, {
+		name: "test2",
+		args: args[uint]{
+			elems: []uint{1, 2, 3, 4, 5},
+			sep:   " & ",
+		},
+		want: "1 & 2 & 3 & 4 & 5",
+	}}
+	for _, tt := range uintTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Join(tt.args.elems, tt.args.sep); got != tt.want {
+				t.Errorf("Join() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func printf(s any, err error) {
+	fmt.Printf("%T, %v, err: %v\n", s, s, err)
 }

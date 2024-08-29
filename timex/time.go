@@ -23,8 +23,13 @@ func FormatDateTime(t time.Time) string {
 }
 
 // ParseDateTime 时间字符串转换为日期时间
-func ParseDateTime(format string) (time.Time, error) {
-	return time.Parse("2006-01-02 15:04:05", format)
+func ParseDateTime(value string) (time.Time, error) {
+	return time.Parse("2006-01-02 15:04:05", value)
+}
+
+// ParseInLocation is like Parse but differs in two important ways.
+func ParseInLocation(value string, loc *time.Location) (time.Time, error) {
+	return time.ParseInLocation("2006-01-02 15:04:05", value, loc)
 }
 
 // IsSameDay 判断两个日期是同一天
@@ -98,6 +103,26 @@ func UnixMilliFormat(t time.Time) string {
 
 func UnixMicroFormat(t time.Time) string {
 	return time.UnixMicro(t.UnixMicro()).Format("2006-01-02 15:04:05.000000")
+}
+
+// BetweenDays 获取2个日期的涉及天数
+func BetweenDays(startTime, endTime time.Time) int {
+	if startTime.After(endTime) {
+		return 0
+	}
+	start := time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC)
+	end := time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 0, 0, 0, 0, time.UTC)
+	duration := end.Sub(start)
+	return int(duration.Hours()/24) + 1
+}
+
+// SubDays 获取2个日期的相差天数
+func SubDays(startTime, endTime time.Time) int {
+	duration := endTime.Sub(startTime)
+	if duration < 0 {
+		return 0
+	}
+	return int(duration.Hours() / 24)
 }
 
 // ToBeijingTime 转成北京时间

@@ -1,7 +1,10 @@
 package stringx
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/minlib/go-util/slicex"
+	"golang.org/x/exp/constraints"
 	"regexp"
 	"strconv"
 	"strings"
@@ -247,4 +250,34 @@ func IsNoneBlank(strings ...string) bool {
 		}
 	}
 	return true
+}
+
+// Split slices s into all substrings separated by sep and returns a slice of
+// the substrings between those separators.
+func Split(s, sep string) []string {
+	return strings.Split(s, sep)
+}
+
+// SplitToIntegers slices s into all sub integers separated by sep and returns a slice of
+// // the sub integers between those separators.
+func SplitToIntegers[E constraints.Integer](s, sep string) ([]E, error) {
+	slice := strings.Split(s, sep)
+	return slicex.StringToInt[E](slice)
+}
+
+// Join 拼接切片
+func Join[E constraints.Integer](elems []E, sep string) string {
+	switch len(elems) {
+	case 0:
+		return ""
+	case 1:
+		return strconv.FormatInt(int64(elems[0]), 10)
+	}
+	var buffer bytes.Buffer
+	buffer.WriteString(strconv.FormatInt(int64(elems[0]), 10))
+	for _, v := range elems[1:] {
+		buffer.WriteString(sep)
+		buffer.WriteString(strconv.FormatInt(int64(v), 10))
+	}
+	return buffer.String()
 }
