@@ -50,31 +50,49 @@ func AddDuration(t time.Time, interval int, unit string) time.Time {
 
 // AddSecond add seconds
 func AddSecond(t time.Time, seconds int) time.Time {
+	if seconds == 0 {
+		return t
+	}
 	return t.Add(time.Duration(seconds) * time.Second)
 }
 
 // AddMinute add minutes
 func AddMinute(t time.Time, minutes int) time.Time {
+	if minutes == 0 {
+		return t
+	}
 	return t.Add(time.Duration(minutes) * time.Minute)
 }
 
 // AddHour add hours
 func AddHour(t time.Time, hours int) time.Time {
+	if hours == 0 {
+		return t
+	}
 	return t.Add(time.Duration(hours) * time.Hour)
 }
 
 // AddDay add days
 func AddDay(t time.Time, days int) time.Time {
+	if days == 0 {
+		return t
+	}
 	return t.AddDate(0, 0, days)
 }
 
 // AddMonth add months
 func AddMonth(t time.Time, months int) time.Time {
+	if months == 0 {
+		return t
+	}
 	return t.AddDate(0, months, 0)
 }
 
 // AddYear add years
 func AddYear(t time.Time, years int) time.Time {
+	if years == 0 {
+		return t
+	}
 	return t.AddDate(years, 0, 0)
 }
 
