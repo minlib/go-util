@@ -1,6 +1,6 @@
 module github.com/minlib/go-util
 
-go 1.22.1
+go 1.23.1
 
 require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
@@ -12,10 +12,4 @@ require (
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	golang.org/x/image v0.18.0
 	golang.org/x/text v0.16.0
-)
-
-require (
-	github.com/kr/fs v0.1.0 // indirect
-	github.com/pkg/sftp v1.13.6 // indirect
-	golang.org/x/sys v0.22.0 // indirect
 )
