@@ -33,13 +33,28 @@ func Float32(f float32) *float32 {
 	return &f
 }
 
+// Int 复制 int 对象，并返回复制体的指针
+func Int(i int) *int {
+	return &i
+}
+
 // Int64 复制 int64 对象，并返回复制体的指针
 func Int64(i int64) *int64 {
 	return &i
 }
 
-// Int32 复制 int64 对象，并返回复制体的指针
+// Int32 复制 int32 对象，并返回复制体的指针
 func Int32(i int32) *int32 {
+	return &i
+}
+
+// Int16 复制 int16 对象，并返回复制体的指针
+func Int16(i int16) *int16 {
+	return &i
+}
+
+// Int8 复制 int8 对象，并返回复制体的指针
+func Int8(i int8) *int8 {
 	return &i
 }
 

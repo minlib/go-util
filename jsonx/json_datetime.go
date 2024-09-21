@@ -15,7 +15,14 @@ type DateTime struct {
 }
 
 func NewDateTime(t time.Time) *DateTime {
-	return &DateTime{t}
+	return &DateTime{Time: t}
+}
+
+func NewDateTimePtr(t *time.Time) *DateTime {
+	if t == nil {
+		return nil
+	}
+	return &DateTime{Time: *t}
 }
 
 // Scan implements the Scanner interface.
