@@ -3,6 +3,7 @@ package slicex
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/minlib/go-util/core"
 	"github.com/minlib/go-util/jsonx"
 	"reflect"
 	"sort"
@@ -191,9 +192,9 @@ func TestFunc(t *testing.T) {
 
 func TestLongToInt64(t *testing.T) {
 	type args struct {
-		s []jsonx.Long
+		s []core.Long
 	}
-	var args1 []jsonx.Long
+	var args1 []core.Long
 	json.Unmarshal([]byte(`["",null,"null","0","100"]`), &args1)
 	want1 := []int64{0, 100}
 	got1 := LongToInt64(args1)

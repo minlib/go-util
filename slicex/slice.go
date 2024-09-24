@@ -1,9 +1,9 @@
 package slicex
 
 import (
+	"github.com/minlib/go-util/core"
 	"strconv"
 
-	"github.com/minlib/go-util/jsonx"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 )
@@ -180,7 +180,7 @@ func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 }
 
 // LongToInt64 convert long slice to int64 slice, ignore nil value
-func LongToInt64(s []jsonx.Long) []int64 {
+func LongToInt64(s []core.Long) []int64 {
 	var res []int64
 	for _, v := range s {
 		if v.Int64 != nil {
@@ -191,10 +191,10 @@ func LongToInt64(s []jsonx.Long) []int64 {
 }
 
 // Int64ToLong convert int64 slice to long slice
-func Int64ToLong(s []int64) []jsonx.Long {
-	var res []jsonx.Long
+func Int64ToLong(s []int64) []core.Long {
+	var res []core.Long
 	for _, v := range s {
-		res = append(res, jsonx.NewLong(v))
+		res = append(res, core.NewLong(v))
 	}
 	return res
 }
