@@ -18,9 +18,8 @@ func Unmarshal(data []byte, v any) error {
 func MarshalString(v any) string {
 	if buf, err := json.Marshal(v); err == nil {
 		return string(buf)
-	} else {
-		return ""
 	}
+	return ""
 }
 
 // UnmarshalString parses the JSON-encoded data and stores the result.
