@@ -98,15 +98,16 @@ func Duplicate[S ~[]E, E comparable](s S) S {
 // Subtract returns the elements in `s1` that aren't in `s2`
 func Subtract[S ~[]E, E comparable](s1, s2 S) S {
 	var s S
-	if len(s1) > 0 {
-		var mp = make(map[E]struct{}, len(s2))
-		for _, v := range s2 {
-			mp[v] = struct{}{}
-		}
-		for _, v := range s1 {
-			if _, found := mp[v]; !found {
-				s = append(s, v)
-			}
+	if len(s1) == 0 {
+		return s
+	}
+	var mp = make(map[E]struct{}, len(s2))
+	for _, v := range s2 {
+		mp[v] = struct{}{}
+	}
+	for _, v := range s1 {
+		if _, found := mp[v]; !found {
+			s = append(s, v)
 		}
 	}
 	return s
@@ -121,15 +122,16 @@ func SubtractDistinct[S ~[]E, E comparable](s1, s2 S) S {
 // Intersect 返回交集并去重
 func Intersect[S ~[]E, E comparable](s1, s2 S) S {
 	var s S
-	if len(s1) > 0 && len(s2) > 0 {
-		var mp = make(map[E]struct{}, 0)
-		for _, v := range s2 {
-			mp[v] = struct{}{}
-		}
-		for _, v := range s1 {
-			if _, found := mp[v]; found {
-				s = append(s, v)
-			}
+	if len(s1) == 0 || len(s2) == 0 {
+		return s
+	}
+	var mp = make(map[E]struct{}, 0)
+	for _, v := range s2 {
+		mp[v] = struct{}{}
+	}
+	for _, v := range s1 {
+		if _, found := mp[v]; found {
+			s = append(s, v)
 		}
 	}
 	return Distinct(s)
@@ -177,6 +179,39 @@ func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 		}
 	}
 	return res, nil
+}
+
+// Int64PtrToInt64 converts a slice of int64 pointers to a slice of int64,
+// excluding nil values.
+func Int64PtrToInt64(s []*int64) []int64 {
+	var res []int64
+	for _, v := range s {
+		if v != nil {
+			res = append(res, *v)
+		}
+	}
+	return res
+}
+
+// Int64PtrToPositiveInt64 converts a slice of int64 pointers to a slice of int64,
+// excluding nil and non-positive values.
+func Int64PtrToPositiveInt64(s []*int64) []int64 {
+	var res []int64
+	for _, v := range s {
+		if v != nil && *v > 0 {
+			res = append(res, *v)
+		}
+	}
+	return res
+}
+
+// Int64ToInt64Ptr converts a slice of int64 to a slice of int64 pointers.
+func Int64ToInt64Ptr(s []int64) []*int64 {
+	var res []*int64
+	for _, v := range s {
+		res = append(res, &v)
+	}
+	return res
 }
 
 // LongToInt64 convert long slice to int64 slice, ignore nil value

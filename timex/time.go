@@ -3,6 +3,7 @@
 package timex
 
 import (
+	"github.com/minlib/go-util/core"
 	"strconv"
 	"time"
 )
@@ -155,35 +156,46 @@ func ToBeijingZone(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
 }
 
-// GetIntervalString 获取两个时间差字符串
-func GetIntervalString(startTime time.Time, endTime time.Time) string {
+// ToDateTime converts a *time.Time pointer to a *core.DateTime pointer.
+// If the input time pointer is nil, it returns nil.
+// Otherwise, it creates and returns a new *core.DateTime based on the provided time.
+func ToDateTime(t *time.Time) *core.DateTime {
+	if t == nil {
+		return nil
+	}
+	return core.NewDateTime(*t)
+}
+
+// GetIntervalTime calculates the duration between startTime and endTime. (startTime-endTime)
+// It returns the duration as a time.Duration object and a string representation of the duration.
+func GetIntervalTime(startTime time.Time, endTime time.Time) (time.Duration, string) {
 	duration := endTime.Sub(startTime)
-	if duration < 0 {
-		return ""
+	if duration <= 0 {
+		return duration, ""
 	}
 	days := int(duration.Hours() / 24)
 	years := days / 365
 	if years > 0 {
-		return strconv.Itoa(years) + "年"
+		return duration, strconv.Itoa(years) + "年"
 	}
 	months := days / 30
 	if months > 0 {
-		return strconv.Itoa(months) + "个月"
+		return duration, strconv.Itoa(months) + "个月"
 	}
 	if days > 0 {
-		return strconv.Itoa(days) + "天"
+		return duration, strconv.Itoa(days) + "天"
 	}
 	hours := int(duration.Hours())
 	if hours > 0 {
-		return strconv.Itoa(hours) + "小时"
+		return duration, strconv.Itoa(hours) + "小时"
 	}
 	minutes := int(duration.Minutes())
 	if minutes > 0 {
-		return strconv.Itoa(minutes) + "分钟"
+		return duration, strconv.Itoa(minutes) + "分钟"
 	}
 	seconds := int(duration.Seconds())
 	if seconds > 0 {
-		return strconv.Itoa(seconds) + "秒"
+		return duration, strconv.Itoa(seconds) + "秒"
 	}
-	return ""
+	return duration, ""
 }

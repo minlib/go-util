@@ -37,14 +37,16 @@ func parseTime(timeString string) time.Time {
 }
 
 func TestGetIntervalString(t *testing.T) {
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2026-08-15 22:00:00"))) // 2
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2025-08-05 22:00:00"))) // 1
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2025-08-04 22:00:00"))) // 12个月
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2025-03-03 21:00:00"))) // 6个月
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-25 21:00:00"))) // 19天
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-06 21:00:00"))) // 23小时
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:03:11"))) // 3分钟
-	fmt.Println(GetIntervalString(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:00:11"))) // 11秒
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2026-08-15 22:00:00"))) // 17760h0m0s 2年
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2025-08-05 22:00:00"))) // 8760h0m0s 1年
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2025-08-04 22:00:00"))) // 8736h0m0s 12个月
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2025-03-03 21:00:00"))) // 5039h0m0s 6个月
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-25 21:00:00"))) // 479h0m0s 19天
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-06 21:00:00"))) // 23h0m0s 23小时
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:03:11"))) // 3m11s 3分钟
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:00:11"))) // 11s 11秒
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-05 22:00:00"))) // 0s ""
+	fmt.Println(GetIntervalTime(parseTime("2024-08-05 22:00:00"), parseTime("2024-08-04 22:00:11"))) // -23h59m49s ""
 }
 
 func parseDateTime(value string) time.Time {
