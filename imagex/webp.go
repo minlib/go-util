@@ -1,11 +1,17 @@
 package imagex
 
 import (
+	"errors"
 	"fmt"
 	"github.com/minlib/go-terminal/cmd"
 	"github.com/minlib/go-util/filex"
 	"golang.org/x/image/webp"
 	"os"
+	"strings"
+)
+
+var (
+	ErrBadDimension = errors.New("图片尺寸有误，宽度和高度不能超过16383像素")
 )
 
 const (
@@ -58,8 +64,15 @@ func CWebpCommand(option *CommandOption) error {
 	}
 	command := fmt.Sprintf("%scwebp%s %s -o %s", option.LibPath, params, option.Original, option.Output)
 	c := cmd.Command(command)
-	_, err := c.CombinedOutput()
-	return err
+	if bytes, err := c.CombinedOutput(); err != nil {
+		errorMessage := string(bytes)
+		// Bad picture dimension. Maximum width and height allowed is 16383 pixels.
+		if strings.Contains(errorMessage, "Bad picture dimension") {
+			return ErrBadDimension
+		}
+		return err
+	}
+	return nil
 }
 
 // GetWebpSize Get the size of the webp image
