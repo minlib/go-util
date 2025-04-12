@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	ErrBadDimension = errors.New("图片尺寸不能超过16383像素")
+	ErrBadDimension = errors.New("图片尺寸错误")
 )
 
 const (
