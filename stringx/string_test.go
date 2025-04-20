@@ -21,10 +21,17 @@ func TestHasAnySuffix(t *testing.T) {
 }
 
 func TestContainsAnyString(t *testing.T) {
-	fmt.Println(ContainsAnyString("1234.png1"))
-	fmt.Println(ContainsAnyString("1234.png2", "jpg", "jpeg", "gif"))
-	fmt.Println(ContainsAnyString("1234.png3", "jpg", "jpeg", "gif", "png"))
-	fmt.Println(ContainsAnyString("1234.png4", "PNG"))
+	fmt.Println(ContainsAnyString("1234.png1"))                              // false
+	fmt.Println(ContainsAnyString("1234.png2", "jpg", "jpeg", "gif"))        // false
+	fmt.Println(ContainsAnyString("1234.png3", "jpg", "jpeg", "gif", "png")) // true
+	fmt.Println(ContainsAnyString("1234.png4", "PNG"))                       // false
+}
+
+func TestEqualAnyString(t *testing.T) {
+	fmt.Println(EqualAnyString("1234.png1"))                                    // false
+	fmt.Println(EqualAnyString("1234.png2", "1234.png2", "jpeg", "gif"))        // true
+	fmt.Println(EqualAnyString("1234.png3", "1234.PNG3", "jpeg", "gif", "png")) // false
+	fmt.Println(EqualAnyString("1234.png4", "1234.png4"))                       // true
 }
 
 func TestEqualAnyFold(t *testing.T) {

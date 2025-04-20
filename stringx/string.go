@@ -40,6 +40,16 @@ func ContainsAnyString(s string, substrings ...string) bool {
 	return false
 }
 
+// EqualAnyString reports whether the string s equal any t.
+func EqualAnyString(s string, ts ...string) bool {
+	for _, t := range ts {
+		if s == t {
+			return true
+		}
+	}
+	return false
+}
+
 // EqualAnyFold tests whether the string s equal under simple Unicode case-folding
 func EqualAnyFold(s string, ts ...string) bool {
 	for _, t := range ts {
@@ -48,6 +58,21 @@ func EqualAnyFold(s string, ts ...string) bool {
 		}
 	}
 	return false
+}
+
+// ToString 函数用于将一个接口值转换为字符串类型。
+func ToString(i interface{}) string {
+	value, _ := i.(string)
+	return value
+}
+
+// DefaultIfEmpty 函数用于判断字符串是否为空或仅包含空白字符，如果是则返回默认字符串，否则返回原字符串。
+func DefaultIfEmpty(str, defaultStr string) string {
+	if str != "" && strings.TrimSpace(str) != "" {
+		return str
+	} else {
+		return defaultStr
+	}
 }
 
 // FirstToUpper First letter to upper case
