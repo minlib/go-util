@@ -129,12 +129,25 @@ func TestIntToString(t *testing.T) {
 }
 
 func TestStringToInt(t *testing.T) {
+	fmt.Println(StringToInt[int]([]string{"1", "2", "a"}))
+	fmt.Println(StringToInt[int]([]string{"1", ""}))
 	fmt.Println(StringToInt[int]([]string{"1", "2", "3"}))
 	fmt.Println(StringToInt[int8]([]string{"4", "5", "6"}))
 	fmt.Println(StringToInt[int16]([]string{"7", "8", "9"}))
 	fmt.Println(StringToInt[int32]([]string{"11", "12", "13"}))
 	fmt.Println(StringToInt[int64]([]string{"14", "15", "16"}))
 	fmt.Println(StringToInt[uint]([]string{"17", "18", "19"}))
+}
+
+func TestStringToInt64(t *testing.T) {
+	fmt.Println(StringToInt64([]string{"1", "2", "a"}))
+	fmt.Println(StringToInt64([]string{"1", ""}))
+	fmt.Println(StringToInt64([]string{"1", "2", "3"}))
+	fmt.Println(StringToInt64([]string{"4", "5", "6"}))
+	fmt.Println(StringToInt64([]string{"7", "8", "9"}))
+	fmt.Println(StringToInt64([]string{"11", "12", "13"}))
+	fmt.Println(StringToInt64([]string{"14", "15", "16"}))
+	fmt.Println(StringToInt64([]string{"17", "18", "19"}))
 }
 
 func TestExcludeEmpty(t *testing.T) {

@@ -171,49 +171,29 @@ func IntToString[S ~[]E, E constraints.Integer](s S) []string {
 // StringToInt 字符串切片转为整型切片，E为转换后的整型类型
 func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 	var res []E
+	var err error
 	for _, v := range s {
-		if val, err := strconv.Atoi(v); err != nil {
-			return nil, err
-		} else {
+		if val, e := strconv.Atoi(v); e == nil {
 			res = append(res, E(val))
+		} else if err == nil {
+			err = e
 		}
 	}
-	return res, nil
-}
-
-// StringToIntIgnoreError 字符串切片转为整型切片，E为转换后的整型类型，忽略错误
-func StringToIntIgnoreError[E constraints.Integer](s []string) []E {
-	var res []E
-	for _, v := range s {
-		if val, err := strconv.Atoi(v); err == nil {
-			res = append(res, E(val))
-		}
-	}
-	return res
+	return res, err
 }
 
 // StringToInt64 字符串切片转为整型切片，E为转换后的整型类型
 func StringToInt64(s []string) ([]int64, error) {
 	var res []int64
+	var err error
 	for _, v := range s {
-		if val, err := strconv.ParseInt(v, 10, 64); err != nil {
-			return nil, err
-		} else {
+		if val, e := strconv.ParseInt(v, 10, 64); e == nil {
 			res = append(res, val)
+		} else if err == nil {
+			err = e
 		}
 	}
-	return res, nil
-}
-
-// StringToInt64IgnoreError 字符串切片转为整型切片，E为转换后的整型类型
-func StringToInt64IgnoreError(s []string) []int64 {
-	var res []int64
-	for _, v := range s {
-		if val, err := strconv.ParseInt(v, 10, 64); err == nil {
-			res = append(res, val)
-		}
-	}
-	return res
+	return res, err
 }
 
 // ExcludeEmpty 移除字符串切片中的空字符串

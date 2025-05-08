@@ -290,18 +290,11 @@ func SplitToIntegers[E constraints.Integer](s, sep string) ([]E, error) {
 	return slicex.StringToInt[E](slice)
 }
 
-// SplitToIntegersIgnoreError slices s into all sub integers separated by sep and returns a slice of
+// SplitToInt64Slice slices s into all sub integers separated by sep and returns a slice of
 // // the sub integers between those separators.
-func SplitToIntegersIgnoreError[E constraints.Integer](s, sep string) []E {
+func SplitToInt64Slice(s, sep string) ([]int64, error) {
 	slice := strings.Split(s, sep)
-	return slicex.StringToIntIgnoreError[E](slice)
-}
-
-// SplitToInt64SliceIgnoreError slices s into all sub integers separated by sep and returns a slice of
-// // the sub integers between those separators.
-func SplitToInt64SliceIgnoreError(s, sep string) []int64 {
-	slice := strings.Split(s, sep)
-	return slicex.StringToInt64IgnoreError(slice)
+	return slicex.StringToInt64(slice)
 }
 
 // Join 拼接切片
