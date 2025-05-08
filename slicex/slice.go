@@ -162,8 +162,8 @@ func EqualIgnoreOrder[E constraints.Ordered](s1, s2 []E) bool {
 // IntToString 整型切片转为字符串切片
 func IntToString[S ~[]E, E constraints.Integer](s S) []string {
 	var res []string
-	for i := range s {
-		res = append(res, strconv.FormatInt(int64(s[i]), 10))
+	for _, v := range s {
+		res = append(res, strconv.FormatInt(int64(v), 10))
 	}
 	return res
 }
@@ -171,14 +171,49 @@ func IntToString[S ~[]E, E constraints.Integer](s S) []string {
 // StringToInt 字符串切片转为整型切片，E为转换后的整型类型
 func StringToInt[E constraints.Integer](s []string) ([]E, error) {
 	var res []E
-	for i := range s {
-		if val, err := strconv.Atoi(s[i]); err != nil {
+	for _, v := range s {
+		if val, err := strconv.Atoi(v); err != nil {
 			return nil, err
 		} else {
 			res = append(res, E(val))
 		}
 	}
 	return res, nil
+}
+
+// StringToIntIgnoreError 字符串切片转为整型切片，E为转换后的整型类型，忽略错误
+func StringToIntIgnoreError[E constraints.Integer](s []string) []E {
+	var res []E
+	for _, v := range s {
+		if val, err := strconv.Atoi(v); err == nil {
+			res = append(res, E(val))
+		}
+	}
+	return res
+}
+
+// StringToInt64 字符串切片转为整型切片，E为转换后的整型类型
+func StringToInt64(s []string) ([]int64, error) {
+	var res []int64
+	for _, v := range s {
+		if val, err := strconv.ParseInt(v, 10, 64); err != nil {
+			return nil, err
+		} else {
+			res = append(res, val)
+		}
+	}
+	return res, nil
+}
+
+// StringToInt64IgnoreError 字符串切片转为整型切片，E为转换后的整型类型
+func StringToInt64IgnoreError(s []string) []int64 {
+	var res []int64
+	for _, v := range s {
+		if val, err := strconv.ParseInt(v, 10, 64); err == nil {
+			res = append(res, val)
+		}
+	}
+	return res
 }
 
 // Int64PtrToInt64 converts a slice of int64 pointers to a slice of int64,

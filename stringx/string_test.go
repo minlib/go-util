@@ -185,9 +185,30 @@ func TestIsNoneBlank(t *testing.T) {
 }
 
 func TestSplitToIntegers(t *testing.T) {
+	printf(SplitToIntegers[int16]("aaa", ","))
+	printf(SplitToIntegers[int16]("1111,aaa", ","))
+	printf(SplitToIntegers[int16]("1111,222,333", ","))
 	printf(SplitToIntegers[int16]("1111,222,333", ","))
 	printf(SplitToIntegers[int32]("1111,222,333", ","))
 	printf(SplitToIntegers[int64]("1111,222,333", ","))
+	printf(SplitToIntegers[int64]("1111,222,,333", ","))
+}
+
+func TestSplitToIntegersIgnoreError(t *testing.T) {
+	fmt.Println(SplitToIntegersIgnoreError[int64]("aaa", ","))
+	fmt.Println(SplitToIntegersIgnoreError[int64]("1111,aaa", ","))
+	fmt.Println(SplitToIntegersIgnoreError[int64]("1111,222,333", ","))
+	fmt.Println(SplitToIntegersIgnoreError[int64]("1111,222,,333", ","))
+	fmt.Println(SplitToIntegersIgnoreError[int64]("1111,222,,333,", ","))
+}
+
+func TestSplitToInt64SliceIgnoreError(t *testing.T) {
+	fmt.Println(SplitToInt64SliceIgnoreError("aaa", ","))
+	fmt.Println(SplitToInt64SliceIgnoreError("1111", ","))
+	fmt.Println(SplitToInt64SliceIgnoreError("1111,aaa", ","))
+	fmt.Println(SplitToInt64SliceIgnoreError("1111,222,333", ","))
+	fmt.Println(SplitToInt64SliceIgnoreError("1111,222,,333", ","))
+	fmt.Println(SplitToInt64SliceIgnoreError("1111,222,,333,", ","))
 }
 
 func TestJoin(t *testing.T) {
