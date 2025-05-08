@@ -137,6 +137,14 @@ func TestStringToInt(t *testing.T) {
 	fmt.Println(StringToInt[uint]([]string{"17", "18", "19"}))
 }
 
+func TestExcludeEmpty(t *testing.T) {
+	fmt.Println(ExcludeEmpty(nil))
+	fmt.Println(ExcludeEmpty([]string{""}))
+	fmt.Println(ExcludeEmpty([]string{"a"}))
+	fmt.Println(ExcludeEmpty([]string{"a", "b", "1"}))
+	fmt.Println(ExcludeEmpty([]string{"a", "b", "1", ""}))
+}
+
 type Model struct {
 	id   int
 	name string

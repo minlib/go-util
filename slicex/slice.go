@@ -216,6 +216,17 @@ func StringToInt64IgnoreError(s []string) []int64 {
 	return res
 }
 
+// ExcludeEmpty 移除字符串切片中的空字符串
+func ExcludeEmpty(elems []string) []string {
+	var result []string
+	for _, str := range elems {
+		if str != "" {
+			result = append(result, str)
+		}
+	}
+	return result
+}
+
 // Int64PtrToInt64 converts a slice of int64 pointers to a slice of int64,
 // excluding nil values.
 func Int64PtrToInt64(s []*int64) []int64 {
