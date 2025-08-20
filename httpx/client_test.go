@@ -2,9 +2,10 @@ package httpx
 
 import (
 	"fmt"
-	"testing"
-
+	"github.com/minlib/go-util/convert"
 	"github.com/minlib/go-util/jsonx"
+	"testing"
+	"time"
 )
 
 func TestGet(t *testing.T) {
@@ -36,4 +37,19 @@ func TestPostForm(t *testing.T) {
 	} else {
 		fmt.Println(resp)
 	}
+}
+
+func TestPostFormNew(t *testing.T) {
+	client := NewHttpClient(3 * time.Second)
+	requestUrl := "https://ym28.sydiaoke.cn/api/company/getCompany"
+	data := map[string]string{
+		"keyword": "腾讯",
+		"page":    convert.IntToString(1),
+	}
+	headers := map[string]string{
+		"token":        "2d92f38d-e4b6-46a3-980b-26f234f68d49",
+		"Content-Type": "application/json; charset=utf-8",
+	}
+	bytes, code, err := client.PostForm(requestUrl, headers, data)
+	fmt.Println(string(bytes), code, err)
 }
