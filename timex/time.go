@@ -97,21 +97,6 @@ func AddYear(t time.Time, years int) time.Time {
 	return t.AddDate(years, 0, 0)
 }
 
-// StartDateTime 当天的开始时间
-func StartDateTime(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local)
-}
-
-// EndDateTime 当天的结束时间
-func EndDateTime(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, time.Local)
-}
-
-// RangeDateTime 当天的开始与结束时间
-func RangeDateTime(t time.Time) (time.Time, time.Time) {
-	return StartDateTime(t), EndDateTime(t)
-}
-
 func UnixFormat(t time.Time) string {
 	return time.Unix(t.Unix(), 0).Format("2006-01-02 15:04:05")
 }
@@ -122,26 +107,6 @@ func UnixMilliFormat(t time.Time) string {
 
 func UnixMicroFormat(t time.Time) string {
 	return time.UnixMicro(t.UnixMicro()).Format("2006-01-02 15:04:05.000000")
-}
-
-// BetweenDays 获取2个日期的涉及天数
-func BetweenDays(startTime, endTime time.Time) int {
-	if startTime.After(endTime) {
-		return 0
-	}
-	start := time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC)
-	end := time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 0, 0, 0, 0, time.UTC)
-	duration := end.Sub(start)
-	return int(duration.Hours()/24) + 1
-}
-
-// SubDays 获取2个日期的相差天数
-func SubDays(startTime, endTime time.Time) int {
-	duration := endTime.Sub(startTime)
-	if duration < 0 {
-		return 0
-	}
-	return int(duration.Hours() / 24)
 }
 
 // ToBeijingTime 转成北京时间
@@ -164,38 +129,4 @@ func ToDateTime(t *time.Time) *core.DateTime {
 		return nil
 	}
 	return core.NewDateTime(*t)
-}
-
-// GetIntervalTime calculates the duration between startTime and endTime. (startTime-endTime)
-// It returns the duration as a time.Duration object and a string representation of the duration.
-func GetIntervalTime(startTime time.Time, endTime time.Time) (time.Duration, string) {
-	duration := endTime.Sub(startTime)
-	if duration <= 0 {
-		return duration, ""
-	}
-	days := int(duration.Hours() / 24)
-	years := days / 365
-	if years > 0 {
-		return duration, strconv.Itoa(years) + "年"
-	}
-	months := days / 30
-	if months > 0 {
-		return duration, strconv.Itoa(months) + "个月"
-	}
-	if days > 0 {
-		return duration, strconv.Itoa(days) + "天"
-	}
-	hours := int(duration.Hours())
-	if hours > 0 {
-		return duration, strconv.Itoa(hours) + "小时"
-	}
-	minutes := int(duration.Minutes())
-	if minutes > 0 {
-		return duration, strconv.Itoa(minutes) + "分钟"
-	}
-	seconds := int(duration.Seconds())
-	if seconds > 0 {
-		return duration, strconv.Itoa(seconds) + "秒"
-	}
-	return duration, ""
 }
