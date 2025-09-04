@@ -15,6 +15,25 @@ func ContainsKey[M ~map[K]V, K comparable, V any](m M, k K) bool {
 	return found
 }
 
+// RemoveKeys 批量移除map中的指定key
+// 参数:
+//
+//	m: 要操作的map，允许为nil（此时无操作）
+//	keys: 要移除的key列表
+//
+// 注意:
+//  1. 会直接修改原map，而非返回新map
+//  2. 对于不存在的key会自动忽略
+//  3. 支持任意可比较类型的key和任意值类型的map
+func RemoveKeys[M ~map[K]V, K comparable, V any](m M, keys ...K) {
+	if m == nil {
+		return
+	}
+	for _, key := range keys {
+		delete(m, key)
+	}
+}
+
 // Get 通用获取函数，返回原始值和是否存在的标志
 // 用于需要处理更复杂类型的场景
 func Get(m map[string]interface{}, key string) (interface{}, bool) {

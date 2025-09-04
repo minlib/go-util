@@ -369,3 +369,108 @@ func almostEqual(a, b float64) bool {
 	}
 	return diff < epsilon
 }
+
+// TestRemoveKeys 测试批量移除map中指定key的功能
+func TestRemoveKeys(t *testing.T) {
+	testCases := []struct {
+		name           string
+		inputMap       map[string]interface{}
+		keysToRemove   []string
+		expectedResult map[string]interface{}
+	}{
+		{
+			name: "正常情况：移除多个存在的键",
+			inputMap: map[string]interface{}{
+				"name":  "test",
+				"age":   18,
+				"money": 9999,
+				"value": []string{"A", "B", "C"},
+			},
+			keysToRemove: []string{"name", "age", "money"},
+			expectedResult: map[string]interface{}{
+				"value": []string{"A", "B", "C"},
+			},
+		},
+		{
+			name:           "空map：移除键",
+			inputMap:       map[string]interface{}{},
+			keysToRemove:   []string{"name", "age"},
+			expectedResult: map[string]interface{}{},
+		},
+		{
+			name: "移除不存在的键",
+			inputMap: map[string]interface{}{
+				"test": "value",
+			},
+			keysToRemove: []string{"nonexistent"},
+			expectedResult: map[string]interface{}{
+				"test": "value",
+			},
+		},
+		{
+			name: "不移除任何键",
+			inputMap: map[string]interface{}{
+				"a": 1,
+				"b": 2,
+			},
+			keysToRemove: []string{},
+			expectedResult: map[string]interface{}{
+				"a": 1,
+				"b": 2,
+			},
+		},
+		{
+			name: "移除所有键",
+			inputMap: map[string]interface{}{
+				"x": "foo",
+				"y": "bar",
+			},
+			keysToRemove:   []string{"x", "y"},
+			expectedResult: map[string]interface{}{},
+		},
+		{
+			name: "混合存在和不存在的键",
+			inputMap: map[string]interface{}{
+				"one":   1,
+				"two":   2,
+				"three": 3,
+			},
+			keysToRemove: []string{"two", "four"},
+			expectedResult: map[string]interface{}{
+				"one":   1,
+				"three": 3,
+			},
+		},
+	}
+
+	// 执行测试用例
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// 创建输入map的拷贝，避免测试用例间相互影响
+			inputCopy := make(map[string]interface{})
+			for k, v := range tc.inputMap {
+				inputCopy[k] = v
+			}
+
+			// 执行待测试函数
+			RemoveKeys(inputCopy, tc.keysToRemove...)
+
+			// 使用反射包进行深度比较
+			if !reflect.DeepEqual(inputCopy, tc.expectedResult) {
+				t.Errorf("测试用例 %q 失败:\n预期结果: %v\n实际结果: %v", tc.name, tc.expectedResult, inputCopy)
+			}
+		})
+	}
+
+	// 测试nil map特殊情况
+	t.Run("nil map：移除键", func(t *testing.T) {
+		var data map[string]interface{} // nil map
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("测试用例 %q 失败: 处理nil map时发生恐慌: %v", t.Name(), r)
+			}
+		}()
+
+		RemoveKeys(data, "name")
+	})
+}
