@@ -7,12 +7,12 @@ import (
 )
 
 type intModel struct {
-	Id Int
+	Id Integer
 }
 
-func TestInt_MarshalJSON(t *testing.T) {
+func TestInteger_MarshalJSON(t *testing.T) {
 	intModel1 := &intModel{
-		Id: NewInt(1),
+		Id: NewInteger(1),
 	}
 	byte1, _ := json.Marshal(intModel1)
 	fmt.Println(string(byte1))
@@ -21,7 +21,7 @@ func TestInt_MarshalJSON(t *testing.T) {
 	}
 
 	intModel2 := &intModel{
-		Id: NewInt(0),
+		Id: NewInteger(0),
 	}
 	byte2, _ := json.Marshal(intModel2)
 	fmt.Println(string(byte2))
@@ -52,8 +52,7 @@ func TestInt_MarshalJSON(t *testing.T) {
 
 }
 
-func TestInt_UnmarshalJSON(t *testing.T) {
-
+func TestInteger_UnmarshalJSON(t *testing.T) {
 	json1 := `{"Id":"0"}`
 	intModel1 := &intModel{}
 	json.Unmarshal([]byte(json1), &intModel1)
@@ -112,8 +111,8 @@ func TestInt_UnmarshalJSON(t *testing.T) {
 
 }
 
-func TestIntSlice_MarshalJSON(t *testing.T) {
-	s1 := []Int{{nil}, NewInt(0), NewInt(11111), NewInt(22222)}
+func TestIntegerSlice_MarshalJSON(t *testing.T) {
+	s1 := []Integer{{nil}, NewInteger(0), NewInteger(11111), NewInteger(22222)}
 	byte1, _ := json.Marshal(&s1)
 	fmt.Println(string(byte1))
 	want1 := `[null,0,11111,22222]`
@@ -122,10 +121,9 @@ func TestIntSlice_MarshalJSON(t *testing.T) {
 	}
 }
 
-func TestIntSlice_UnmarshalJSON(t *testing.T) {
-
+func TestIntegerSlice_UnmarshalJSON(t *testing.T) {
 	json1 := `["",null,"null","0","100"]`
-	var s1 []Int
+	var s1 []Integer
 	json.Unmarshal([]byte(json1), &s1)
 	fmt.Println(s1)
 	if s1[0].Int32 != nil {

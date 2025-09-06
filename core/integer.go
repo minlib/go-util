@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-type Int struct {
+type Integer struct {
 	Int32 *int32
 }
 
-// NewInt returns a new Int
-func NewInt[E constraints.Integer](value E) Int {
+// NewInteger returns a new Integer
+func NewInteger[E constraints.Integer](value E) Integer {
 	v := int32(value)
-	return Int{Int32: &v}
+	return Integer{Int32: &v}
 }
 
 // Int32Def 获取值
-func (l Int) Int32Def() int32 {
+func (l Integer) Int32Def() int32 {
 	if l.Int32 == nil {
 		return 0
 	} else {
@@ -28,24 +28,24 @@ func (l Int) Int32Def() int32 {
 }
 
 // Scan implements the Scanner interface.
-func (l *Int) Scan(value interface{}) error {
+func (l *Integer) Scan(value interface{}) error {
 	// if value == nil {
 	// 	*l = NewInt(0)
 	// 	return nil
 	// }
 	switch v := value.(type) {
 	case int32:
-		*l = NewInt(v)
+		*l = NewInteger(v)
 		return nil
 	case int:
-		*l = NewInt(v)
+		*l = NewInteger(v)
 		return nil
 	case []byte:
 		i, err := strconv.ParseInt(string(v), 10, 64)
 		if err != nil {
 			return err
 		}
-		*l = NewInt(i)
+		*l = NewInteger(i)
 		return nil
 	default:
 		// fmt.Printf("---- %v.%T\n", v, v)
@@ -54,7 +54,7 @@ func (l *Int) Scan(value interface{}) error {
 }
 
 // Value implements the driver Valuer interface.
-func (l Int) Value() (driver.Value, error) {
+func (l Integer) Value() (driver.Value, error) {
 	if l.Int32 != nil {
 		return *l.Int32, nil
 	} else {
@@ -63,7 +63,7 @@ func (l Int) Value() (driver.Value, error) {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (l Int) MarshalJSON() ([]byte, error) {
+func (l Integer) MarshalJSON() ([]byte, error) {
 	if l.Int32 != nil {
 		return []byte(fmt.Sprintf(`%v`, *l.Int32)), nil
 	} else {
@@ -72,7 +72,7 @@ func (l Int) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
-func (l *Int) UnmarshalJSON(data []byte) error {
+func (l *Integer) UnmarshalJSON(data []byte) error {
 	str := string(data)
 	str = strings.Trim(str, "\"")
 	str = strings.Trim(str, " ")
