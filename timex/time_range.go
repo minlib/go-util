@@ -21,6 +21,11 @@ func EndDateTime(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, time.Local)
 }
 
+// EndNanoSecond 当前时间的结束时间（纳秒为最大值）
+func EndNanoSecond(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 999999999, time.Local)
+}
+
 // RangeDateTime 当天的开始与结束时间
 func RangeDateTime(t time.Time) (time.Time, time.Time) {
 	return StartDateTime(t), EndDateTime(t)

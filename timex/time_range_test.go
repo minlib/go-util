@@ -10,6 +10,7 @@ func TestRangeDateTime(t *testing.T) {
 	dt, _ := ParseDateTime("2024-10-05 22:10:56")
 	fmt.Println(StartDateTime(dt)) // 2022-10-05 00:00:00 +0800 CST
 	fmt.Println(EndDateTime(dt))   // 2022-10-05 23:59:59.999999999 +0800 CST
+	fmt.Println(EndNanoSecond(dt)) // 2024-10-05 22:10:56.999999999 +0800 CST
 	fmt.Println(RangeDateTime(dt)) // 2022-10-05 00:00:00 +0800 CST  2022-10-05 23:59:59.999999999 +0800 CST
 }
 
