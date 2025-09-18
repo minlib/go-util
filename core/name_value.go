@@ -43,3 +43,16 @@ func (t *NameValueSlice) GetValues() []string {
 	}
 	return values
 }
+
+// GetValueByName 通过名称获取值
+func (t *NameValueSlice) GetValueByName(name string) (string, bool) {
+	if t == nil {
+		return "", false
+	}
+	for _, nv := range *t {
+		if nv.Name == name {
+			return nv.Value, true
+		}
+	}
+	return "", false
+}

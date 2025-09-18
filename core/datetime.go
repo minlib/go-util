@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	formatDateTime = "2006-01-02 15:04:05"
+	FormatDateTime = "2006-01-02 15:04:05"
 )
 
 type DateTime struct {
@@ -52,7 +52,7 @@ func (t DateTime) MarshalJSON() ([]byte, error) {
 	if t.Time.Unix() == zeroTime.Unix() {
 		return []byte("null"), nil
 	} else {
-		formatted := fmt.Sprintf("\"%s\"", t.Format(formatDateTime))
+		formatted := fmt.Sprintf("\"%s\"", t.Format(FormatDateTime))
 		return []byte(formatted), nil
 	}
 }
@@ -64,13 +64,10 @@ func (t *DateTime) UnmarshalJSON(data []byte) error {
 	}
 	// Fractional seconds are handled implicitly by Parse.
 	var err error
-	(*t).Time, err = time.ParseInLocation(`"`+formatDateTime+`"`, string(data), time.Local)
+	(*t).Time, err = time.ParseInLocation(`"`+FormatDateTime+`"`, string(data), time.Local)
 	return err
 }
 
-func (t *DateTime) String() string {
-	if t == nil {
-		return ""
-	}
-	return t.Format(formatDateTime)
+func (t DateTime) String() string {
+	return t.Format(FormatDateTime)
 }

@@ -44,3 +44,17 @@ func Test_Unmarshal(t *testing.T) {
 	var list3 NameValueSlice
 	_ = json.Unmarshal(nil, &list3)
 }
+
+func Test_GetValueByName(t *testing.T) {
+	var list NameValueSlice
+	list = append(list, NameValue{
+		Name:  "张三",
+		Value: "18",
+	})
+	list = append(list, NameValue{
+		Name:  "李四",
+		Value: "22",
+	})
+	value, ok := list.GetValueByName("张三")
+	fmt.Println(value, ok)
+}
