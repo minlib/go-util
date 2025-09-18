@@ -154,3 +154,22 @@ func NewPointer(targetFieldValue reflect.Value) reflect.Value {
 func New[E any](e E) *E {
 	return &e
 }
+
+// GetRealValue 获取reflect.Value的原始值（处理bool、int、float等类型）
+func GetRealValue(val reflect.Value) interface{} {
+	switch val.Kind() {
+	case reflect.Bool:
+		return val.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return val.Int()
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return val.Uint()
+	case reflect.Float32, reflect.Float64:
+		return val.Float()
+	case reflect.String:
+		return val.String()
+	default:
+		// 复杂类型（如struct）：返回其Interface()（需确保该类型支持序列化）
+		return val.Interface()
+	}
+}

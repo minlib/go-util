@@ -17,6 +17,10 @@ func TestDateTime_Scan(t1 *testing.T) {
 	cstTime := utcTime.In(loc)
 	fmt.Println(cstTime)
 
+	type testModel struct {
+		T *DateTime
+	}
+
 	x := testModel{
 		T: NewDateTime(time.Now()),
 	}
@@ -28,6 +32,12 @@ func TestDateTime_Scan(t1 *testing.T) {
 	fmt.Println(y)
 }
 
-type testModel struct {
-	T *DateTime
+func TestDateTimeString(t *testing.T) {
+	fmt.Println(NewDateTime(time.Now()))
+	fmt.Println(NewDateTime(time.Now()).String())
+	fmt.Printf("%v\n", NewDateTime(time.Now()))
+	fmt.Printf("%s\n", NewDateTime(time.Now()))
+	var date *DateTime
+	fmt.Println(date)
+	fmt.Println(date.String())
 }

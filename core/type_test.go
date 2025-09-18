@@ -360,7 +360,7 @@ func TestDecimalValueFunctions(t *testing.T) {
 			t.Errorf("DecimalValue(&d) 预期 %v，实际 %v", d, got)
 		}
 		// 测试nil时返回零值
-		zero := decimal.Decimal{}
+		zero := decimal.Zero
 		if got := DecimalValue(nil); got != zero {
 			t.Errorf("DecimalValue(nil) 预期零值 %v，实际 %v", zero, got)
 		}

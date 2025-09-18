@@ -19,60 +19,55 @@ func NewInteger[E constraints.Integer](value E) Integer {
 }
 
 // Int32Def 获取值
-func (l Integer) Int32Def() int32 {
-	if l.Int32 == nil {
+func (i Integer) Int32Def() int32 {
+	if i.Int32 == nil {
 		return 0
 	} else {
-		return *l.Int32
+		return *i.Int32
 	}
 }
 
 // Scan implements the Scanner interface.
-func (l *Integer) Scan(value interface{}) error {
-	// if value == nil {
-	// 	*l = NewInt(0)
-	// 	return nil
-	// }
+func (i *Integer) Scan(value interface{}) error {
 	switch v := value.(type) {
 	case int32:
-		*l = NewInteger(v)
+		*i = NewInteger(v)
 		return nil
 	case int:
-		*l = NewInteger(v)
+		*i = NewInteger(v)
 		return nil
 	case []byte:
-		i, err := strconv.ParseInt(string(v), 10, 64)
+		val, err := strconv.ParseInt(string(v), 10, 64)
 		if err != nil {
 			return err
 		}
-		*l = NewInteger(i)
+		*i = NewInteger(val)
 		return nil
 	default:
-		// fmt.Printf("---- %v.%T\n", v, v)
 		return nil
 	}
 }
 
 // Value implements the driver Valuer interface.
-func (l Integer) Value() (driver.Value, error) {
-	if l.Int32 != nil {
-		return *l.Int32, nil
+func (i Integer) Value() (driver.Value, error) {
+	if i.Int32 != nil {
+		return *i.Int32, nil
 	} else {
 		return nil, nil
 	}
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (l Integer) MarshalJSON() ([]byte, error) {
-	if l.Int32 != nil {
-		return []byte(fmt.Sprintf(`%v`, *l.Int32)), nil
+func (i Integer) MarshalJSON() ([]byte, error) {
+	if i.Int32 != nil {
+		return []byte(fmt.Sprintf(`%v`, *i.Int32)), nil
 	} else {
 		return []byte("null"), nil
 	}
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
-func (l *Integer) UnmarshalJSON(data []byte) error {
+func (i *Integer) UnmarshalJSON(data []byte) error {
 	str := string(data)
 	str = strings.Trim(str, "\"")
 	str = strings.Trim(str, " ")
@@ -86,6 +81,13 @@ func (l *Integer) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v := int32(value)
-	l.Int32 = &v
+	i.Int32 = &v
 	return nil
+}
+
+func (i Integer) String() string {
+	if i.Int32 == nil {
+		return ""
+	}
+	return strconv.FormatInt(int64(*i.Int32), 10)
 }

@@ -150,3 +150,13 @@ func TestIntegerSlice_UnmarshalJSON(t *testing.T) {
 	byte1, _ := json.Marshal(&s1)
 	fmt.Println(string(byte1))
 }
+
+func TestIntegerString(t *testing.T) {
+	fmt.Println(NewInteger(12345678))
+	fmt.Println(NewInteger(12345678).String())
+	fmt.Printf("%v\n", NewInteger(12345678))
+	fmt.Printf("%s\n", NewInteger(12345678))
+	var value Integer
+	fmt.Println(value)
+	fmt.Println(value.String())
+}

@@ -3,10 +3,9 @@ package core
 import (
 	"database/sql/driver"
 	"fmt"
+	"golang.org/x/exp/constraints"
 	"strconv"
 	"strings"
-
-	"golang.org/x/exp/constraints"
 )
 
 type Long struct {
@@ -88,4 +87,11 @@ func (l *Long) UnmarshalJSON(data []byte) error {
 	}
 	l.Int64 = &value
 	return nil
+}
+
+func (l Long) String() string {
+	if l.Int64 == nil {
+		return ""
+	}
+	return strconv.FormatInt(*l.Int64, 10)
 }

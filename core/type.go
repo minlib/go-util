@@ -64,10 +64,7 @@ func Decimal(d decimal.Decimal) *decimal.Decimal {
 
 // StringValue 从*string获取值，为nil时返回空字符串
 func StringValue(s *string) string {
-	if s == nil {
-		return ""
-	}
-	return *s
+	return StringValueOrDefault(s, "")
 }
 
 // StringValueOrDefault 从*string获取值，为nil时返回默认值
@@ -80,10 +77,7 @@ func StringValueOrDefault(s *string, defaultValue string) string {
 
 // BoolValue 从*bool获取值，为nil时返回false
 func BoolValue(b *bool) bool {
-	if b == nil {
-		return false
-	}
-	return *b
+	return BoolValueOrDefault(b, false)
 }
 
 // BoolValueOrDefault 从*bool获取值，为nil时返回默认值
@@ -96,10 +90,7 @@ func BoolValueOrDefault(b *bool, defaultValue bool) bool {
 
 // Float64Value 从*float64获取值，为nil时返回0
 func Float64Value(f *float64) float64 {
-	if f == nil {
-		return 0
-	}
-	return *f
+	return Float64ValueOrDefault(f, 0)
 }
 
 // Float64ValueOrDefault 从*float64获取值，为nil时返回默认值
@@ -112,10 +103,7 @@ func Float64ValueOrDefault(f *float64, defaultValue float64) float64 {
 
 // Float32Value 从*float32获取值，为nil时返回0
 func Float32Value(f *float32) float32 {
-	if f == nil {
-		return 0
-	}
-	return *f
+	return Float32ValueOrDefault(f, 0)
 }
 
 // Float32ValueOrDefault 从*float32获取值，为nil时返回默认值
@@ -128,10 +116,7 @@ func Float32ValueOrDefault(f *float32, defaultValue float32) float32 {
 
 // Int64Value 从*int64获取值，为nil时返回0
 func Int64Value(i *int64) int64 {
-	if i == nil {
-		return 0
-	}
-	return *i
+	return Int64ValueOrDefault(i, 0)
 }
 
 // Int64ValueOrDefault 从*int64获取值，为nil时返回默认值
@@ -144,10 +129,7 @@ func Int64ValueOrDefault(i *int64, defaultValue int64) int64 {
 
 // Int32Value 从*int32获取值，为nil时返回0
 func Int32Value(i *int32) int32 {
-	if i == nil {
-		return 0
-	}
-	return *i
+	return Int32ValueOrDefault(i, 0)
 }
 
 // Int32ValueOrDefault 从*int32获取值，为nil时返回默认值
@@ -160,10 +142,7 @@ func Int32ValueOrDefault(i *int32, defaultValue int32) int32 {
 
 // Int16Value 从*int16获取值，为nil时返回0
 func Int16Value(i *int16) int16 {
-	if i == nil {
-		return 0
-	}
-	return *i
+	return Int16ValueOrDefault(i, 0)
 }
 
 // Int16ValueOrDefault 从*int16获取值，为nil时返回默认值
@@ -176,10 +155,7 @@ func Int16ValueOrDefault(i *int16, defaultValue int16) int16 {
 
 // Int8Value 从*int8获取值，为nil时返回0
 func Int8Value(i *int8) int8 {
-	if i == nil {
-		return 0
-	}
-	return *i
+	return Int8ValueOrDefault(i, 0)
 }
 
 // Int8ValueOrDefault 从*int8获取值，为nil时返回默认值
@@ -192,10 +168,7 @@ func Int8ValueOrDefault(i *int8, defaultValue int8) int8 {
 
 // IntValue 从*int获取值，为nil时返回0
 func IntValue(i *int) int {
-	if i == nil {
-		return 0
-	}
-	return *i
+	return IntValueOrDefault(i, 0)
 }
 
 // IntValueOrDefault 从*int获取值，为nil时返回默认值
@@ -208,10 +181,7 @@ func IntValueOrDefault(i *int, defaultValue int) int {
 
 // DecimalValue 从*decimal.Decimal获取值，为nil时返回零值
 func DecimalValue(d *decimal.Decimal) decimal.Decimal {
-	if d == nil {
-		return decimal.Decimal{}
-	}
-	return *d
+	return DecimalValueOrDefault(d, decimal.Zero)
 }
 
 // DecimalValueOrDefault 从*decimal.Decimal获取值，为nil时返回默认值
@@ -220,4 +190,30 @@ func DecimalValueOrDefault(d *decimal.Decimal, defaultValue decimal.Decimal) dec
 		return defaultValue
 	}
 	return *d
+}
+
+// IntegerValue 从Integer获取值，为nil时返回零值
+func IntegerValue(value Integer) int32 {
+	return IntegerValueOrDefault(value, 0)
+}
+
+// IntegerValueOrDefault 从Integer获取值，为nil时返回默认值
+func IntegerValueOrDefault(value Integer, defaultValue int32) int32 {
+	if value.Int32 == nil {
+		return defaultValue
+	}
+	return *value.Int32
+}
+
+// LongValue 从Long获取值，为nil时返回零值
+func LongValue(value Long) int64 {
+	return LongValueOrDefault(value, 0)
+}
+
+// LongValueOrDefault 从Long获取值，为nil时返回默认值
+func LongValueOrDefault(value Long, defaultValue int64) int64 {
+	if value.Int64 == nil {
+		return defaultValue
+	}
+	return *value.Int64
 }

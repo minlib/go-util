@@ -67,3 +67,10 @@ func (t *DateTime) UnmarshalJSON(data []byte) error {
 	(*t).Time, err = time.ParseInLocation(`"`+formatDateTime+`"`, string(data), time.Local)
 	return err
 }
+
+func (t *DateTime) String() string {
+	if t == nil {
+		return ""
+	}
+	return t.Format(formatDateTime)
+}

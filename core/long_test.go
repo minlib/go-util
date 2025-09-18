@@ -151,3 +151,13 @@ func TestLongSlice_UnmarshalJSON(t *testing.T) {
 	byte1, _ := json.Marshal(&s1)
 	fmt.Println(string(byte1))
 }
+
+func TestLongString(t *testing.T) {
+	fmt.Println(NewLong(123456789101112))
+	fmt.Println(NewLong(123456789101112).String())
+	fmt.Printf("%v\n", NewLong(123456789101112))
+	fmt.Printf("%s\n", NewLong(123456789101112))
+	var value Long
+	fmt.Println(value)
+	fmt.Println(value.String())
+}
