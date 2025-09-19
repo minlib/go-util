@@ -71,4 +71,15 @@ func Test_String(t *testing.T) {
 	})
 	fmt.Println(list)
 	fmt.Println(list.String())
+
+	var list2 NameValueSlice
+	fmt.Println(list2)
+	fmt.Println(list2.String())
+
+	var list3 = &list
+	fmt.Println(list3)
+	fmt.Println(list3.String())
+
+	var list4 *NameValueSlice
+	fmt.Println(list4)
 }
