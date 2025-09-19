@@ -58,3 +58,17 @@ func Test_GetValueByName(t *testing.T) {
 	value, ok := list.GetValueByName("张三")
 	fmt.Println(value, ok)
 }
+
+func Test_String(t *testing.T) {
+	var list NameValueSlice
+	list = append(list, NameValue{
+		Name:  "张三",
+		Value: "18",
+	})
+	list = append(list, NameValue{
+		Name:  "李四",
+		Value: "22",
+	})
+	fmt.Println(list)
+	fmt.Println(list.String())
+}

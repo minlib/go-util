@@ -3,6 +3,7 @@ package core
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"strings"
 )
 
 type NameValue struct {
@@ -13,20 +14,20 @@ type NameValue struct {
 type NameValueSlice []NameValue
 
 // Scan implements the Scanner interface.
-func (t *NameValueSlice) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &t)
+func (s *NameValueSlice) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &s)
 }
 
 // Value implements the driver Valuer interface.
-func (t *NameValueSlice) Value() (driver.Value, error) {
-	return json.Marshal(t)
+func (s *NameValueSlice) Value() (driver.Value, error) {
+	return json.Marshal(s)
 }
 
 // GetNames get name list
-func (t *NameValueSlice) GetNames() []string {
+func (s *NameValueSlice) GetNames() []string {
 	var names []string
-	if t != nil {
-		for _, v := range *t {
+	if s != nil {
+		for _, v := range *s {
 			names = append(names, v.Name)
 		}
 	}
@@ -34,10 +35,10 @@ func (t *NameValueSlice) GetNames() []string {
 }
 
 // GetValues get value list
-func (t *NameValueSlice) GetValues() []string {
+func (s *NameValueSlice) GetValues() []string {
 	var values []string
-	if t != nil {
-		for _, v := range *t {
+	if s != nil {
+		for _, v := range *s {
 			values = append(values, v.Value)
 		}
 	}
@@ -45,14 +46,22 @@ func (t *NameValueSlice) GetValues() []string {
 }
 
 // GetValueByName 通过名称获取值
-func (t *NameValueSlice) GetValueByName(name string) (string, bool) {
-	if t == nil {
+func (s *NameValueSlice) GetValueByName(name string) (string, bool) {
+	if s == nil {
 		return "", false
 	}
-	for _, nv := range *t {
+	for _, nv := range *s {
 		if nv.Name == name {
 			return nv.Value, true
 		}
 	}
 	return "", false
+}
+
+func (s NameValueSlice) String() string {
+	var values []string
+	for _, v := range s {
+		values = append(values, v.Name+":"+v.Value)
+	}
+	return "[" + strings.Join(values, ",") + "]"
 }
