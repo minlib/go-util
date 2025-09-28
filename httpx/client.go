@@ -26,15 +26,15 @@ func NewHttpClient(timeout time.Duration) *HttpClient {
 	}
 }
 
-// Get 发送GET请求
-func (c *HttpClient) Get(requestUrl string, headers map[string]string) ([]byte, int, error) {
-	req, err := http.NewRequest(http.MethodGet, requestUrl, nil)
+// Request 发送请求
+func (c *HttpClient) Request(method, requestUrl string, headers map[string]string, body io.Reader) ([]byte, int, error) {
+	req, err := http.NewRequest(method, requestUrl, body)
 	if err != nil {
 		return nil, 0, fmt.Errorf("创建请求失败: %w", err)
 	}
 	// 添加自定义Header
-	for k, v := range headers {
-		req.Header.Set(k, v)
+	for key, value := range headers {
+		req.Header.Set(key, value)
 	}
 	// 发送请求
 	resp, err := c.client.Do(req)
@@ -49,31 +49,23 @@ func (c *HttpClient) Get(requestUrl string, headers map[string]string) ([]byte, 
 	return bytes, resp.StatusCode, nil
 }
 
+// Get 发送GET请求
+func (c *HttpClient) Get(requestUrl string, headers map[string]string) ([]byte, int, error) {
+	return c.Request(http.MethodGet, requestUrl, headers, nil)
+}
+
 // Post 发送POST请求
 func (c *HttpClient) Post(requestUrl string, headers map[string]string, data interface{}) ([]byte, int, error) {
 	jsonBody, err := json.Marshal(data)
 	if err != nil {
 		return nil, 0, fmt.Errorf("JSON序列化失败: %w", err)
 	}
-	req, err := http.NewRequest(http.MethodPost, requestUrl, bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return nil, 0, fmt.Errorf("创建请求失败: %w", err)
+	body := bytes.NewBuffer(jsonBody)
+	if headers == nil {
+		headers = make(map[string]string)
 	}
-	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-	// 添加自定义Header
-	for key, value := range headers {
-		req.Header.Set(key, value)
-	}
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, 0, fmt.Errorf("发送请求失败: %w", err)
-	}
-	defer resp.Body.Close()
-	bytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, fmt.Errorf("读取响应体失败: %w", err)
-	}
-	return bytes, resp.StatusCode, nil
+	headers["Content-Type"] = "application/json; charset=utf-8"
+	return c.Request(http.MethodPost, requestUrl, headers, body)
 }
 
 // PostForm 发送POST表单请求
@@ -82,25 +74,12 @@ func (c *HttpClient) PostForm(requestUrl string, headers map[string]string, data
 	for key, value := range data {
 		values.Set(key, value)
 	}
-	req, err := http.NewRequest(http.MethodPost, requestUrl, strings.NewReader(values.Encode()))
-	if err != nil {
-		return nil, 0, fmt.Errorf("创建请求失败: %w", err)
+	body := strings.NewReader(values.Encode())
+	if headers == nil {
+		headers = make(map[string]string)
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	// 添加自定义Header
-	for key, value := range headers {
-		req.Header.Set(key, value)
-	}
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, 0, fmt.Errorf("发送请求失败: %w", err)
-	}
-	defer resp.Body.Close()
-	bytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, fmt.Errorf("读取响应失败: %w", err)
-	}
-	return bytes, resp.StatusCode, nil
+	headers["Content-Type"] = "application/x-www-form-urlencoded"
+	return c.Request(http.MethodPost, requestUrl, headers, body)
 }
 
 func Get(url string) ([]byte, error) {
