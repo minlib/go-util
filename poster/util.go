@@ -1,6 +1,7 @@
 package poster
 
 import (
+	"github.com/fogleman/gg"
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
 	"github.com/minlib/go-util/colorx"
@@ -9,17 +10,47 @@ import (
 	"image/color"
 	"image/draw"
 	"os"
+	"strings"
 )
 
 // Text 文字
 type Text struct {
-	Content  string  //内容
-	FontPath string  //字体路径
-	Color    string  //颜色
-	Size     float64 //大小
-	X        int     //横坐标
-	Y        int     //纵坐标
+	Content  string  // 内容
+	FontPath string  // 字体路径
+	Color    string  // 颜色
+	Size     float64 // 大小
+	X        int     // 横坐标
+	Y        int     // 纵坐标
 }
+
+// MultiLineText 多行文字
+type MultiLineText struct {
+	Content     string    // 内容
+	FontPath    string    // 字体路径
+	Color       string    // 颜色
+	Size        float64   // 大小
+	X           float64   // 横坐标
+	Y           float64   // 纵坐标
+	AX          float64   // 水平锚点比例（0左，0.5中，1右）
+	AY          float64   // 垂直锚点比例（0上，0.5中，1下）
+	LineSpacing float64   // 行间距
+	Align       TextAlign // 对齐方式
+}
+
+// TextAlign 文本对齐方式
+type TextAlign int
+
+const (
+	AlignLeft   TextAlign = iota // 左对齐
+	AlignCenter                  // 居中对齐
+	AlignRight                   // 右对齐
+)
+
+const (
+	FlexStart  = 0.0
+	FlexCenter = 0.5
+	FlexEnd    = 1.0
+)
 
 // NewRGBA returns a new RGBA image with the given bounds.
 func NewRGBA(x0, y0, x1, y1 int) *image.RGBA {
@@ -64,6 +95,31 @@ func DrawText(canvas draw.Image, text *Text) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// DrawMultiLineText draw multi Line text
+func DrawMultiLineText(canvas draw.Image, text *MultiLineText) error {
+	// 获取图片的宽和高
+	srcBounds := canvas.Bounds()
+	width := srcBounds.Dx()
+	height := srcBounds.Dy()
+	ctx := gg.NewContext(width, height)
+	// 绘制背景图片
+	ctx.DrawImage(canvas, 0, 0)
+	ctx.SetHexColor(text.Color)
+	// 加载字体
+	if err := ctx.LoadFontFace(text.FontPath, text.Size); err != nil {
+		panic(err)
+	}
+	if strings.Contains(text.Content, "\n") {
+		w, _ := ctx.MeasureMultilineString(text.Content, text.LineSpacing)
+		ctx.DrawStringWrapped(text.Content, text.X, text.Y, text.AX, text.AY, w, text.LineSpacing, gg.Align(text.Align))
+	} else {
+		ctx.DrawStringAnchored(text.Content, text.X, text.Y, text.AX, text.AY)
+	}
+	// 将绘制结果合并回原始画布
+	draw.Draw(canvas, srcBounds, ctx.Image(), image.Point{}, draw.Over)
 	return nil
 }
 

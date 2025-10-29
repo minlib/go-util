@@ -3,6 +3,7 @@ module github.com/minlib/go-util
 go 1.23.1
 
 require (
+	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.6.0
 	github.com/minlib/go-terminal v1.0.8
