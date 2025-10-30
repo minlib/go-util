@@ -186,7 +186,6 @@ func TestGoodsPoster(t *testing.T) {
 		Content:  "马面裙 白色上衣红色织金妆花双工艺面料马面裙",
 		FontPath: "./assets/fzht.ttf",
 	}
-
 	// 绘制文字
 	textDraw5 := &TextDraw{
 		X:        30,
@@ -196,7 +195,6 @@ func TestGoodsPoster(t *testing.T) {
 		Content:  "100元",
 		FontPath: "./assets/fzht.ttf",
 	}
-
 	//// 绘制文字
 	//textDraw1 := &TextDraw{
 	//	X:        180,
@@ -223,4 +221,129 @@ func TestGoodsPoster(t *testing.T) {
 		return
 	}
 	fmt.Println("Success")
+}
+
+func TestMultiLineTextDraw(t *testing.T) {
+	templatePath := "./assets/white.png"
+	width, height, err := imagex.GetSize(templatePath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	start := &StartDraw{}
+	ctx := &Context{
+		Canvas: NewRGBA(0, 0, width, height),
+	}
+	// 绘制背景图
+	backgroundDraw := &ImageDraw{
+		X:    0,
+		Y:    0,
+		Path: templatePath,
+	}
+	// 绘制文字
+	textDraw1 := &TextDraw{
+		X:        132,
+		Y:        190,
+		Size:     28,
+		Color:    "#A5A6A8",
+		Content:  "Minzhan All Rights Reserved.",
+		FontPath: "./assets/fzht.ttf",
+	}
+	textDraw2 := &TextDraw{
+		X:        132,
+		Y:        236,
+		Size:     30,
+		Color:    "#A5A6A8",
+		Content:  "民站科技（深圳）有限公司",
+		FontPath: "./assets/fzht.ttf",
+	}
+	// 单行文本居左对齐
+	textDraw3 := &MultiLineTextDraw{
+		X:        20,
+		Y:        300,
+		AX:       FlexStart,
+		AY:       FlexCenter,
+		Size:     30,
+		Color:    "#999999",
+		Content:  "居左对齐",
+		FontPath: "./assets/fzht.ttf",
+	}
+	// 单行文本居中对齐
+	textDraw4 := &MultiLineTextDraw{
+		X:        float64(width / 2),
+		Y:        330,
+		AX:       FlexCenter,
+		AY:       FlexCenter,
+		Size:     30,
+		Color:    "#999999",
+		Content:  "居中对齐居中对齐居中对齐",
+		FontPath: "./assets/fzht.ttf",
+	}
+	// 单行文本居右对齐
+	textDraw5 := &MultiLineTextDraw{
+		X:        float64(width - 20),
+		Y:        360,
+		AX:       FlexEnd,
+		AY:       FlexCenter,
+		Size:     30,
+		Color:    "#999999",
+		Content:  "居右对齐",
+		FontPath: "./assets/fzht.ttf",
+	}
+	// 多行文本居左对齐
+	textDraw6 := &MultiLineTextDraw{
+		X:           20,
+		Y:           400,
+		AX:          FlexStart,
+		Size:        30,
+		Color:       "#FF0099",
+		Content:     "多行文本居左对齐\n第二行文本\n第三行文本",
+		FontPath:    "./assets/fzht.ttf",
+		LineSpacing: 2,
+		Align:       AlignLeft,
+	}
+	// 多行文本居中对齐
+	textDraw7 := &MultiLineTextDraw{
+		X:           float64(width / 2),
+		Y:           550,
+		AX:          FlexCenter,
+		Size:        30,
+		Color:       "#FF0099",
+		Content:     "多行文本居中对齐\n第二行文本\n第三行文本",
+		FontPath:    "./assets/fzht.ttf",
+		LineSpacing: 2,
+		Align:       AlignCenter,
+	}
+	// 多行文本居右对齐
+	textDraw8 := &MultiLineTextDraw{
+		X:           float64(width) - 20,
+		Y:           700,
+		AX:          FlexEnd,
+		Size:        30,
+		Color:       "#FF0099",
+		Content:     "多行文本居右对齐\n第二行文本\n第三行文本",
+		FontPath:    "./assets/fzht.ttf",
+		LineSpacing: 2,
+		Align:       AlignRight,
+	}
+	// 完成绘制，并导出图片
+	finishDraw := &FinishDraw{
+		Output: getOutputPath(),
+	}
+	start.
+		SetNext(backgroundDraw).
+		SetNext(textDraw1).
+		SetNext(textDraw2).
+		SetNext(textDraw3).
+		SetNext(textDraw4).
+		SetNext(textDraw5).
+		SetNext(textDraw6).
+		SetNext(textDraw7).
+		SetNext(textDraw8).
+		SetNext(finishDraw)
+	if err = start.Run(ctx); err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Success", finishDraw.Output)
 }
