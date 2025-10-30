@@ -25,3 +25,13 @@ func (d *QRCodeDraw) Do(c *Context) error {
 	DrawImage(c.Canvas, qrImage, qrImage.Bounds().Min.Sub(qrPoint))
 	return nil
 }
+
+// DrawQRCode draw qrcode image
+func DrawQRCode(content string, level qrcode.RecoveryLevel, size int) (image.Image, error) {
+	qr, err := qrcode.New(content, level)
+	if err != nil {
+		return nil, err
+	}
+	qrImage := qr.Image(size)
+	return qrImage, nil
+}

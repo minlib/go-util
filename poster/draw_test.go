@@ -270,25 +270,27 @@ func TestMultiLineTextDraw(t *testing.T) {
 	}
 	// 单行文本居中对齐
 	textDraw4 := &MultiLineTextDraw{
-		X:        float64(width / 2),
-		Y:        330,
-		AX:       FlexCenter,
-		AY:       FlexCenter,
-		Size:     30,
-		Color:    "#999999",
-		Content:  "居中对齐居中对齐居中对齐",
-		FontPath: "./assets/fzht.ttf",
+		X:           float64(width / 2),
+		Y:           330,
+		AX:          FlexCenter,
+		AY:          FlexCenter,
+		Size:        30,
+		Color:       "#999999",
+		Content:     "居中对齐居中对齐居中对齐",
+		FontPath:    "./assets/fzht.ttf",
+		CorrectionY: -5,
 	}
 	// 单行文本居右对齐
 	textDraw5 := &MultiLineTextDraw{
-		X:        float64(width - 20),
-		Y:        360,
-		AX:       FlexEnd,
-		AY:       FlexCenter,
-		Size:     30,
-		Color:    "#999999",
-		Content:  "居右对齐",
-		FontPath: "./assets/fzht.ttf",
+		X:           float64(width - 20),
+		Y:           360,
+		AX:          FlexEnd,
+		AY:          FlexCenter,
+		Size:        30,
+		Color:       "#999999",
+		Content:     "居右对齐",
+		FontPath:    "./assets/fzht.ttf",
+		CorrectionY: -5,
 	}
 	// 多行文本居左对齐
 	textDraw6 := &MultiLineTextDraw{
@@ -299,8 +301,9 @@ func TestMultiLineTextDraw(t *testing.T) {
 		Color:       "#FF0099",
 		Content:     "多行文本居左对齐\n第二行文本\n第三行文本",
 		FontPath:    "./assets/fzht.ttf",
-		LineSpacing: 2,
 		Align:       AlignLeft,
+		LineSpacing: 1,
+		CorrectionY: -5,
 	}
 	// 多行文本居中对齐
 	textDraw7 := &MultiLineTextDraw{
@@ -311,8 +314,9 @@ func TestMultiLineTextDraw(t *testing.T) {
 		Color:       "#FF0099",
 		Content:     "多行文本居中对齐\n第二行文本\n第三行文本",
 		FontPath:    "./assets/fzht.ttf",
-		LineSpacing: 2,
 		Align:       AlignCenter,
+		LineSpacing: 2,
+		CorrectionY: -5,
 	}
 	// 多行文本居右对齐
 	textDraw8 := &MultiLineTextDraw{
@@ -323,8 +327,9 @@ func TestMultiLineTextDraw(t *testing.T) {
 		Color:       "#FF0099",
 		Content:     "多行文本居右对齐\n第二行文本\n第三行文本",
 		FontPath:    "./assets/fzht.ttf",
-		LineSpacing: 2,
 		Align:       AlignRight,
+		LineSpacing: 2,
+		CorrectionY: -5,
 	}
 	// 完成绘制，并导出图片
 	finishDraw := &FinishDraw{

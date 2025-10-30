@@ -33,3 +33,24 @@ func (d CircleDraw) At(x, y int) color.Color {
 		return d.image.At(d.point.X+x, d.point.Y+y)
 	}
 }
+
+// DrawCircle draw circle image
+func DrawCircle(canvas image.Image) image.Image {
+	// 获取图片的宽和高
+	srcBounds := canvas.Bounds()
+	width := srcBounds.Max.X - srcBounds.Min.X
+	height := srcBounds.Max.Y - srcBounds.Min.Y
+
+	// 解决白底问题
+	dstImage := NewRGBA(0, 0, width, height)
+	DrawImage(dstImage, canvas, srcBounds.Min)
+
+	// 获取圆的直径
+	var diameter int
+	if width > height {
+		diameter = height
+	} else {
+		diameter = width
+	}
+	return NewCircleDraw(dstImage, image.Point{X: 0, Y: 0}, diameter)
+}
