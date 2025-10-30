@@ -135,8 +135,7 @@ func TestPoster(t *testing.T) {
 }
 
 func getOutputPath() string {
-	fmt.Println(time.Now().UnixMicro())
-	outputPath := "d:/output/" + time.UnixMilli(time.Now().UnixMilli()).Format("20060102150405.000") + ".png"
+	outputPath := "d:/output/" + time.Now().Format("20060102150405") + ".png"
 	_ = filex.MkdirAll(outputPath)
 	return outputPath
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/minlib/go-util/stringx"
 	"image"
 	"image/color"
+	"image/draw"
 	"image/jpeg"
 	"image/png"
 	"io"
@@ -131,5 +132,21 @@ func ResizeImage(src image.Image, width int) (image.Image, error) {
 			newImage.Set(x, y, src.At(srcX, srcY))
 		}
 	}
+	return newImage, nil
+}
+
+// AddBorder 图片添加边框
+func AddBorder(src image.Image, borderWidth int, backgroundColor color.Color) (image.Image, error) {
+	bounds := src.Bounds()
+	srcWidth, srcHeight := bounds.Dx(), bounds.Dy()
+	// 计算带边框的新尺寸（两侧各增加borderWidth）
+	newWidth := srcWidth + 2*borderWidth
+	newHeight := srcHeight + 2*borderWidth
+	// 创建新图像作为画布（自定义背景颜色，如 白色：color.RGBA{R: 255, G: 255, B: 255, A: 255}）
+	newImage := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
+	draw.Draw(newImage, newImage.Bounds(), &image.Uniform{C: backgroundColor}, image.Point{}, draw.Src)
+	// 将原图片绘制到新图像的中间（留出边框空间）
+	rectangle := image.Rect(borderWidth, borderWidth, srcWidth+borderWidth, srcHeight+borderWidth)
+	draw.Draw(newImage, rectangle, src, bounds.Min, draw.Src)
 	return newImage, nil
 }
