@@ -6,6 +6,7 @@ import (
 	"github.com/golang/freetype/truetype"
 	"github.com/minlib/go-util/colorx"
 	"github.com/skip2/go-qrcode"
+	"golang.org/x/image/font"
 	"image"
 	"image/color"
 	"image/draw"
@@ -57,7 +58,7 @@ func NewRGBA(x0, y0, x1, y1 int) *image.RGBA {
 	return image.NewRGBA(image.Rect(x0, y0, x1, y1))
 }
 
-// GetFont get font
+// GetFont Load and parse a truetype font from the specified file path
 func GetFont(path string) (*truetype.Font, error) {
 	fileBytes, err := os.ReadFile(path)
 	if err != nil {
@@ -68,6 +69,14 @@ func GetFont(path string) (*truetype.Font, error) {
 		return nil, err
 	}
 	return font, nil
+}
+
+// GetFontFace Create a font.Face from a truetype.Font with the specified point size
+func GetFontFace(f *truetype.Font, points float64) (font.Face, error) {
+	face := truetype.NewFace(f, &truetype.Options{
+		Size: points,
+	})
+	return face, nil
 }
 
 // DrawText draw text
