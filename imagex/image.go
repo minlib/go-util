@@ -59,9 +59,8 @@ func GetSize(path string) (int, int, error) {
 		return 0, 0, err
 	}
 	// 获取图片的宽和高
-	srcBounds := srcImage.Bounds()
-	width := srcBounds.Max.X - srcBounds.Min.X
-	height := srcBounds.Max.Y - srcBounds.Min.Y
+	width := srcImage.Bounds().Dx()
+	height := srcImage.Bounds().Dy()
 	return width, height, nil
 }
 
