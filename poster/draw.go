@@ -10,18 +10,27 @@ type Context struct {
 }
 
 type IDraw interface {
-	Do(c *Context) error   // 自身的业务
-	SetNext(h IDraw) IDraw // 设置下一步对象
-	Run(c *Context) error  // 执行
+	Do(c *Context) error          // 自身的业务
+	SetNext(draws ...IDraw) IDraw // 设置下一步对象
+	Run(c *Context) error         // 执行
 }
 
 type NextStep struct {
 	nextDraw IDraw
 }
 
-func (n *NextStep) SetNext(h IDraw) IDraw {
-	n.nextDraw = h
-	return h
+func (n *NextStep) SetNext(draws ...IDraw) IDraw {
+	if len(draws) == 0 {
+		return nil
+	}
+	n.nextDraw = draws[0]
+	if len(draws) == 0 {
+		return draws[0]
+	}
+	for i := 0; i < len(draws)-1; i++ {
+		draws[i].SetNext(draws[i+1])
+	}
+	return draws[len(draws)-1]
 }
 
 func (n *NextStep) Run(c *Context) error {

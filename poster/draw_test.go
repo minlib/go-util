@@ -334,17 +334,7 @@ func TestMultiLineTextDraw(t *testing.T) {
 	finishDraw := &FinishDraw{
 		Output: getOutputPath(),
 	}
-	start.
-		SetNext(backgroundDraw).
-		SetNext(textDraw1).
-		SetNext(textDraw2).
-		SetNext(textDraw3).
-		SetNext(textDraw4).
-		SetNext(textDraw5).
-		SetNext(textDraw6).
-		SetNext(textDraw7).
-		SetNext(textDraw8).
-		SetNext(finishDraw)
+	start.SetNext(backgroundDraw, textDraw1, textDraw2, textDraw3, textDraw4, textDraw5, textDraw6, textDraw7, textDraw8, finishDraw)
 	if err = start.Run(ctx); err != nil {
 		fmt.Println(err)
 		return

@@ -13,7 +13,7 @@ func TestQrcodeWithBorder(t *testing.T) {
 	outputPath := "d:/output/" + time.Now().Format("20060102150405") + ".png"
 	_ = filex.MkdirAll(outputPath)
 
-	qrcodeImage, err := QrcodeWithBorder("https://www.minzhan.com", 10, qrcode.High)
+	qrcodeImage, err := QrcodeWithBorder("https://www.minzhan.com", 200, qrcode.High)
 	if err != nil {
 		t.Fatalf("生成二维码失败: %v", err)
 	}
