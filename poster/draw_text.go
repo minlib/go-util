@@ -1,76 +1,66 @@
 package poster
 
 import (
+	"errors"
 	"github.com/golang/freetype"
 	"github.com/minlib/go-util/colorx"
 	"image"
 	"image/color"
-	"image/draw"
 )
 
-// Text 文字
-type Text struct {
-	X        int     // 横坐标
-	Y        int     // 纵坐标
-	Size     float64 // 大小
-	Color    string  // 颜色
-	Content  string  // 内容
-	FontPath string  // 字体路径
-}
-
+// TextDraw 文本绘制组件
 type TextDraw struct {
-	X        int     // 横坐标
-	Y        int     // 纵坐标
-	Size     float64 // 大小
-	Color    string  // 颜色
-	Content  string  // 内容
-	FontPath string  // 字体路径
-	NextStep
+	X        int     `json:"x"`        // 横坐标
+	Y        int     `json:"y"`        // 纵坐标
+	Size     float64 `json:"size"`     // 字体大小
+	Color    string  `json:"color"`    // 颜色（十六进制）
+	Content  string  `json:"content"`  // 文本内容
+	FontPath string  `json:"fontPath"` // 字体路径
 }
 
-func (d *TextDraw) Do(c *Context) error {
-	if d.Size == 0 {
-		d.Size = 24
-	}
-	text := &Text{
-		X:        d.X,
-		Y:        d.Y,
-		Size:     d.Size,
-		Color:    d.Color,
-		Content:  d.Content,
-		FontPath: d.FontPath,
-	}
-	err := DrawText(c.Canvas, text)
+// Type 实现Drawer接口
+func (d *TextDraw) Type() string {
+	return "text"
+}
+
+// Draw 实现Drawer接口
+func (d *TextDraw) Draw(ctx *Context) error {
+	// 1. 加载字体
+	font, err := ctx.Resources.LoadFont(d.FontPath)
 	if err != nil {
-		return err
+		return errors.New("load font failed: " + err.Error())
+	}
+
+	// 2. 配置绘制上下文
+	ftCtx := freetype.NewContext()
+	ftCtx.SetDPI(72)
+	ftCtx.SetFont(font)
+	ftCtx.SetFontSize(d.Size)
+	ftCtx.SetClip(ctx.Canvas.Bounds())
+	ftCtx.SetDst(ctx.Canvas)
+
+	// 3. 设置文本颜色
+	r, g, b := colorx.Hex2RGB(d.Color)
+	ftCtx.SetSrc(image.NewUniform(color.RGBA{R: r, G: g, B: b, A: 255}))
+
+	// 4. 绘制文本
+	_, err = ftCtx.DrawString(d.Content, freetype.Pt(d.X, d.Y))
+	if err != nil {
+		return errors.New("draw text failed: " + err.Error())
 	}
 	return nil
 }
 
-// DrawText draw text
-func DrawText(canvas draw.Image, text *Text) error {
-	fontType, err := GetFont(text.FontPath)
-	if err != nil {
-		return err
+// Validate 实现Drawer接口
+func (d *TextDraw) Validate() error {
+	if d.Content == "" {
+		return errors.New("content is required")
 	}
-	ctx := freetype.NewContext()
-	//设置屏幕每英寸的分辨率
-	ctx.SetDPI(72)
-	//设置用于绘制文本的字体
-	ctx.SetFont(fontType)
-	//以磅为单位设置字体大小
-	ctx.SetFontSize(text.Size)
-	//设置剪裁矩形以进行绘制
-	ctx.SetClip(canvas.Bounds())
-	//设置目标图像
-	ctx.SetDst(canvas)
-	r, g, b := colorx.Hex2RGB(text.Color)
-	//设置绘制操作的源图像，通常为 image.Uniform
-	ctx.SetSrc(image.NewUniform(color.RGBA{R: r, G: g, B: b, A: 255}))
-	pt := freetype.Pt(text.X, text.Y)
-	_, err = ctx.DrawString(text.Content, pt)
-	if err != nil {
-		return err
+	if d.FontPath == "" {
+		return errors.New("fontPath is required")
+	}
+	if d.Size <= 0 {
+		return errors.New("size must be positive")
 	}
 	return nil
 }

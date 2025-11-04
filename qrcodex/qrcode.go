@@ -9,7 +9,7 @@ import (
 )
 
 // Qrcode 生成无默认边框的基础二维码图像
-func Qrcode(content string, size int, level qrcode.RecoveryLevel) (image.Image, error) {
+func Qrcode(content string, level qrcode.RecoveryLevel, size int) (image.Image, error) {
 	qrCode, err := qrcode.New(content, level)
 	if err != nil {
 		return nil, err
@@ -21,8 +21,8 @@ func Qrcode(content string, size int, level qrcode.RecoveryLevel) (image.Image, 
 }
 
 // QrcodeWithBorder 生成带自定义白色边框的二维码图像
-func QrcodeWithBorder(content string, size int, level qrcode.RecoveryLevel) (image.Image, error) {
-	baseImage, err := Qrcode(content, size, level)
+func QrcodeWithBorder(content string, level qrcode.RecoveryLevel, size int) (image.Image, error) {
+	baseImage, err := Qrcode(content, level, size)
 	if err != nil {
 		return nil, err
 	}
