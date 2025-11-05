@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+func getOutputPath() string {
+	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
+}
+
 func TestQrcode(t *testing.T) {
 	outputPath := getOutputPath()
 	qrcodeImage, err := Qrcode("https://www.minzhan.com", qrcode.High, 128)
@@ -31,8 +35,4 @@ func TestQrcodeWithBorder(t *testing.T) {
 		t.Fatalf("保存二维码失败: %v", err)
 	}
 	log.Printf("已生成带边框的二维码: %s", outputPath)
-}
-
-func getOutputPath() string {
-	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
 }

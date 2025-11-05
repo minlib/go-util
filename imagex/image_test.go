@@ -7,8 +7,12 @@ import (
 	"time"
 )
 
+func getOutputPath() string {
+	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
+}
+
 func TestNewDrawable(t *testing.T) {
-	output := getOutputImagePath()
+	output := getOutputPath()
 	// Create a simple test image
 	srcImg := NewImage(50, 50, color.RGBA{R: 0, G: 255, B: 0, A: 255})
 
@@ -23,20 +27,20 @@ func TestNewDrawable(t *testing.T) {
 }
 
 func TestNewImageWithTransparentColor(t *testing.T) {
-	output := getOutputImagePath()
+	output := getOutputPath()
 	img := NewImage(100, 100, color.RGBA{R: 0, G: 0, B: 0, A: 0})
 	_ = SavePNG(img, output)
 }
 
 func TestNewImageWithRedColor(t *testing.T) {
-	output := getOutputImagePath()
+	output := getOutputPath()
 	img := NewImage(100, 100, color.RGBA{R: 255, G: 0, B: 0, A: 255})
 	_ = SavePNG(img, output)
 }
 
 func TestNewImageFromFile(t *testing.T) {
 	// First create a test image
-	output := getOutputImagePath()
+	output := getOutputPath()
 	srcImg := NewImage(50, 50, color.RGBA{R: 255, G: 0, B: 0, A: 255})
 	err := SavePNG(srcImg, output)
 	if err != nil {
@@ -63,8 +67,4 @@ func TestNewImageFromFileWithInvalidPath(t *testing.T) {
 	if err == nil {
 		t.Error("Expected an error when loading from nonexistent file, but got nil")
 	}
-}
-
-func getOutputImagePath() string {
-	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
 }

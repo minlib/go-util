@@ -2,18 +2,21 @@ package imagex
 
 import (
 	"fmt"
+	"github.com/minlib/go-util/filex"
 	"image/color"
 	"os"
 	"testing"
 	"time"
-
-	"github.com/minlib/go-util/filex"
 )
 
 var libPath = "D:/dev/libwebp-1.3.2-windows-x64/bin/"
 var original = "../outputs/original.jpg"
 var webpUtil = &WebpUtil{
 	LibPath: libPath,
+}
+
+func getOutputWebpPath() string {
+	return fmt.Sprintf("%s%d.webp", "../outputs/", time.Now().UnixNano())
 }
 
 // setup is a common method to be executed before each test
@@ -33,7 +36,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestRunCommand(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	option := &CommandOption{
 		LibPath:  libPath,
 		Quality:  80,
@@ -50,7 +53,7 @@ func TestRunCommand(t *testing.T) {
 }
 
 func TestCWebpByScaleToFill(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.CWebp(original, outputPath, ScaleToFill, 0, 540, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -60,7 +63,7 @@ func TestCWebpByScaleToFill(t *testing.T) {
 }
 
 func TestCWebpByAspectFill(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.CWebp(original, outputPath, AspectFill, 500, 0, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -70,7 +73,7 @@ func TestCWebpByAspectFill(t *testing.T) {
 }
 
 func TestCWebpByWidthFix(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.CWebp(original, outputPath, WidthFix, 500, 0, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -80,7 +83,7 @@ func TestCWebpByWidthFix(t *testing.T) {
 }
 
 func TestCWebpByHeightFix(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.CWebp(original, outputPath, HeightFix, 500, 0, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -90,7 +93,7 @@ func TestCWebpByHeightFix(t *testing.T) {
 }
 
 func TestScaleToFill(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.ScaleToFill(original, outputPath, 600, 400, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -100,7 +103,7 @@ func TestScaleToFill(t *testing.T) {
 }
 
 func TestScaleToFill2(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.ScaleToFill(original, outputPath, 1920, 400, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -110,7 +113,7 @@ func TestScaleToFill2(t *testing.T) {
 }
 
 func TestAspectFill(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.AspectFill(original, outputPath, 400, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -120,7 +123,7 @@ func TestAspectFill(t *testing.T) {
 }
 
 func TestAspectFill2(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.AspectFill(original, outputPath, 300, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -134,7 +137,7 @@ func TestAspectFill2(t *testing.T) {
 }
 
 func TestWidthFix(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.WidthFix(original, outputPath, 400, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -148,7 +151,7 @@ func TestWidthFix(t *testing.T) {
 }
 
 func TestWidthFix2(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	originalWidth, _, err := GetSize(original)
 	width := originalWidth + 500
 	err = webpUtil.WidthFix(original, outputPath, width, 85)
@@ -164,7 +167,7 @@ func TestWidthFix2(t *testing.T) {
 }
 
 func TestWidthLessen(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	originalWidth, _, err := GetSize(original)
 	err = webpUtil.WidthLessen(original, outputPath, originalWidth+500, 85)
 	if err != nil {
@@ -179,7 +182,7 @@ func TestWidthLessen(t *testing.T) {
 }
 
 func TestHeightFix(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	err := webpUtil.HeightFix(original, outputPath, 800, 85)
 	if err != nil {
 		fmt.Println(err)
@@ -193,7 +196,7 @@ func TestHeightFix(t *testing.T) {
 }
 
 func TestHeightFix2(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	_, originalHeight, _ := GetSize(original)
 	height := originalHeight + 500
 	err := webpUtil.HeightFix(original, outputPath, height, 85)
@@ -209,7 +212,7 @@ func TestHeightFix2(t *testing.T) {
 }
 
 func TestHeightLessen(t *testing.T) {
-	outputPath := getOutputPath()
+	outputPath := getOutputWebpPath()
 	_, originalHeight, _ := GetSize(original)
 	err := webpUtil.HeightLessen(original, outputPath, originalHeight+500, 85)
 	if err != nil {
@@ -221,8 +224,4 @@ func TestHeightLessen(t *testing.T) {
 	if originalHeight != outputHeight {
 		t.Errorf("height expected: %d, actual: %d", originalHeight, outputHeight)
 	}
-}
-
-func getOutputPath() string {
-	return fmt.Sprintf("%s%d.webp", "../outputs/", time.Now().UnixNano())
 }

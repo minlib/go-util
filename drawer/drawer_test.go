@@ -2,18 +2,22 @@ package drawer
 
 import (
 	"fmt"
+	"github.com/minlib/go-util/colorx"
+	"github.com/minlib/go-util/imagex"
 	"image/color"
 	"os"
 	"testing"
 	"time"
-
-	"github.com/minlib/go-util/colorx"
-	"github.com/minlib/go-util/imagex"
 )
 
 const fontPath = "../assets/fonts/syht.ttf"
 const templatePath = "../outputs/template.png"
 const avatarPath = "../outputs/avatar.png"
+
+// getOutputPath generates a unique output path for test images.
+func getOutputPath() string {
+	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
+}
 
 // setup is a common method to be executed before each test
 func setup() {
@@ -352,9 +356,4 @@ func TestProductImage(t *testing.T) {
 		return
 	}
 	fmt.Printf("Product image test success, output path: %s\n", outputPath)
-}
-
-// getOutputPath generates a unique output path for test images.
-func getOutputPath() string {
-	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
 }
