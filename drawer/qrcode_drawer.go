@@ -1,5 +1,4 @@
-// Package poster provides functionality for creating posters with various drawing components.
-package poster
+package drawer
 
 import (
 	"errors"

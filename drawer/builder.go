@@ -1,36 +1,33 @@
-package poster
+package drawer
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"image"
+	"image/draw"
 )
 
-// Builder 海报构建器
+// Builder is a helper for constructing posters with a fluent API.
 type Builder struct {
-	width     int
-	height    int
-	resources *ResourceLoader
-	pipeline  *Pipeline
+	Canvas   draw.Image
+	pipeline *Pipeline
 }
 
-// NewPosterBuilder 创建构建器
-func NewPosterBuilder(width, height int) *Builder {
+// NewBuilder creates a new Builder instance with the specified dimensions.
+func NewBuilder(canvas draw.Image) *Builder {
 	return &Builder{
-		width:     width,
-		height:    height,
-		resources: &ResourceLoader{},
-		pipeline:  NewPipeline(),
+		Canvas:   canvas,
+		pipeline: NewPipeline(),
 	}
 }
 
-// AddDrawer 添加绘制组件
+// AddDrawer adds one or more drawing components to the builder.
 func (b *Builder) AddDrawer(drawers ...Drawer) *Builder {
 	b.pipeline.AddDrawer(drawers...)
 	return b
 }
 
-// FromJSONConfig 从JSON配置加载组件
+// FromJSONConfig loads drawing components from a JSON configuration string.
 func (b *Builder) FromJSONConfig(jsonStr string) (*Builder, error) {
 	var configs []struct {
 		Type string          `json:"type"`
@@ -38,7 +35,7 @@ func (b *Builder) FromJSONConfig(jsonStr string) (*Builder, error) {
 	}
 
 	if err := json.Unmarshal([]byte(jsonStr), &configs); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unmarshal json config failed: %w", err)
 	}
 
 	for _, cfg := range configs {
@@ -47,44 +44,36 @@ func (b *Builder) FromJSONConfig(jsonStr string) (*Builder, error) {
 		case "image":
 			var d ImageDraw
 			if err := json.Unmarshal(cfg.Data, &d); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("unmarshal image drawer failed: %w", err)
 			}
 			drawer = &d
 		case "text":
 			var d TextDraw
 			if err := json.Unmarshal(cfg.Data, &d); err != nil {
-				return nil, err
-			}
-			drawer = &d
-		case "multi_line_text":
-			var d MultiLineTextDraw
-			if err := json.Unmarshal(cfg.Data, &d); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("unmarshal text drawer failed: %w", err)
 			}
 			drawer = &d
 		case "qrcode":
 			var d QRCodeDraw
 			if err := json.Unmarshal(cfg.Data, &d); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("unmarshal qrcode drawer failed: %w", err)
 			}
 			drawer = &d
 		default:
-			return nil, errors.New("unsupported drawer type: " + cfg.Type)
+			return nil, fmt.Errorf("unsupported drawer type: %s", cfg.Type)
 		}
 		b.AddDrawer(drawer)
 	}
 	return b, nil
 }
 
-// Build 执行绘制并返回结果
+// Build executes the drawing pipeline and returns the resulting image.
 func (b *Builder) Build() (image.Image, error) {
 	ctx := &Context{
-		Canvas:    NewRGBA(0, 0, b.width, b.height),
-		Resources: b.resources,
+		Canvas: b.Canvas,
 	}
-
 	if err := b.pipeline.Execute(ctx); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("build failed: %w", err)
 	}
 	return ctx.Canvas, nil
 }
