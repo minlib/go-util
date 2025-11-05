@@ -55,7 +55,6 @@ func DrawCircle(srcImage image.Image) image.Image {
 
 	// Create target image
 	dstImage := image.NewRGBA(image.Rect(0, 0, width, height))
-	// imagex.DrawImage(dstImage, srcImage, srcBounds.Min)
 	draw.Draw(dstImage, dstImage.Bounds(), srcImage, srcBounds.Min, draw.Over)
 
 	// Get the diameter (smaller of width and height)

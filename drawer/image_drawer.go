@@ -57,7 +57,7 @@ func (d *ImageDraw) Draw(ctx *Context) error {
 	}
 
 	// 4. Draw the image onto the canvas
-	draw.Draw(ctx.Canvas, ctx.Canvas.Bounds(), drawImage, image.Point{X: d.X, Y: d.Y}, draw.Over)
+	draw.Draw(ctx.Canvas, ctx.Canvas.Bounds(), drawImage, image.Point{X: -d.X, Y: -d.Y}, draw.Over)
 	return nil
 }
 

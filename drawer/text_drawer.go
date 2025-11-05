@@ -3,21 +3,22 @@ package drawer
 import (
 	"errors"
 	"fmt"
-	"image"
-	"image/draw"
-	"strings"
-
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
+	"image"
+	"image/draw"
 )
 
 // TextDraw represents a component for drawing text.
 type TextDraw struct {
-	// X is the x-coordinate for drawing the text.
-	X float64 `json:"x"`
+	// Left is the x-coordinate for drawing the text.
+	Left float64 `json:"left"`
 
-	// Y is the y-coordinate for drawing the text.
-	Y float64 `json:"y"`
+	// Right is the x-coordinate for drawing the text.
+	Right float64 `json:"right"`
+
+	// Top is the y-coordinate for drawing the text.
+	Top float64 `json:"top"`
 
 	// AX is the horizontal anchor point ratio (0=left, 0.5=center, 1=right).
 	AX float64 `json:"ax"`
@@ -43,10 +44,10 @@ type TextDraw struct {
 	// LineSpacing is the line spacing multiplier.
 	LineSpacing float64 `json:"lineSpacing"`
 
-	// CorrectionX is the X-axis correction value.
+	// CorrectionX is the Left-axis correction value.
 	CorrectionX float64 `json:"correctionX"`
 
-	// CorrectionY is the Y-axis correction value.
+	// CorrectionY is the Top-axis correction value.
 	CorrectionY float64 `json:"correctionY"`
 
 	// Font is the loaded font object (internal use).
@@ -61,11 +62,11 @@ func (d *TextDraw) Type() string {
 // Draw executes the text drawing logic.
 func (d *TextDraw) Draw(ctx *Context) error {
 	// 1. Set default values
-	if d.Size == 0 {
+	if d.Size <= 0 {
 		d.Size = 24
 	}
-	if d.LineSpacing == 0 {
-		d.LineSpacing = 1.2
+	if d.LineSpacing <= 0 {
+		d.LineSpacing = 1
 	}
 
 	// 2. Load the font
@@ -90,14 +91,15 @@ func (d *TextDraw) Draw(ctx *Context) error {
 	ctxGG.SetFontFace(truetype.NewFace(font, &truetype.Options{Size: d.Size}))
 
 	// 4. Draw the text
-	adjustedX := d.X + d.CorrectionX
-	adjustedY := d.Y + d.CorrectionY
-	if strings.Contains(d.Content, "\n") {
-		w, _ := ctxGG.MeasureMultilineString(d.Content, d.LineSpacing)
-		ctxGG.DrawStringWrapped(d.Content, adjustedX, adjustedY, d.AX, d.AY, w, d.LineSpacing, gg.Align(d.Align))
-	} else {
-		ctxGG.DrawStringAnchored(d.Content, adjustedX, adjustedY, d.AX, d.AY)
+	adjustedX := d.Left + d.CorrectionX
+	adjustedY := d.Top + d.CorrectionY
+
+	if d.Align == AlignRight && d.Right > 0 {
+		adjustedX = float64(bounds.Dx()) - d.Right
 	}
+
+	w, _ := ctxGG.MeasureMultilineString(d.Content, d.LineSpacing)
+	ctxGG.DrawStringWrapped(d.Content, adjustedX, adjustedY, d.AX, d.AY, w, d.LineSpacing, gg.Align(AlignMap[string(d.Align)]))
 
 	// 5. Merge back to the original canvas
 	draw.Draw(ctx.Canvas, bounds, ctxGG.Image(), image.Point{}, draw.Over)

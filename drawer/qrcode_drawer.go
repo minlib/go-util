@@ -38,9 +38,7 @@ func (d *QRCodeDraw) Draw(ctx *Context) error {
 		return fmt.Errorf("generate qrcode failed: %w", err)
 	}
 	// Draw the QR code onto the canvas
-	// imagex.DrawImage(ctx.Canvas, qrImage, qrImage.Bounds().Min.Sub(image.Point{X: d.X, Y: d.Y}))
-	point := qrImage.Bounds().Min.Sub(image.Point{X: d.X, Y: d.Y})
-	draw.Draw(ctx.Canvas, ctx.Canvas.Bounds(), qrImage, point, draw.Over)
+	draw.Draw(ctx.Canvas, ctx.Canvas.Bounds(), qrImage, image.Point{X: -d.X, Y: -d.Y}, draw.Over)
 	return nil
 }
 

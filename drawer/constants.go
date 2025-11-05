@@ -1,18 +1,24 @@
 package drawer
 
 // TextAlign represents text alignment options.
-type TextAlign int
+type TextAlign string
 
 const (
 	// AlignLeft aligns text to the left.
-	AlignLeft TextAlign = iota
+	AlignLeft = "left"
 
 	// AlignCenter centers text.
-	AlignCenter
+	AlignCenter = "center"
 
 	// AlignRight aligns text to the right.
-	AlignRight
+	AlignRight = "right"
 )
+
+var AlignMap = map[string]int{
+	AlignLeft:   0,
+	AlignCenter: 1,
+	AlignRight:  2,
+}
 
 const (
 	// FlexStart represents the start position for flex alignment (0.0).
