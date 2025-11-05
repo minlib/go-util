@@ -294,7 +294,7 @@ func TestCircle(t *testing.T) {
 	fmt.Printf("Circle test success, output path: %s\n", outputPath)
 }
 
-// TestProductImage demonstrates how to draw product posters.
+// TestProductImage demonstrates how to draw product images.
 func TestProductImage(t *testing.T) {
 	canvas := imagex.NewImage(750, 1100, colorx.Hex2RGBA("#FFFFFFFF"))
 	ctx := NewContext(canvas)
@@ -356,4 +356,94 @@ func TestProductImage(t *testing.T) {
 		return
 	}
 	fmt.Printf("Product image test success, output path: %s\n", outputPath)
+}
+
+// TestProductImageFromJson demonstrates how to draw product image from JSON configuration.
+func TestProductImageFromJson(t *testing.T) {
+	// 定义JSON配置，包含所有图像和文本元素
+	config := fmt.Sprintf(`[
+		{
+			"type": "image",
+			"data": {
+				"x": 30,
+				"y": 30,
+				"path": "https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp",
+				"width": 690,
+				"round": false
+			}
+		},
+		{
+			"type": "image",
+			"data": {
+				"x": 500,
+				"y": 820,
+				"path": "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
+				"width": 200,
+				"round": true
+			}
+		},
+		{
+			"type": "text",
+			"data": {
+				"right": 30,
+				"top": 1040,
+				"ax": 1.0,
+				"size": 28,
+				"color": "#000000",
+				"content": "长按识别小程序码",
+				"fontPath": "%s",
+				"lineSpacing": 1,
+				"align": "right"
+			}
+		},
+		{
+			"type": "text",
+			"data": {
+				"left": 30,
+				"top": 750,
+				"size": 36,
+				"color": "#000000",
+				"content": "马面裙白色上衣红色织金妆花\n双工艺面料马面裙",
+				"fontPath": "%s",
+				"lineSpacing": 1.2,
+				"align": "left"
+			}
+		},
+		{
+			"type": "text",
+			"data": {
+				"left": 30,
+				"top": 860,
+				"size": 40,
+				"color": "#FF0000",
+				"content": "100元",
+				"fontPath": "%s"
+			}
+		}
+	]`, fontPath, fontPath, fontPath) // 3个文本元素的fontPath占位符
+
+	// 创建画布（与原TestProductImage保持一致）
+	canvas := imagex.NewImage(750, 1100, colorx.Hex2RGBA("#FFFFFFFF"))
+	builder := NewBuilder(canvas)
+
+	// 从JSON配置加载绘制元素
+	builder, err := builder.FromJSONConfig(config)
+	if err != nil {
+		t.Errorf("Failed to load from JSON config: %v", err)
+		return
+	}
+
+	// 构建并保存图像
+	outputPath := getOutputPath()
+	image, err := builder.Build()
+	if err != nil {
+		t.Errorf("Failed to build from JSON config: %v", err)
+		return
+	}
+	if err = imagex.SavePNG(image, outputPath); err != nil {
+		t.Errorf("Save image failed: %v", err)
+		return
+	}
+
+	fmt.Printf("Product image from JSON config success, output path: %s\n", outputPath)
 }
