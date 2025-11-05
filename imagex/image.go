@@ -2,7 +2,7 @@ package imagex
 
 import (
 	"bytes"
-	"github.com/minlib/go-util/stringx"
+	"github.com/minlib/go-util/filex"
 	"image"
 	"image/color"
 	"image/draw"
@@ -16,7 +16,7 @@ import (
 
 // GetResourceReader get local or remote resource file
 func GetResourceReader(pathOrUrl string) (*bytes.Reader, error) {
-	if stringx.HasAnyPrefix(pathOrUrl, "https://", "http://") {
+	if strings.HasPrefix(pathOrUrl, "https://") || strings.HasPrefix(pathOrUrl, "http://") {
 		resp, err := http.Get(pathOrUrl)
 		if err != nil {
 			return nil, err
@@ -34,6 +34,64 @@ func GetResourceReader(pathOrUrl string) (*bytes.Reader, error) {
 		}
 		return bytes.NewReader(fileBytes), nil
 	}
+}
+
+// NewDrawable creates a drawable image from an existing image.
+// This is useful when you need to perform drawing operations on an existing image.
+// Parameters:
+//   - srcImage: The source image to create a drawable copy from
+//
+// Returns:
+//   - draw.Image: A new drawable image containing the contents of the source image
+func NewDrawable(srcImage image.Image) draw.Image {
+	// Get the bounds of the source image
+	bounds := srcImage.Bounds()
+
+	// Create a new RGBA image with the same dimensions as the source
+	img := image.NewRGBA(bounds)
+
+	// Copy the source image to the new image using draw.Draw for efficiency
+	draw.Draw(img, bounds, srcImage, bounds.Min, draw.Src)
+
+	return img
+}
+
+// NewImage creates a new image filled with a solid color.
+// This function returns a draw.Image which can be used for further drawing operations.
+// Parameters:
+//   - width: The width of the new image in pixels
+//   - height: The height of the new image in pixels
+//   - fillColor: The color to fill the image with
+//
+// Returns:
+//   - draw.Image: A new image filled with the specified color
+func NewImage(width, height int, fillColor color.Color) draw.Image {
+	// Create a new RGBA image with the specified dimensions
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	// Fill the entire image with the background color using draw.Draw for efficiency
+	draw.Draw(img, img.Bounds(), &image.Uniform{C: fillColor}, image.Point{}, draw.Src)
+
+	return img
+}
+
+// NewImageFromFile creates a drawable image from an image file.
+// This is useful when you need to perform drawing operations on an image loaded from a file.
+// Parameters:
+//   - srcImagePath: The path to the source image file
+//
+// Returns:
+//   - draw.Image: A new drawable image containing the contents of the source image file
+//   - error: Any error encountered while reading or processing the image
+func NewImageFromFile(srcImagePath string) (draw.Image, error) {
+	// Read the source image from file
+	srcImage, err := ReadImage(srcImagePath)
+	if err != nil {
+		// If there's an error reading the image, return the error
+		return nil, err
+	}
+	img := NewDrawable(srcImage)
+	return img, nil
 }
 
 // ReadImage read a image
@@ -66,8 +124,11 @@ func GetSize(path string) (int, int, error) {
 }
 
 // SavePNG save as png image
-func SavePNG(src image.Image, outputPath string) error {
-	file, err := os.Create(outputPath)
+func SavePNG(src image.Image, filename string) error {
+	if err := filex.MkdirAll(filename); err != nil {
+		return err
+	}
+	file, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -76,8 +137,11 @@ func SavePNG(src image.Image, outputPath string) error {
 }
 
 // SaveJPG save as jpg image
-func SaveJPG(src image.Image, outputPath string, quality int) error {
-	file, err := os.Create(outputPath)
+func SaveJPG(src image.Image, filename string, quality int) error {
+	if err := filex.MkdirAll(filename); err != nil {
+		return err
+	}
+	file, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -85,26 +149,6 @@ func SaveJPG(src image.Image, outputPath string, quality int) error {
 	return jpeg.Encode(file, src, &jpeg.Options{
 		Quality: quality,
 	})
-}
-
-// CreateImage 创建新的图片
-func CreateImage(filename string, width, height int, c color.Color) *os.File {
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			img.Set(x, y, c)
-		}
-	}
-	file, err := os.Create(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	err = png.Encode(file, img)
-	if err != nil {
-		panic(err)
-	}
-	return file
 }
 
 // ResizeImage 图像按比例缩放到指定宽度
