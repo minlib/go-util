@@ -1,7 +1,7 @@
 package qrcodex
 
 import (
-	"github.com/minlib/go-util/filex"
+	"fmt"
 	"github.com/minlib/go-util/imagex"
 	"github.com/skip2/go-qrcode"
 	"log"
@@ -9,19 +9,30 @@ import (
 	"time"
 )
 
-func TestQrcodeWithBorder(t *testing.T) {
-	outputPath := "d:/output/" + time.Now().Format("20060102150405") + ".png"
-	_ = filex.MkdirAll(outputPath)
-
-	qrcodeImage, err := QrcodeWithBorder("https://www.minzhan.com", qrcode.High, 200)
+func TestQrcode(t *testing.T) {
+	outputPath := getOutputPath()
+	qrcodeImage, err := Qrcode("https://www.minzhan.com", qrcode.High, 128)
 	if err != nil {
 		t.Fatalf("生成二维码失败: %v", err)
 	}
-
 	if err = imagex.SavePNG(qrcodeImage, outputPath); err != nil {
 		t.Fatalf("保存二维码失败: %v", err)
 	}
+	log.Printf("已生成二维码: %s", outputPath)
+}
 
-	log.Println("已生成带边框的二维码")
-	log.Println(outputPath)
+func TestQrcodeWithBorder(t *testing.T) {
+	outputPath := getOutputPath()
+	qrcodeImage, err := QrcodeWithBorder("https://www.minzhan.com", qrcode.High, 128)
+	if err != nil {
+		t.Fatalf("生成二维码失败: %v", err)
+	}
+	if err = imagex.SavePNG(qrcodeImage, outputPath); err != nil {
+		t.Fatalf("保存二维码失败: %v", err)
+	}
+	log.Printf("已生成带边框的二维码: %s", outputPath)
+}
+
+func getOutputPath() string {
+	return fmt.Sprintf("%s%d.png", "../outputs/", time.Now().UnixNano())
 }
