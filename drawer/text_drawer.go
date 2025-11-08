@@ -35,8 +35,8 @@ type TextDraw struct {
 	// Content is the text content to be drawn (supports \n for line breaks).
 	Content string `json:"content"`
 
-	// FontPath is the path to the font file.
-	FontPath string `json:"fontPath"`
+	// FontFamily is the font family to be used for drawing the text.
+	FontFamily string `json:"fontFamily"`
 
 	// Align is the text alignment (AlignLeft, AlignCenter, AlignRight).
 	Align TextAlign `json:"align"`
@@ -49,9 +49,6 @@ type TextDraw struct {
 
 	// CorrectionY is the Top-axis correction value.
 	CorrectionY float64 `json:"correctionY"`
-
-	// Font is the loaded font object (internal use).
-	Font *truetype.Font `json:"-"`
 }
 
 // Type returns the type identifier for the TextDraw component.
@@ -61,36 +58,26 @@ func (d *TextDraw) Type() string {
 
 // Draw executes the text drawing logic.
 func (d *TextDraw) Draw(ctx *Context) error {
-	// 1. Set default values
+	// Set default values
 	if d.Size <= 0 {
 		d.Size = 24
 	}
 	if d.LineSpacing <= 0 {
 		d.LineSpacing = 1
 	}
-
-	// 2. Load the font
-	var font *truetype.Font
-	var err error
-	if d.Font != nil {
-		font = d.Font
-	} else if d.FontPath != "" {
-		font, err = ctx.LoadFont(d.FontPath)
-		if err != nil {
-			return fmt.Errorf("load font failed: %w", err)
-		}
-	} else {
-		return errors.New("fontPath is required")
-	}
-
-	// 3. Configure the gg drawing context
+	// Configure the gg drawing context
 	bounds := ctx.Canvas.Bounds()
 	ctxGG := gg.NewContext(bounds.Dx(), bounds.Dy())
+	font := ctx.Fonts[d.FontFamily]
+	fontFace := truetype.NewFace(font, &truetype.Options{Size: d.Size})
+	if fontFace == nil {
+		return fmt.Errorf("font family '%s' not found", d.FontFamily)
+	}
 	ctxGG.DrawImage(ctx.Canvas, 0, 0) // Copy existing canvas content
 	ctxGG.SetHexColor(d.Color)
-	ctxGG.SetFontFace(truetype.NewFace(font, &truetype.Options{Size: d.Size}))
+	ctxGG.SetFontFace(fontFace)
 
-	// 4. Draw the text
+	// Draw the text
 	adjustedX := d.Left + d.CorrectionX
 	adjustedY := d.Top + d.CorrectionY
 
@@ -107,12 +94,15 @@ func (d *TextDraw) Draw(ctx *Context) error {
 }
 
 // Validate checks if the TextDraw configuration is valid.
-func (d *TextDraw) Validate() error {
+func (d *TextDraw) Validate(ctx *Context) error {
 	if d.Content == "" {
 		return errors.New("content is required")
 	}
-	if d.FontPath == "" && d.Font == nil {
-		return errors.New("fontPath or Font is required")
+	if d.FontFamily == "" {
+		return errors.New("fontFamily is required")
+	}
+	if ctx.Fonts[d.FontFamily] == nil {
+		return fmt.Errorf("font family '%s' not found", d.FontFamily)
 	}
 	if d.AX < 0 || d.AX > 1 || d.AY < 0 || d.AY > 1 {
 		return errors.New("ax and ay must be between 0 and 1")

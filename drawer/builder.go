@@ -3,6 +3,7 @@ package drawer
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/golang/freetype/truetype"
 	"image"
 	"image/draw"
 )
@@ -10,13 +11,15 @@ import (
 // Builder is a helper for constructing posters with a fluent API.
 type Builder struct {
 	Canvas   draw.Image
+	Fonts    map[string]*truetype.Font
 	pipeline *Pipeline
 }
 
 // NewBuilder creates a new Builder instance with the specified dimensions.
-func NewBuilder(canvas draw.Image) *Builder {
+func NewBuilder(canvas draw.Image, fonts map[string]*truetype.Font) *Builder {
 	return &Builder{
 		Canvas:   canvas,
+		Fonts:    fonts,
 		pipeline: NewPipeline(),
 	}
 }
@@ -71,6 +74,7 @@ func (b *Builder) FromJSONConfig(jsonStr string) (*Builder, error) {
 func (b *Builder) Build() (image.Image, error) {
 	ctx := &Context{
 		Canvas: b.Canvas,
+		Fonts:  b.Fonts,
 	}
 	if err := b.pipeline.Execute(ctx); err != nil {
 		return nil, fmt.Errorf("build failed: %w", err)

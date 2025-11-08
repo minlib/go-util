@@ -35,7 +35,7 @@ func (p *Pipeline) SetOutput(output string) *Pipeline {
 // Execute runs the drawing pipeline, executing all components in order.
 func (p *Pipeline) Execute(ctx *Context) error {
 	// 1. Validate all components
-	if err := p.validate(); err != nil {
+	if err := p.validate(ctx); err != nil {
 		return fmt.Errorf("pipeline validation failed: %w", err)
 	}
 
@@ -60,9 +60,9 @@ func (p *Pipeline) Execute(ctx *Context) error {
 }
 
 // validate checks if all drawing components in the pipeline are valid.
-func (p *Pipeline) validate() error {
+func (p *Pipeline) validate(ctx *Context) error {
 	for _, drawer := range p.drawers {
-		if err := drawer.Validate(); err != nil {
+		if err := drawer.Validate(ctx); err != nil {
 			return fmt.Errorf("invalid drawer %s: %w", drawer.Type(), err)
 		}
 	}

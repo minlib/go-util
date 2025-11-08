@@ -43,7 +43,7 @@ func (d *QRCodeDraw) Draw(ctx *Context) error {
 }
 
 // Validate checks if the QRCodeDraw configuration is valid.
-func (d *QRCodeDraw) Validate() error {
+func (d *QRCodeDraw) Validate(*Context) error {
 	if d.Content == "" {
 		return errors.New("content is required")
 	}

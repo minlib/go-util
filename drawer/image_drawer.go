@@ -35,7 +35,7 @@ func (d *ImageDraw) Type() string {
 // Draw executes the image drawing logic.
 func (d *ImageDraw) Draw(ctx *Context) error {
 	// 1. Load the image resource
-	srcImage, err := ctx.LoadImage(d.Path)
+	srcImage, err := imagex.ReadImage(d.Path)
 	if err != nil {
 		return fmt.Errorf("load image failed: %w", err)
 	}
@@ -62,7 +62,7 @@ func (d *ImageDraw) Draw(ctx *Context) error {
 }
 
 // Validate checks if the ImageDraw configuration is valid.
-func (d *ImageDraw) Validate() error {
+func (d *ImageDraw) Validate(*Context) error {
 	if d.Path == "" {
 		return errors.New("path is required")
 	}

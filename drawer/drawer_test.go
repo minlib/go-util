@@ -2,7 +2,9 @@ package drawer
 
 import (
 	"fmt"
+	"github.com/golang/freetype/truetype"
 	"github.com/minlib/go-util/colorx"
+	"github.com/minlib/go-util/fontx"
 	"github.com/minlib/go-util/imagex"
 	"image/color"
 	"os"
@@ -10,9 +12,13 @@ import (
 	"time"
 )
 
-const fontPath = "../assets/fonts/syht.ttf"
 const templatePath = "../outputs/template.png"
 const avatarPath = "../outputs/avatar.png"
+
+var fontFamilyPaths = map[string]string{
+	"syht": "../assets/fonts/syht.ttf",
+	"msyh": "../assets/fonts/msyh.ttc",
+}
 
 // getOutputPath generates a unique output path for test images.
 func getOutputPath() string {
@@ -41,19 +47,28 @@ func GenerateTestAssets() error {
 	if err := imagex.SavePNG(template, templatePath); err != nil {
 		return err
 	}
-	// Create a solid blue avatar (200x200)
-	avatar := imagex.NewImage(200, 200, color.RGBA{R: 65, G: 105, B: 225, A: 255})
+	// Create a solid blue avatar (150x150)
+	avatar := imagex.NewImage(150, 150, color.RGBA{R: 65, G: 105, B: 225, A: 255})
 	if err := imagex.SavePNG(avatar, avatarPath); err != nil {
 		return err
 	}
 	return nil
 }
 
+// getFonts retrieves fonts from the specified paths.
+func getFonts() map[string]*truetype.Font {
+	fonts, err := fontx.GetFonts(fontFamilyPaths)
+	if err != nil {
+		panic(err)
+	}
+	return fonts
+}
+
 // TestPipelineExample demonstrates how to use the new Pipeline API to create a image.
 func TestPipelineExample(t *testing.T) {
-	canvas := imagex.NewImage(750, 1334, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	canvas := imagex.NewImage(750, 1334, color.RGBA{R: 0, G: 0, B: 0, A: 255})
 	// Create drawing context
-	ctx := NewContext(canvas)
+	ctx := NewContext(canvas, getFonts())
 	// Create drawing components
 	avatarDraw := &ImageDraw{
 		X:     30,
@@ -61,13 +76,21 @@ func TestPipelineExample(t *testing.T) {
 		Path:  avatarPath,
 		Round: true,
 	}
-	textDraw := &TextDraw{
-		Left:     180,
-		Top:      150,
-		Size:     26,
-		Color:    "#000000",
-		Content:  "这里是标题文字",
-		FontPath: fontPath,
+	textDraw1 := &TextDraw{
+		Left:       250,
+		Top:        105,
+		Size:       32,
+		Color:      "#FFFFFF",
+		Content:    "程序员老马",
+		FontFamily: "syht",
+	}
+	textDraw2 := &TextDraw{
+		Left:       250,
+		Top:        150,
+		Size:       28,
+		Color:      "#FFFFFF",
+		Content:    "专注软件开发20年",
+		FontFamily: "msyh",
 	}
 	qrCodeDraw := &QRCodeDraw{
 		X:       30,
@@ -79,7 +102,8 @@ func TestPipelineExample(t *testing.T) {
 	outputPath := getOutputPath()
 	pipeline := NewPipeline().
 		AddDrawer(avatarDraw).
-		AddDrawer(textDraw).
+		AddDrawer(textDraw1).
+		AddDrawer(textDraw2).
 		AddDrawer(qrCodeDraw).
 		SetOutput(outputPath)
 
@@ -94,9 +118,9 @@ func TestPipelineExample(t *testing.T) {
 
 // TestBuilderExample demonstrates how to use Builder to create a poster.
 func TestBuilderExample(t *testing.T) {
-	canvas := imagex.NewImage(750, 1334, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	canvas := imagex.NewImage(750, 1334, color.RGBA{R: 0, G: 0, B: 0, A: 255})
 	// Use Builder to create canvas
-	builder := NewBuilder(canvas)
+	builder := NewBuilder(canvas, getFonts())
 	// Add drawing components
 	builder.AddDrawer(
 		&ImageDraw{
@@ -106,20 +130,20 @@ func TestBuilderExample(t *testing.T) {
 			Round: true,
 		},
 		&TextDraw{
-			Left:     180,
-			Top:      105,
-			Size:     26,
-			Color:    "#FFFFFF",
-			Content:  "这里是大标题1",
-			FontPath: fontPath,
+			Left:       250,
+			Top:        105,
+			Size:       32,
+			Color:      "#FFFFFF",
+			Content:    "程序员老马",
+			FontFamily: "syht",
 		},
 		&TextDraw{
-			Left:     180,
-			Top:      150,
-			Size:     20,
-			Color:    "#FFFFFF",
-			Content:  "这里是小标题2",
-			FontPath: fontPath,
+			Left:       250,
+			Top:        150,
+			Size:       28,
+			Color:      "#FFFFFF",
+			Content:    "专注软件开发20年",
+			FontFamily: "syht",
 		},
 		&QRCodeDraw{
 			X:       30,
@@ -147,7 +171,7 @@ func TestBuilderExample(t *testing.T) {
 func TestTextAlignment(t *testing.T) {
 	canvas := imagex.NewImage(750, 1334, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 	width := canvas.Bounds().Dx()
-	ctx := NewContext(canvas)
+	ctx := NewContext(canvas, getFonts())
 	// Create drawing components
 	backgroundDraw := &ImageDraw{
 		X:    0,
@@ -156,31 +180,31 @@ func TestTextAlignment(t *testing.T) {
 	}
 	// Draw text
 	textDraw1 := &TextDraw{
-		Left:     132,
-		Top:      190,
-		Size:     28,
-		Color:    "#A5A6A8",
-		Content:  "Minzhan All Rights Reserved.",
-		FontPath: fontPath,
+		Left:       132,
+		Top:        190,
+		Size:       28,
+		Color:      "#A5A6A8",
+		Content:    "Minzhan All Rights Reserved.",
+		FontFamily: "syht",
 	}
 	textDraw2 := &TextDraw{
-		Left:     132,
-		Top:      236,
-		Size:     30,
-		Color:    "#A5A6A8",
-		Content:  "民站科技（深圳）有限公司",
-		FontPath: fontPath,
+		Left:       132,
+		Top:        236,
+		Size:       30,
+		Color:      "#A5A6A8",
+		Content:    "民站科技（深圳）有限公司",
+		FontFamily: "syht",
 	}
 	// Single line text left alignment
 	textDraw3 := &TextDraw{
-		Left:     20,
-		Top:      300,
-		AX:       FlexStart,
-		AY:       FlexCenter,
-		Size:     30,
-		Color:    "#999999",
-		Content:  "居左对齐",
-		FontPath: fontPath,
+		Left:       20,
+		Top:        300,
+		AX:         FlexStart,
+		AY:         FlexCenter,
+		Size:       30,
+		Color:      "#999999",
+		Content:    "居左对齐",
+		FontFamily: "syht",
 	}
 	// Single line text center alignment
 	textDraw4 := &TextDraw{
@@ -191,7 +215,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        30,
 		Color:       "#999999",
 		Content:     "居中对齐居中对齐居中对齐",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		CorrectionY: -5,
 	}
 	// Single line text right alignment
@@ -203,7 +227,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        30,
 		Color:       "#999999",
 		Content:     "居右对齐",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		CorrectionY: -5,
 	}
 	// Multi-line text left alignment
@@ -214,7 +238,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        30,
 		Color:       "#FF0099",
 		Content:     "多行文本居左对齐\n第二行文本\n第三行文本",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		Align:       AlignLeft,
 		LineSpacing: 1,
 		CorrectionY: -5,
@@ -227,7 +251,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        30,
 		Color:       "#FF0099",
 		Content:     "多行文本居中对齐\n第二行文本\n第三行文本",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		Align:       AlignCenter,
 		LineSpacing: 1.5,
 		CorrectionY: -5,
@@ -240,7 +264,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        30,
 		Color:       "#FF0099",
 		Content:     "多行文本居右对齐\n第二行文本\n第三行文本",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		Align:       AlignRight,
 		LineSpacing: 1.5,
 		CorrectionY: -5,
@@ -252,7 +276,7 @@ func TestTextAlignment(t *testing.T) {
 		Size:        12,
 		Color:       "#000000",
 		Content:     "APP开发需要注意的细节非常多，这里罗列一些，避免大家踩坑：\n1、找开发公司或者APP开发团队。要多渠道的找，找一些觉得靠谱的开发公司，多接触，创始人最好是技术出身，有技术基因的公司才能保证项目的开发质量。很多的做销售出身的公司，技术能力真心没有办法保证。\n2、合同签订。合同内容一定要细致，需要有比较详细的列表和功能描述，这样才能保证后期不会出现扯皮。因为软件开发需求经常会变，开发公司有时候也有愉懒的情况。\n3、需求沟通。沟通结果一定要落实到纸或者邮件、文档。最后要产生详尽的产品原型。原型是必须的，产品文档可根据实际情况来确定要不要，因为产品文档这个太需要时间，可能咱的费用及开发公司精力等方面限制，PRD文档不是必须的。\n4、产品研发。一定要提前沟通好技术架构，这样对项目开发内沟通，以及后续产品版本迭代都会有非常大的帮助，减少沟通成本，提高开发效率和质量。\n5、产品测试。这个环节非常重要，咱们需要在beta版本的时候参与进来。这样可以更早的了解熟悉软件的实现情况，为后续运营作好准备。\n6、产品验收。一定要把各个功能细节，一定都要过2~5遍。这样双方都放心一些。 ",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		Align:       AlignLeft,
 		LineSpacing: 1,
 	}
@@ -297,7 +321,7 @@ func TestCircle(t *testing.T) {
 // TestProductImage demonstrates how to draw product images.
 func TestProductImage(t *testing.T) {
 	canvas := imagex.NewImage(750, 1100, colorx.Hex2RGBA("#FFFFFFFF"))
-	ctx := NewContext(canvas)
+	ctx := NewContext(canvas, getFonts())
 	avatarDraw1 := &ImageDraw{
 		X:     30,
 		Y:     30,
@@ -319,7 +343,7 @@ func TestProductImage(t *testing.T) {
 		Size:        28,
 		Color:       "#000000",
 		Content:     "长按识别小程序码",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		LineSpacing: 1,
 		Align:       AlignRight,
 	}
@@ -329,17 +353,17 @@ func TestProductImage(t *testing.T) {
 		Size:        36,
 		Color:       "#000000",
 		Content:     "马面裙白色上衣红色织金妆花\n双工艺面料马面裙",
-		FontPath:    fontPath,
+		FontFamily:  "syht",
 		LineSpacing: 1.2,
 		Align:       AlignLeft,
 	}
 	textDraw3 := &TextDraw{
-		Left:     30,
-		Top:      860,
-		Size:     40,
-		Color:    "#FF0000",
-		Content:  "100元",
-		FontPath: fontPath,
+		Left:       30,
+		Top:        860,
+		Size:       40,
+		Color:      "#FF0000",
+		Content:    "100元",
+		FontFamily: "syht",
 	}
 	// Create pipeline and add components
 	outputPath := getOutputPath()
@@ -391,7 +415,7 @@ func TestProductImageFromJson(t *testing.T) {
 				"size": 28,
 				"color": "#000000",
 				"content": "长按识别小程序码",
-				"fontPath": "%s",
+				"fontFamily": "syht",
 				"lineSpacing": 1,
 				"align": "right"
 			}
@@ -404,7 +428,7 @@ func TestProductImageFromJson(t *testing.T) {
 				"size": 36,
 				"color": "#000000",
 				"content": "马面裙白色上衣红色织金妆花\n双工艺面料马面裙",
-				"fontPath": "%s",
+				"fontFamily": "syht",
 				"lineSpacing": 1.2,
 				"align": "left"
 			}
@@ -417,14 +441,14 @@ func TestProductImageFromJson(t *testing.T) {
 				"size": 40,
 				"color": "#FF0000",
 				"content": "100元",
-				"fontPath": "%s"
+				"fontFamily": "syht"
 			}
 		}
-	]`, fontPath, fontPath, fontPath) // 3个文本元素的fontPath占位符
+	]`) // 3个文本元素的fontPath占位符
 
 	// 创建画布（与原TestProductImage保持一致）
 	canvas := imagex.NewImage(750, 1100, colorx.Hex2RGBA("#FFFFFFFF"))
-	builder := NewBuilder(canvas)
+	builder := NewBuilder(canvas, getFonts())
 
 	// 从JSON配置加载绘制元素
 	builder, err := builder.FromJSONConfig(config)
@@ -446,4 +470,91 @@ func TestProductImageFromJson(t *testing.T) {
 	}
 
 	fmt.Printf("Product image from JSON config success, output path: %s\n", outputPath)
+}
+
+// TestPoster demonstrates how to draw posters with complex text layouts.
+func TestPoster(t *testing.T) {
+	// Create drawing context
+	canvas := imagex.NewImage(1080, 1590, color.RGBA{R: 246, G: 247, B: 249, A: 255})
+	ctx := NewContext(canvas, getFonts())
+	// Multi-line text left alignment
+	textDraw1 := &TextDraw{
+		Left:        130,
+		Top:         160,
+		AX:          FlexStart,
+		Size:        34,
+		Color:       "#A0A0A0",
+		Content:     "Minzhan (ShenZhen) Limited\n民站科技 (深圳) 有限公司",
+		FontFamily:  "syht",
+		LineSpacing: 1.2,
+		Align:       AlignLeft,
+		CorrectionY: -5,
+	}
+	// Multi-line text left alignment
+	textDraw2 := &TextDraw{
+		Left:        130,
+		Top:         479,
+		AX:          FlexStart,
+		Size:        29,
+		Color:       "#888888",
+		Content:     "产品编码\n官方网址\n产品名称\n开发日期",
+		FontFamily:  "syht",
+		LineSpacing: 2.7,
+		Align:       AlignLeft,
+		CorrectionY: -5,
+	}
+	// Multi-line text right alignment
+	textDraw3 := &TextDraw{
+		Right:       130,
+		Top:         479,
+		AX:          FlexEnd,
+		Size:        29,
+		Color:       "#AAAAAA",
+		Content:     "12345678\nwww.minzhan.com\n民站商城小程序\n2025-11-08 00:00:00",
+		FontFamily:  "syht",
+		LineSpacing: 2.7,
+		Align:       AlignRight,
+		CorrectionY: -5,
+	}
+	// Multi-line text left alignment
+	textDraw4 := &TextDraw{
+		Left:        130,
+		Top:         884,
+		AX:          FlexStart,
+		Size:        34,
+		Color:       "#212121",
+		Content:     "This is to certify that the software (s) bearing the above\nversion no (s) meets the company's technical/quality \nstandards.\n特此证明以上版本号的软件符合本公司技术及质量标准。",
+		FontFamily:  "syht",
+		LineSpacing: 1.4,
+		Align:       AlignLeft,
+		CorrectionY: -5,
+	}
+	// Multi-line text left alignment
+	textDraw5 := &TextDraw{
+		Left:        130,
+		Top:         1120,
+		AX:          FlexStart,
+		Size:        28,
+		Color:       "#A0A0A0",
+		Content:     "Minzhan (ShenZhen) Limited\n民站科技 (深圳) 有限公司",
+		FontFamily:  "syht",
+		LineSpacing: 1.2,
+		Align:       AlignLeft,
+		CorrectionY: -5,
+	}
+	// Create pipeline and add components
+	outputPath := getOutputPath()
+	pipeline := NewPipeline().
+		AddDrawer(textDraw1).
+		AddDrawer(textDraw2).
+		AddDrawer(textDraw3).
+		AddDrawer(textDraw4).
+		AddDrawer(textDraw5).
+		SetOutput(outputPath)
+	// Execute drawing pipeline
+	if err := pipeline.Execute(ctx); err != nil {
+		t.Errorf("Custom image execution failed: %v", err)
+		return
+	}
+	fmt.Printf("Custom image execution success, output path: %s\n", outputPath)
 }
