@@ -92,6 +92,14 @@ func TestPipelineExample(t *testing.T) {
 		Content:    "专注软件开发20年",
 		FontFamily: "msyh",
 	}
+	textDraw3 := &TextDraw{
+		Left:       250,
+		Top:        150,
+		Size:       28,
+		Color:      "#FFFFFF",
+		Content:    "",
+		FontFamily: "msyh",
+	}
 	qrCodeDraw := &QRCodeDraw{
 		X:       30,
 		Y:       860,
@@ -104,6 +112,7 @@ func TestPipelineExample(t *testing.T) {
 		AddDrawer(avatarDraw).
 		AddDrawer(textDraw1).
 		AddDrawer(textDraw2).
+		AddDrawer(textDraw3).
 		AddDrawer(qrCodeDraw).
 		SetOutput(outputPath)
 
@@ -441,6 +450,17 @@ func TestProductImageFromJson(t *testing.T) {
 				"size": 40,
 				"color": "#FF0000",
 				"content": "100元",
+				"fontFamily": "syht"
+			}
+		},
+		{
+			"type": "text",
+			"data": {
+				"left": 30,
+				"top": 860,
+				"size": 40,
+				"color": "#FF0000",
+				"content": "",
 				"fontFamily": "syht"
 			}
 		}

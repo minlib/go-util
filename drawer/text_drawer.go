@@ -7,6 +7,7 @@ import (
 	"github.com/golang/freetype/truetype"
 	"image"
 	"image/draw"
+	"strings"
 )
 
 // TextDraw represents a component for drawing text.
@@ -58,6 +59,9 @@ func (d *TextDraw) Type() string {
 
 // Draw executes the text drawing logic.
 func (d *TextDraw) Draw(ctx *Context) error {
+	if d.Content == "" || strings.TrimSpace(d.Content) == "" {
+		return nil
+	}
 	// Set default values
 	if d.Size <= 0 {
 		d.Size = 24
@@ -95,9 +99,6 @@ func (d *TextDraw) Draw(ctx *Context) error {
 
 // Validate checks if the TextDraw configuration is valid.
 func (d *TextDraw) Validate(ctx *Context) error {
-	if d.Content == "" {
-		return errors.New("content is required")
-	}
 	if d.FontFamily == "" {
 		return errors.New("fontFamily is required")
 	}
