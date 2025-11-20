@@ -329,6 +329,26 @@ func TestProductImage(t *testing.T) {
 		Width: 200,
 		Round: true,
 	}
+	avatarDraw1 := &ImageDraw{
+		X:           40,
+		Y:           950,
+		Path:        "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
+		Width:       120,
+		Round:       false,
+		Border:      true,
+		BorderWidth: 5,
+		BorderColor: colorx.Hex2RGBA("#000000"),
+	}
+	avatarDraw2 := &ImageDraw{
+		X:           200,
+		Y:           950,
+		Path:        "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
+		Width:       120,
+		Round:       true,
+		Border:      true,
+		BorderWidth: 5,
+		BorderColor: colorx.Hex2RGBA("#000000"),
+	}
 	textDraw1 := &TextDraw{
 		Left:        float64(750) - 30,
 		Top:         1040,
@@ -363,6 +383,8 @@ func TestProductImage(t *testing.T) {
 	pipeline := NewPipeline().
 		AddDrawer(backgroundDraw).
 		AddDrawer(qrcodeDraw).
+		AddDrawer(avatarDraw1).
+		AddDrawer(avatarDraw2).
 		AddDrawer(textDraw1).
 		AddDrawer(textDraw2).
 		AddDrawer(textDraw3).

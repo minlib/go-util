@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 
 	"github.com/minlib/go-util/imagex"
@@ -22,6 +23,15 @@ type ImageDraw struct {
 
 	// Round indicates whether to apply circular cropping to the image.
 	Round bool `json:"round"`
+
+	// Border indicates whether to apply a border to the image.
+	Border bool `json:"border"`
+
+	// BorderWidth is the width of the border to be applied to the image.
+	BorderWidth int `json:"borderWidth"`
+
+	// BorderColor is the color of the border to be applied to the image.
+	BorderColor color.Color `json:"borderColor"`
 
 	// Width is the target width for resizing the image (0 means no resizing).
 	Width int `json:"width"`
@@ -56,7 +66,12 @@ func (d *ImageDraw) Draw(ctx *Context) error {
 		drawImage = srcImage
 	}
 
-	// 4. Draw the image onto the canvas
+	// 4. Apply border if needed
+	if d.Border {
+		drawImage = imagex.AddBorder(drawImage, d.BorderWidth, d.BorderColor, d.Round)
+	}
+
+	// 5. Draw the image onto the canvas
 	draw.Draw(ctx.Canvas, ctx.Canvas.Bounds(), drawImage, image.Point{X: -d.X, Y: -d.Y}, draw.Over)
 	return nil
 }
