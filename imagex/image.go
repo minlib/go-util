@@ -245,7 +245,7 @@ func AddBorder(src image.Image, borderWidth int, borderColor color.Color, circul
 
 		// Draw border circle
 		centerX, centerY := float64(totalSize)/2, float64(totalSize)/2
-		borderRadius := float64(diameter)/2 + float64(borderWidth)/2
+		borderRadius := float64(diameter)/2 + float64(borderWidth)
 
 		// Draw border
 		dc.DrawCircle(centerX, centerY, borderRadius)
@@ -281,7 +281,6 @@ func AddBorder(src image.Image, borderWidth int, borderColor color.Color, circul
 
 		// Draw the source image in the center
 		dc.DrawImage(src, borderWidth, borderWidth)
-
 		return dc.Image()
 	}
 }
