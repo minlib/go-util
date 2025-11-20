@@ -311,34 +311,18 @@ func TestTextAlignment(t *testing.T) {
 	fmt.Printf("Text test success, output path: %s\n", outputPath)
 }
 
-// TestCircle demonstrates how to draw circular images.
-func TestCircle(t *testing.T) {
-	srcImage, err := imagex.ReadImage(avatarPath)
-	if err != nil {
-		t.Skipf("Skip test due to missing avatar: %v", err)
-		return
-	}
-	newImage := DrawCircle(srcImage)
-	outputPath := getOutputPath()
-	if err = imagex.SavePNG(newImage, outputPath); err != nil {
-		t.Errorf("Failed to save circle image: %v", err)
-		return
-	}
-	fmt.Printf("Circle test success, output path: %s\n", outputPath)
-}
-
 // TestProductImage demonstrates how to draw product images.
 func TestProductImage(t *testing.T) {
 	canvas := imagex.NewImage(750, 1100, colorx.Hex2RGBA("#FFFFFFFF"))
 	ctx := NewContext(canvas, getFonts())
-	avatarDraw1 := &ImageDraw{
+	backgroundDraw := &ImageDraw{
 		X:     30,
 		Y:     30,
 		Path:  "https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp",
 		Width: 690,
 		Round: false,
 	}
-	avatarDraw2 := &ImageDraw{
+	qrcodeDraw := &ImageDraw{
 		X:     500,
 		Y:     820,
 		Path:  "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
@@ -377,8 +361,8 @@ func TestProductImage(t *testing.T) {
 	// Create pipeline and add components
 	outputPath := getOutputPath()
 	pipeline := NewPipeline().
-		AddDrawer(avatarDraw1).
-		AddDrawer(avatarDraw2).
+		AddDrawer(backgroundDraw).
+		AddDrawer(qrcodeDraw).
 		AddDrawer(textDraw1).
 		AddDrawer(textDraw2).
 		AddDrawer(textDraw3).

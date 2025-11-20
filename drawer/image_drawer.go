@@ -51,7 +51,7 @@ func (d *ImageDraw) Draw(ctx *Context) error {
 	// 3. Apply circular cropping if needed
 	var drawImage image.Image
 	if d.Round {
-		drawImage = DrawCircle(srcImage)
+		drawImage = imagex.DrawCircle(srcImage)
 	} else {
 		drawImage = srcImage
 	}
