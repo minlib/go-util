@@ -3,11 +3,12 @@ package drawer
 import (
 	"errors"
 	"fmt"
-	"github.com/fogleman/gg"
-	"github.com/golang/freetype/truetype"
 	"image"
 	"image/draw"
 	"strings"
+
+	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
 )
 
 // TextDraw represents a component for drawing text.
@@ -62,6 +63,7 @@ func (d *TextDraw) Draw(ctx *Context) error {
 	if d.Content == "" || strings.TrimSpace(d.Content) == "" {
 		return nil
 	}
+
 	// Set default values
 	if d.Size <= 0 {
 		d.Size = 24
@@ -69,31 +71,41 @@ func (d *TextDraw) Draw(ctx *Context) error {
 	if d.LineSpacing <= 0 {
 		d.LineSpacing = 1
 	}
+
 	// Configure the gg drawing context
 	bounds := ctx.Canvas.Bounds()
-	ctxGG := gg.NewContext(bounds.Dx(), bounds.Dy())
-	font := ctx.Fonts[d.FontFamily]
-	fontFace := truetype.NewFace(font, &truetype.Options{Size: d.Size})
-	if fontFace == nil {
+	dc := gg.NewContextForImage(ctx.Canvas)
+
+	// Check if font exists before creating font face
+	font, exists := ctx.Fonts[d.FontFamily]
+	if !exists || font == nil {
 		return fmt.Errorf("font family '%s' not found", d.FontFamily)
 	}
-	ctxGG.DrawImage(ctx.Canvas, 0, 0) // Copy existing canvas content
-	ctxGG.SetHexColor(d.Color)
-	ctxGG.SetFontFace(fontFace)
 
-	// Draw the text
+	fontFace := truetype.NewFace(font, &truetype.Options{Size: d.Size})
+	if fontFace == nil {
+		return fmt.Errorf("failed to create font face for '%s'", d.FontFamily)
+	}
+
+	// Set text properties
+	dc.SetHexColor(d.Color)
+	dc.SetFontFace(fontFace)
+
+	// Calculate coordinates with corrections
 	adjustedX := d.Left + d.CorrectionX
 	adjustedY := d.Top + d.CorrectionY
 
+	// Handle right alignment properly
 	if d.Align == AlignRight && d.Right > 0 {
 		adjustedX = float64(bounds.Dx()) - d.Right
 	}
 
-	w, _ := ctxGG.MeasureMultilineString(d.Content, d.LineSpacing)
-	ctxGG.DrawStringWrapped(d.Content, adjustedX, adjustedY, d.AX, d.AY, w, d.LineSpacing, gg.Align(AlignMap[string(d.Align)]))
+	// Draw the text
+	w, _ := dc.MeasureMultilineString(d.Content, d.LineSpacing)
+	dc.DrawStringWrapped(d.Content, adjustedX, adjustedY, d.AX, d.AY, w, d.LineSpacing, gg.Align(AlignMap[string(d.Align)]))
 
-	// 5. Merge back to the original canvas
-	draw.Draw(ctx.Canvas, bounds, ctxGG.Image(), image.Point{}, draw.Over)
+	// Merge back to the original canvas
+	draw.Draw(ctx.Canvas, bounds, dc.Image(), image.Point{}, draw.Over)
 	return nil
 }
 

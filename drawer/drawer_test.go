@@ -2,14 +2,15 @@ package drawer
 
 import (
 	"fmt"
-	"github.com/golang/freetype/truetype"
-	"github.com/minlib/go-util/colorx"
-	"github.com/minlib/go-util/fontx"
-	"github.com/minlib/go-util/imagex"
 	"image/color"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/golang/freetype/truetype"
+	"github.com/minlib/go-util/colorx"
+	"github.com/minlib/go-util/fontx"
+	"github.com/minlib/go-util/imagex"
 )
 
 const templatePath = "../outputs/template.png"
@@ -330,7 +331,7 @@ func TestProductImage(t *testing.T) {
 		Round: true,
 	}
 	avatarDraw1 := &ImageDraw{
-		X:           40,
+		X:           30,
 		Y:           950,
 		Path:        "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
 		Width:       120,
@@ -340,7 +341,18 @@ func TestProductImage(t *testing.T) {
 		BorderColor: colorx.Hex2RGBA("#000000"),
 	}
 	avatarDraw2 := &ImageDraw{
-		X:           200,
+		X:           180,
+		Y:           950,
+		Path:        "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
+		Width:       120,
+		Round:       false,
+		Border:      true,
+		BorderWidth: 5,
+		BorderColor: colorx.Hex2RGBA("#000000"),
+		Radius:      10,
+	}
+	avatarDraw3 := &ImageDraw{
+		X:           330,
 		Y:           950,
 		Path:        "https://res.wx.qq.com/wxdoc/dist/assets/img/skyline-demo.37eff20b.png",
 		Width:       120,
@@ -385,6 +397,7 @@ func TestProductImage(t *testing.T) {
 		AddDrawer(qrcodeDraw).
 		AddDrawer(avatarDraw1).
 		AddDrawer(avatarDraw2).
+		AddDrawer(avatarDraw3).
 		AddDrawer(textDraw1).
 		AddDrawer(textDraw2).
 		AddDrawer(textDraw3).

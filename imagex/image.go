@@ -215,77 +215,133 @@ func ResizeImage(src image.Image, width int) (image.Image, error) {
 	return newImage, nil
 }
 
-// AddBorder adds a border to an image using the gg library.
+// DrawCircleBorder adds a circular border to an image.
+// This function creates a circular border around the input image by:
+// 1. Calculating the diameter based on the smaller dimension of the image
+// 2. Creating a new canvas with dimensions to accommodate the border
+// 3. Drawing a circular border on the canvas
+// 4. Clipping the source image to fit within the circular area
+//
 // Parameters:
-//   - src: The source image to add a border to
-//   - borderWidth: The width of the border in pixels
-//   - borderColor: The color of the border
-//   - circular: If true, draws a circular border (for circular images), otherwise draws a rectangular border
+//   - src: The source image to add a circular border to
+//   - borderWidth: The width of the border in pixels (must be positive)
+//   - borderColor: The color of the border (can be any color.Color implementation)
 //
 // Returns:
-//   - image.Image: The image with the added border
-func AddBorder(src image.Image, borderWidth int, borderColor color.Color, circular bool) image.Image {
-	srcBounds := src.Bounds()
-	srcWidth := srcBounds.Dx()
-	srcHeight := srcBounds.Dy()
-
-	if circular {
-		// For circular images, draw a circular border
-		// Get the diameter (smaller of width and height)
-		diameter := srcWidth
-		if srcHeight < srcWidth {
-			diameter = srcHeight
-		}
-
-		// Calculate total size including border
-		totalSize := diameter + borderWidth*2
-
-		// Create a new context with the total size
-		dc := gg.NewContext(totalSize, totalSize)
-
-		// Draw border circle
-		centerX, centerY := float64(totalSize)/2, float64(totalSize)/2
-		borderRadius := float64(diameter)/2 + float64(borderWidth)
-
-		// Draw border
-		dc.DrawCircle(centerX, centerY, borderRadius)
-		dc.SetColor(borderColor)
-		dc.Fill()
-
-		// Draw a circular clipping path for the inner image
-		imageRadius := float64(diameter)/2 - 0.5
-		dc.DrawCircle(centerX, centerY, imageRadius)
-		dc.Clip()
-
-		// Calculate the offset to center the source image
-		offsetX := (srcWidth - diameter) / 2
-		offsetY := (srcHeight - diameter) / 2
-
-		// Draw the source image onto the circular context
-		dc.DrawImage(src, borderWidth-offsetX, borderWidth-offsetY)
-
-		return dc.Image()
-	} else {
-		// Original rectangular border implementation
-		// Calculate new dimensions with border (both sides)
-		newWidth := srcWidth + 2*borderWidth
-		newHeight := srcHeight + 2*borderWidth
-
-		// Create a new context with the new dimensions
-		dc := gg.NewContext(newWidth, newHeight)
-
-		// Draw border
-		dc.SetColor(borderColor)
-		dc.DrawRectangle(0, 0, float64(newWidth), float64(newHeight))
-		dc.Fill()
-
-		// Draw the source image in the center
-		dc.DrawImage(src, borderWidth, borderWidth)
-		return dc.Image()
+//   - image.Image: The image with the added circular border
+//   - If borderWidth <= 0, returns the original image unchanged
+//   - If src has invalid dimensions (width or height <= 0), returns the original image unchanged
+func DrawCircleBorder(src image.Image, borderWidth int, borderColor color.Color) image.Image {
+	// Handle edge cases
+	if borderWidth <= 0 {
+		return src // No border to add
 	}
+
+	// Get source image dimensions
+	srcBounds := src.Bounds()
+	srcWidth, srcHeight := srcBounds.Dx(), srcBounds.Dy()
+
+	// Handle invalid image dimensions
+	if srcWidth <= 0 || srcHeight <= 0 {
+		return src
+	}
+
+	// For circular images, draw a circular border
+	// Get the diameter (smaller of width and height)
+	diameter := srcWidth
+	if srcHeight < srcWidth {
+		diameter = srcHeight
+	}
+
+	// Calculate total size including border
+	totalSize := diameter + borderWidth*2
+
+	// Calculate center coordinates for the border circle
+	centerX, centerY := float64(totalSize)/2, float64(totalSize)/2
+
+	// Calculate the radius of the border circle
+	borderRadius := float64(diameter)/2 + float64(borderWidth)
+
+	// Calculate the offset to center the source image
+	offsetX, offsetY := (srcWidth-diameter)/2, (srcHeight-diameter)/2
+
+	// Create a new context with the total size
+	dc := gg.NewContext(totalSize, totalSize)
+
+	// Draw border
+	dc.DrawCircle(centerX, centerY, borderRadius)
+	dc.SetColor(borderColor)
+	dc.Fill()
+
+	// Draw a circular clipping path for the inner image
+	imageRadius := float64(diameter)/2 - 0.5
+	dc.DrawCircle(centerX, centerY, imageRadius)
+	dc.Clip()
+
+	// Draw the source image in the center
+	dc.DrawImage(src, borderWidth-offsetX, borderWidth-offsetY)
+
+	return dc.Image()
 }
 
-// AddShadow adds a shadow effect to an image using the gg library.
+// DrawRectangleBorder adds a rectangular border to an image with optional rounded corners.
+// This function creates a rectangular border around the input image by:
+// 1. Calculating new dimensions to accommodate the border
+// 2. Creating a new canvas with the expanded dimensions
+// 3. Drawing either a rectangle or rounded rectangle for the border
+// 4. Drawing the source image centered within the border
+//
+// Parameters:
+//   - src: The source image to add a border to
+//   - borderWidth: The width of the border in pixels (must be positive)
+//   - borderColor: The color of the border (can be any color.Color implementation)
+//   - radius: The corner radius for rounded rectangles (0 for sharp corners)
+//
+// Returns:
+//   - image.Image: The image with the added rectangular border
+//   - If borderWidth <= 0, returns the original image unchanged
+//   - If src has invalid dimensions (width or height <= 0), returns the original image unchanged
+func DrawRectangleBorder(src image.Image, borderWidth int, borderColor color.Color, radius float64) image.Image {
+	// Handle edge cases
+	if borderWidth <= 0 {
+		return src // No border to add
+	}
+
+	// Get source image dimensions
+	srcBounds := src.Bounds()
+	srcWidth, srcHeight := srcBounds.Dx(), srcBounds.Dy()
+
+	// Handle invalid image dimensions
+	if srcWidth <= 0 || srcHeight <= 0 {
+		return src
+	}
+
+	// Calculate new dimensions with border (both sides)
+	newWidth := srcWidth + 2*borderWidth
+	newHeight := srcHeight + 2*borderWidth
+
+	// Create a new context with the new dimensions
+	dc := gg.NewContext(newWidth, newHeight)
+
+	// Draw border with or without rounded corners
+	if radius <= 0 {
+		// Sharp corners
+		dc.DrawRectangle(0, 0, float64(newWidth), float64(newHeight))
+	} else {
+		// Rounded corners
+		dc.DrawRoundedRectangle(0, 0, float64(newWidth), float64(newHeight), radius)
+	}
+
+	dc.SetColor(borderColor)
+	dc.Fill()
+
+	// Draw the source image in the center
+	dc.DrawImage(src, borderWidth, borderWidth)
+
+	return dc.Image()
+}
+
+// DrawShadow adds a shadow effect to an image using the gg library.
 // Parameters:
 //   - src: The source image to add a shadow to
 //   - offsetX: The horizontal offset of the shadow
@@ -296,7 +352,7 @@ func AddBorder(src image.Image, borderWidth int, borderColor color.Color, circul
 //
 // Returns:
 //   - image.Image: The image with the added shadow
-func AddShadow(src image.Image, offsetX, offsetY, blurRadius int, shadowColor color.Color, circular bool) image.Image {
+func DrawShadow(src image.Image, offsetX, offsetY, blurRadius int, shadowColor color.Color, circular bool) image.Image {
 	srcBounds := src.Bounds()
 	srcWidth := srcBounds.Dx()
 	srcHeight := srcBounds.Dy()

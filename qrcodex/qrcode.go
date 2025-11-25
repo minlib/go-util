@@ -50,6 +50,6 @@ func QrcodeWithBorder(content string, level qrcode.RecoveryLevel, size int) (ima
 		return nil, err
 	}
 	// Add white border (RGB 255,255,255) with rectangular mode (circular=false)
-	qrcodeImage := imagex.AddBorder(baseImage, borderWidth, color.RGBA{R: 255, G: 255, B: 255, A: 255}, false)
+	qrcodeImage := imagex.DrawRectangleBorder(baseImage, borderWidth, color.RGBA{R: 255, G: 255, B: 255, A: 255}, 0)
 	return qrcodeImage, nil
 }

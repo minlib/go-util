@@ -33,6 +33,9 @@ type ImageDraw struct {
 	// BorderColor is the color of the border to be applied to the image.
 	BorderColor color.Color `json:"borderColor"`
 
+	// Radius is the radius of the circular cropping to be applied to the image.
+	Radius float64 `json:"radius"`
+
 	// Width is the target width for resizing the image (0 means no resizing).
 	Width int `json:"width"`
 }
@@ -68,7 +71,11 @@ func (d *ImageDraw) Draw(ctx *Context) error {
 
 	// 4. Apply border if needed
 	if d.Border {
-		drawImage = imagex.AddBorder(drawImage, d.BorderWidth, d.BorderColor, d.Round)
+		if d.Round {
+			drawImage = imagex.DrawCircleBorder(drawImage, d.BorderWidth, d.BorderColor)
+		} else {
+			drawImage = imagex.DrawRectangleBorder(drawImage, d.BorderWidth, d.BorderColor, d.Radius)
+		}
 	}
 
 	// 5. Draw the image onto the canvas
