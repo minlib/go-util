@@ -74,16 +74,28 @@ func TestNewImageFromFileWithInvalidPath(t *testing.T) {
 	}
 }
 
-// TestGetSize tests getting image size
-func TestGetSize(t *testing.T) {
-	width, height, err := GetSize("https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp")
+// TestReadImageForBmp tests reading image bytes for bmp
+func TestReadImageForBmp(t *testing.T) {
+	image, err := ReadImage("../assets/images/test.bmp")
+	fmt.Println(image, err)
+}
+
+// TestReadImage tests reading image bytes for webp
+func TestReadImageForWebp(t *testing.T) {
+	image, err := ReadImage("../assets/images/test.webp")
+	fmt.Println(image, err)
+}
+
+// TestGetSizeForBmp tests getting image size for bmp
+func TestGetSizeForBmp(t *testing.T) {
+	width, height, err := GetSize("../assets/images/test.bmp")
 	fmt.Println(width, height, err)
 }
 
-// TestReadImage tests reading image bytes
-func TestReadImage(t *testing.T) {
-	image, err := ReadImage("https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp")
-	fmt.Println(image, err)
+// TestGetSizeForWebp tests getting image size for webp
+func TestGetSizeForWebp(t *testing.T) {
+	width, height, err := GetSize("../assets/images/test.webp")
+	fmt.Println(width, height, err)
 }
 
 // TestDrawRectangleBorder tests adding a border to an image
