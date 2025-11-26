@@ -2,8 +2,6 @@ package imagex
 
 import (
 	"bytes"
-	"github.com/fogleman/gg"
-	"github.com/minlib/go-util/filex"
 	"image"
 	"image/color"
 	"image/draw"
@@ -14,6 +12,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/fogleman/gg"
+	"github.com/minlib/go-util/filex"
 )
 
 // GetResourceReader get local or remote resource file
@@ -126,9 +127,6 @@ func ReadImage(pathOrUrl string) (image.Image, error) {
 //   - int: The height of the image
 //   - error: Any error encountered while reading the image
 func GetSize(path string) (int, int, error) {
-	if strings.HasSuffix(path, ".webp") {
-		return GetWebpSize(path)
-	}
 	srcImage, err := ReadImage(path)
 	if err != nil {
 		return 0, 0, err
