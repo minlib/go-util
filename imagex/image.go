@@ -15,6 +15,7 @@ import (
 
 	"github.com/fogleman/gg"
 	"github.com/minlib/go-util/filex"
+	_ "golang.org/x/image/webp"
 )
 
 // GetResourceReader get local or remote resource file

@@ -74,6 +74,18 @@ func TestNewImageFromFileWithInvalidPath(t *testing.T) {
 	}
 }
 
+// TestGetSize tests getting image size
+func TestGetSize(t *testing.T) {
+	width, height, err := GetSize("https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp")
+	fmt.Println(width, height, err)
+}
+
+// TestReadImage tests reading image bytes
+func TestReadImage(t *testing.T) {
+	image, err := ReadImage("https://static.minzhan.com/uploads/s274600676091367425/thumb/202406/1331ff9d1377f549450280b7509786308ad3.webp")
+	fmt.Println(image, err)
+}
+
 // TestDrawRectangleBorder tests adding a border to an image
 func TestDrawRectangleBorder(t *testing.T) {
 	output := getOutputPath()
