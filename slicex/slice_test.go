@@ -3,11 +3,12 @@ package slicex
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/minlib/go-util/core"
-	"github.com/minlib/go-util/jsonx"
 	"reflect"
 	"sort"
 	"testing"
+
+	"github.com/minlib/go-util/core"
+	"github.com/minlib/go-util/jsonx"
 )
 
 func TestSlice(t *testing.T) {

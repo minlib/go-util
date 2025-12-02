@@ -1,7 +1,7 @@
 package random
 
 import (
-	"github.com/minlib/go-util/stringx"
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -29,8 +29,8 @@ func IntRange(min, max int) int {
 
 // IntRangeZeroFill Returns a string of random numbers,if less than the specified length, preceded by zeros.
 func IntRangeZeroFill(min, max, length int) string {
-	randNum := IntRange(min, max)
-	return stringx.ZeroFill(randNum, length)
+	number := IntRange(min, max)
+	return fmt.Sprintf("%0*d", length, number)
 }
 
 // Random 随机生成字符串

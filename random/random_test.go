@@ -53,7 +53,7 @@ func TestIntRangeZeroFill(t *testing.T) {
 	fmt.Println(IntRangeZeroFill(12, 12, 2))     // 12
 	fmt.Println(IntRangeZeroFill(123, 123, 2))   // 123
 	fmt.Println(IntRangeZeroFill(1234, 1234, 2)) // 1234
-
 	fmt.Println(IntRangeZeroFill(123, 123, 4))   // 0123
 	fmt.Println(IntRangeZeroFill(1234, 1234, 4)) // 1234
+	fmt.Println(IntRangeZeroFill(0, 1234, 4))
 }

@@ -3,11 +3,12 @@ package stringx
 import (
 	"bytes"
 	"fmt"
-	"github.com/minlib/go-util/slicex"
-	"golang.org/x/exp/constraints"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/minlib/go-util/slicex"
+	"golang.org/x/exp/constraints"
 )
 
 // HasAnyPrefix tests whether the string s ends with any prefix.
@@ -120,8 +121,8 @@ func UnderlineToLowerHump(s string) string {
 // ZeroFill(100, 6) // 000100
 // ZeroFill(123456, 6)  // 123456
 // ZeroFill(1234567, 6) // 1234567
-func ZeroFill(number, bit int) string {
-	return fmt.Sprintf("%0"+strconv.Itoa(bit)+"d", number)
+func ZeroFill(number, length int) string {
+	return fmt.Sprintf("%0*d", length, number)
 }
 
 // RuneLength 长度

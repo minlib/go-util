@@ -1,9 +1,9 @@
 package slicex
 
 import (
-	"github.com/minlib/go-util/core"
 	"strconv"
 
+	"github.com/minlib/go-util/core"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 )
