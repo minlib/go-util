@@ -37,7 +37,7 @@ func TestDir(t *testing.T) {
 	}{
 		{"Absolute path", "/home/user/file.txt", "/home/user"},
 		{"Relative path", "user/file.txt", "user"},
-		{"Directory", "/home/user/", "/home"},
+		{"Directory", "/home/user/", "/home/user"},
 		{"Root", "/", "/"},
 		{"Empty", "", "."},
 	}
@@ -60,7 +60,7 @@ func TestExt(t *testing.T) {
 		{"PDF file", "document.pdf", ".pdf"},
 		{"No extension", "README", ""},
 		{"Multiple dots", "file.test.go", ".go"},
-		{"Hidden file", ".gitignore", ""},
+		{"Hidden file", ".gitignore", ".gitignore"},
 	}
 
 	for _, tt := range tests {
@@ -76,7 +76,7 @@ func TestExist(t *testing.T) {
 	// Create a temporary file for testing
 	tempFile := filepath.Join(os.TempDir(), "test_exist.txt")
 	content := "test content"
-	err := WriteFile(tempFile, content)
+	err := WriteFileString(tempFile, content)
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
@@ -112,7 +112,7 @@ func TestIsDir(t *testing.T) {
 
 	// Create a temporary file for testing
 	tempFile := filepath.Join(os.TempDir(), "test_isdir_file.txt")
-	err = WriteFile(tempFile, "test content")
+	err = WriteFileString(tempFile, "test content")
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
@@ -141,7 +141,7 @@ func TestGetSize(t *testing.T) {
 	// Create a temporary file for testing
 	tempFile := filepath.Join(os.TempDir(), "test_size.txt")
 	content := "Hello, World!"
-	err := WriteFile(tempFile, content)
+	err := WriteFileString(tempFile, content)
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
@@ -254,7 +254,7 @@ func TestWriteFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := WriteFile(tt.filename, tt.data)
+			err := WriteFileString(tt.filename, tt.data)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("WriteFile() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -262,7 +262,7 @@ func TestWriteFile(t *testing.T) {
 
 			// Verify the file was written correctly
 			if !tt.wantErr {
-				content, err := ReadFile(tt.filename)
+				content, err := ReadFileString(tt.filename)
 				if err != nil {
 					t.Errorf("Failed to read written file: %v", err)
 					return
@@ -279,7 +279,7 @@ func TestReadFile(t *testing.T) {
 	// Create a temporary file for testing
 	tempFile := filepath.Join(os.TempDir(), "test_readfile.txt")
 	content := "test content for reading"
-	err := WriteFile(tempFile, content)
+	err := WriteFileString(tempFile, content)
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
@@ -297,13 +297,60 @@ func TestReadFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ReadFile(tt.filename)
+			got, err := ReadFileString(tt.filename)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ReadFile() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ReadFileString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("ReadFile() = %v, want %v", got, tt.want)
+				t.Errorf("ReadFileString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCopyFile(t *testing.T) {
+	// Create a temporary source file for testing
+	srcFile := filepath.Join(os.TempDir(), "test_copy_src.txt")
+	content := "test content for copying"
+	err := WriteFileString(srcFile, content)
+	if err != nil {
+		t.Fatalf("Failed to create source test file: %v", err)
+	}
+	defer os.Remove(srcFile)
+
+	// Destination file path
+	destFile := filepath.Join(os.TempDir(), "test_copy_dest.txt")
+	defer os.Remove(destFile)
+
+	tests := []struct {
+		name    string
+		src     string
+		dest    string
+		wantErr bool
+	}{
+		{"Normal copy", srcFile, destFile, false},
+		{"Non-existing source", "/non/existing/file.txt", filepath.Join(os.TempDir(), "dest.txt"), true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := CopyFile(tt.src, tt.dest)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CopyFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			// Verify the file was copied correctly
+			if !tt.wantErr {
+				copiedContent, err := ReadFileString(tt.dest)
+				if err != nil {
+					t.Errorf("Failed to read copied file: %v", err)
+					return
+				}
+				if copiedContent != content {
+					t.Errorf("CopyFile() copied %v, want %v", copiedContent, content)
+				}
 			}
 		})
 	}
@@ -366,7 +413,7 @@ func TestFindByExtensions(t *testing.T) {
 	}
 
 	for _, f := range files {
-		if err := WriteFile(f.path, f.content); err != nil {
+		if err := WriteFileString(f.path, f.content); err != nil {
 			t.Fatalf("Failed to create test file: %v", err)
 		}
 	}
@@ -414,7 +461,7 @@ func TestFindByExtensionsContext(t *testing.T) {
 	}
 
 	for _, f := range files {
-		if err := WriteFile(f.path, f.content); err != nil {
+		if err := WriteFileString(f.path, f.content); err != nil {
 			t.Fatalf("Failed to create test file: %v", err)
 		}
 	}

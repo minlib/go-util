@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -118,26 +119,56 @@ func MkdirAll(paths ...string) error {
 }
 
 // WriteFile writes data to a file named by filename.
-// If the file does not exist, WriteFile creates it with permissions 0644.
-// If the file already exists, WriteFile truncates it before writing.
-func WriteFile(filename string, data string) error {
+func WriteFile(filename string, data []byte) error {
 	if err := MkdirAll(filename); err != nil {
 		return fmt.Errorf("failed to create parent directories for %s: %w", filename, err)
 	}
 
-	if err := os.WriteFile(filename, []byte(data), 0644); err != nil {
+	if err := os.WriteFile(filename, data, 0644); err != nil {
 		return fmt.Errorf("failed to write file %s: %w", filename, err)
 	}
 	return nil
 }
 
+// WriteFileString writes data to a file named by filename.
+func WriteFileString(filename, data string) error {
+	return WriteFile(filename, []byte(data))
+}
+
 // ReadFile reads the file named by filename and returns the contents.
-func ReadFile(filename string) (string, error) {
+func ReadFile(filename string) ([]byte, error) {
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file %s: %w", filename, err)
+	}
+	return bytes, nil
+}
+
+// ReadFileString reads the file named by filename and returns the contents.
+func ReadFileString(filename string) (string, error) {
 	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return "", fmt.Errorf("failed to read file %s: %w", filename, err)
 	}
 	return string(bytes), nil
+}
+
+// CopyFile copies the contents of the file named srcFilename to the file named destFilename.
+func CopyFile(srcFilename, destFilename string) error {
+	src, err := os.Open(srcFilename)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	dest, err := os.Create(destFilename)
+	if err != nil {
+		return err
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, src)
+	return err
 }
 
 // IsExtensions checks if the given file path has one of the specified extensions.
