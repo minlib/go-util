@@ -101,6 +101,54 @@ func TestExist(t *testing.T) {
 	}
 }
 
+func TestFilenameWithoutExt(t *testing.T) {
+	tests := []struct {
+		name     string
+		filePath string
+		want     string
+	}{
+		{"Basic file", "/home/user/file.txt", "file"},
+		{"File with multiple dots", "/home/user/file.test.go", "file.test"},
+		{"File without extension", "/home/user/README", "README"},
+		{"Hidden file", "/home/user/.gitignore", ""},
+		{"Just filename with extension", "document.pdf", "document"},
+		{"Just filename without extension", "README", "README"},
+		{"Empty path", "", ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FilenameWithoutExt(tt.filePath); got != tt.want {
+				t.Errorf("FilenameWithoutExt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestReplaceExt(t *testing.T) {
+	tests := []struct {
+		name string
+		path string
+		ext  string
+		want string
+	}{
+		{"Basic replacement", "/home/user/file.txt", ".pdf", "/home/user/file.pdf"},
+		{"Different extension length", "document.pdf", ".txt", "document.txt"},
+		{"Add extension to file without one", "/home/user/README", ".md", "/home/user/README.md"},
+		{"Replace with empty extension", "/home/user/file.txt", "", "/home/user/file"},
+		{"File with multiple dots", "file.test.go", ".txt", "file.test.txt"},
+		{"Empty path", "", ".txt", ".txt"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ReplaceExt(tt.path, tt.ext); got != tt.want {
+				t.Errorf("ReplaceExt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestIsDir(t *testing.T) {
 	// Create a temporary directory for testing
 	tempDir := filepath.Join(os.TempDir(), "test_isdir")

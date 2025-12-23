@@ -42,6 +42,42 @@ func Exist(path string) bool {
 	return !os.IsNotExist(err)
 }
 
+// FilenameWithoutExt returns the base filename without its extension.
+//
+// Parameters:
+//   - path: the path to the file
+//
+// Returns:
+//   - the filename without extension
+//
+// Examples:
+//   - FilenameWithoutExt("/path/to/file.txt") -> "file"
+//   - FilenameWithoutExt("file.tar.gz") -> "file.tar"
+func FilenameWithoutExt(path string) string {
+	if path == "" {
+		return ""
+	}
+	base := filepath.Base(path)
+	ext := filepath.Ext(path)
+	return strings.TrimSuffix(base, ext)
+}
+
+// ReplaceExt replaces the extension of the given path with the new extension.
+//
+// Parameters:
+//   - path: the original file path
+//   - ext: the new extension (should include the leading dot, e.g., ".txt")
+//
+// Returns:
+//   - the path with the new extension
+//
+// Examples:
+//   - ReplaceExt("/path/to/file.txt", ".pdf") -> "/path/to/file.pdf"
+//   - ReplaceExt("file.txt", ".doc") -> "file.doc"
+func ReplaceExt(path string, ext string) string {
+	return strings.TrimSuffix(path, filepath.Ext(path)) + ext
+}
+
 // IsDir reports whether the given path is a directory.
 // Returns false if the path doesn't exist or an error occurs.
 func IsDir(path string) bool {
