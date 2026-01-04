@@ -3,9 +3,10 @@
 package timex
 
 import (
-	"github.com/minlib/go-util/core"
 	"strconv"
 	"time"
+
+	"github.com/minlib/go-util/core"
 )
 
 // FormatDate 获取日期字符串
@@ -16,6 +17,20 @@ func FormatDate(t time.Time) string {
 // FormatTime 获取时间字符串
 func FormatTime(t time.Time) string {
 	return t.Format("15:04:05")
+}
+
+// FormatWeek 获取星期字符串
+func FormatWeek(t time.Time) string {
+	weekdayMap := map[time.Weekday]string{
+		time.Sunday:    "星期日",
+		time.Monday:    "星期一",
+		time.Tuesday:   "星期二",
+		time.Wednesday: "星期三",
+		time.Thursday:  "星期四",
+		time.Friday:    "星期五",
+		time.Saturday:  "星期六",
+	}
+	return weekdayMap[t.Weekday()]
 }
 
 // FormatDateTime 获取日期时间字符串
